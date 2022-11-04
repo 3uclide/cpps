@@ -1,3 +1,7 @@
 # C++² 
 
-C\+\+² is experimental programming language that transpile into clean C\+\+.
+C\+\+² is a programming language that transpile into clean C\+\+.
+
+## Disclaimer
+
+This is an experimental project, use at your own risk.
