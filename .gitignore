@@ -1,0 +1,23 @@
+# Build directories and binary files
+build/
+out/
+install/
+cmake-build-*/
+conan-cache/
+
+# User spesific settings
+CMakeUserPresets.json
+
+# IDE files
+.vs/
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*~
+_ReSharper*
+*.log
+*.user
