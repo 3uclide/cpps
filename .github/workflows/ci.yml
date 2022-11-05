@@ -23,11 +23,19 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
+          - windows-2022
         compiler:
           - llvm-15.0.2
           - gcc-12
         generator:
           - "Ninja Multi-Config"
+        exclude:
+          - os: ubuntu-22.04
+            compiler: llvm-15.0.2
+
+          - os: windows-2022
+            compiler: gcc-12
+
         include:
           - compiler: gcc-12
             gcov_executable: gcov-12
@@ -58,15 +66,12 @@ jobs:
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
 
-      - name: Setup Task
-        uses: arduino/setup-task@v1
-
       - name: Setup Cpp
         uses: aminya/setup-cpp@v0.21.0
         with:
           compiler: ${{ matrix.compiler }}
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
-
+          task: true
           cmake: true
           ninja: true
           conan: true
