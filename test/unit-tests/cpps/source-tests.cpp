@@ -89,18 +89,53 @@ TEST_CASE("Source cppsify", "[Source]")
 
     SECTION("set previous adjacent comment/empty line type to cpps")
     {
-        source.add("cpp", Source::Line::Type::Cpp);
-        source.add("comment", Source::Line::Type::Comment);
-        source.add("", Source::Line::Type::Empty);
-        source.add("cpps", Source::Line::Type::Cpps);
+        SECTION("stop when line type is cpp")
+        {
+            source.add("cpp", Source::Line::Type::Cpp);
+            source.add("comment", Source::Line::Type::Comment);
+            source.add("", Source::Line::Type::Empty);
+            source.add("cpps", Source::Line::Type::Cpps);
 
-        source.cppsify();
+            source.cppsify();
 
-        REQUIRE(source.size() == 4);
-        REQUIRE(source[0].getType() == Source::Line::Type::Cpp);
-        REQUIRE(source[1].getType() == Source::Line::Type::Cpps);
-        REQUIRE(source[2].getType() == Source::Line::Type::Cpps);
-        REQUIRE(source[3].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source.size() == 4);
+            REQUIRE(source[0].getType() == Source::Line::Type::Cpp);
+            REQUIRE(source[1].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[2].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[3].getType() == Source::Line::Type::Cpps);
+        }
+
+        SECTION("stop when line type is import")
+        {
+            source.add("cpp", Source::Line::Type::Import);
+            source.add("comment", Source::Line::Type::Comment);
+            source.add("", Source::Line::Type::Empty);
+            source.add("cpps", Source::Line::Type::Cpps);
+
+            source.cppsify();
+
+            REQUIRE(source.size() == 4);
+            REQUIRE(source[0].getType() == Source::Line::Type::Import);
+            REQUIRE(source[1].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[2].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[3].getType() == Source::Line::Type::Cpps);
+        }
+
+        SECTION("stop when line type is preprocessor")
+        {
+            source.add("preprocessor", Source::Line::Type::Preprocessor);
+            source.add("comment", Source::Line::Type::Comment);
+            source.add("", Source::Line::Type::Empty);
+            source.add("cpps", Source::Line::Type::Cpps);
+
+            source.cppsify();
+
+            REQUIRE(source.size() == 4);
+            REQUIRE(source[0].getType() == Source::Line::Type::Preprocessor);
+            REQUIRE(source[1].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[2].getType() == Source::Line::Type::Cpps);
+            REQUIRE(source[3].getType() == Source::Line::Type::Cpps);
+        }
     }
 }
 
