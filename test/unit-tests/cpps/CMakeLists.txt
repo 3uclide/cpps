@@ -15,6 +15,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     diagnosis-tests.cpp
     source-location-tests.cpp
     source-tests.cpp
+    utility-tests.cpp
 )
 
 add_executable(cpps-unit-tests ${CPPS_UNIT_TESTS_INCLUDES} ${CPPS_UNIT_TESTS_SOURCES})

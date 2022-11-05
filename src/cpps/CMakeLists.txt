@@ -6,6 +6,7 @@ set(CPPS_INCLUDES
     source.hpp
     source-location.hpp
     source-reader.hpp
+    utility.hpp
 )
 
 set(CPPS_SOURCES
