@@ -15,8 +15,8 @@ struct SourceLocation
 {
     bool operator==(const SourceLocation&) const = default;
 
-    SourceLine line;
-    SourceColumn column;
+    SourceLine line{InvalidSourceLine};
+    SourceColumn column{InvalidSourceColumn};
 };
 
 inline constexpr SourceLocation InvalidSourceLocation{InvalidSourceLine, InvalidSourceColumn};
