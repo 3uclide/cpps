@@ -12,6 +12,7 @@ set(CPPS_UNIT_TESTS_INCLUDES
 )
 
 set(CPPS_UNIT_TESTS_SOURCES
+    diagnosis-tests.cpp
     source-location-tests.cpp
 )
 

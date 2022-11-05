@@ -2,6 +2,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
+    diagnosis.hpp
     source-location.hpp
     source-reader.hpp
 )
