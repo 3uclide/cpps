@@ -30,13 +30,9 @@ jobs:
         include:
           - compiler: gcc-12
             gcov_executable: gcov-12
-            c_compiler: gcc-12
-            cxx_compiler: g++-12
 
           - compiler: llvm-15.0.2
             gcov_executable: "llvm-cov-15 gcov"
-            c_compiler: clang-15
-            cxx_compiler: clang++-15
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
@@ -45,8 +41,6 @@ jobs:
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
-            c_compiler: cl
-            cxx_compiler: cl
 
     runs-on: ${{ matrix.os }}
 
