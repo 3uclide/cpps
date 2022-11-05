@@ -29,10 +29,10 @@ jobs:
           - "Ninja Multi-Config"
         include:
           - compiler: gcc-12
-            gcov_executable: gcov-12
+            gcov_executable: gcov
 
           - compiler: llvm-15.0.2
-            gcov_executable: "llvm-cov-15 gcov"
+            gcov_executable: "llvm-cov gcov"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
@@ -78,8 +78,6 @@ jobs:
           task coverage
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
-          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
-          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
           GCOV_EXECUTABLE: ${{matrix.gcov_executable}}
 
       - name: Debug Tests
@@ -87,24 +85,18 @@ jobs:
           task test_debug
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
-          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
-          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
 
       - name: Release Tests
         run: |
           task test_release
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
-          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
-          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
 
       - name: Install
         run: |
           task install
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
-          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
-          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
           CPACK_GENERATOR: ${{matrix.package_generator}}
 
       - name: Publish to Codecov
