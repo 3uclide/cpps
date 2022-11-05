@@ -40,8 +40,8 @@ public:
     [[nodiscard]] constexpr std::span<const Entry> getWarnings() const;
 
 private:
-    std::vector<Entry> _errors;
-    std::vector<Entry> _warnings;
+    std::vector<Entry> _errors{};
+    std::vector<Entry> _warnings{};
 };
 
 constexpr void Diagnosis::error(std::string message)
