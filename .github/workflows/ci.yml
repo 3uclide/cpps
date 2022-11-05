@@ -24,11 +24,11 @@ jobs:
           - ubuntu-22.04
         compiler:
           - llvm-15.0.2
-          - gcc-12
+          - gcc-12.1.0
         generator:
           - "Ninja Multi-Config"
         include:
-          - compiler: gcc-12
+          - compiler: gcc-12.1.0
             gcov_executable: gcov
 
           - compiler: llvm-15.0.2
