@@ -23,7 +23,7 @@ jobs:
         os:
           - ubuntu-22.04
         compiler:
-          - llvm-15
+          - llvm-15.0.2
           - gcc-12
         generator:
           - "Ninja Multi-Config"
@@ -33,7 +33,7 @@ jobs:
             c_compiler: gcc-12
             cxx_compiler: g++-12
 
-          - compiler: llvm-15
+          - compiler: llvm-15.0.2
             gcov_executable: "llvm-cov-15 gcov"
             c_compiler: clang-15
             cxx_compiler: clang++-15
@@ -71,7 +71,7 @@ jobs:
           conan: true
           vcpkg: false
           ccache: true
-          clangtidy: "15.0.0"
+          clangtidy: "15.0.2"
           cppcheck: true
           gcovr: false
           opencppcoverage: true
