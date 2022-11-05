@@ -7,9 +7,16 @@ namespace CPPS {
 TEST_CASE("source_location fmt", "[source_location]")
 {
     SourceReader sourceReader;
-    (void)sourceReader;
 
-    CHECK(true);
+    SECTION("true")
+    {
+        CHECK(sourceReader.doSomething(true));
+    }
+
+    SECTION("false")
+    {
+        CHECK_FALSE(sourceReader.doSomething(false));
+    }
 }
 
 } // namespace CPPS
