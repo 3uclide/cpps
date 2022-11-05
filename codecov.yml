@@ -6,4 +6,11 @@ coverage:
         threshold: 0%
         base: auto 
         paths: 
-          - "src"
+          - "src/cpps/"
+    patch:
+      default:
+        target: 90%
+        threshold: 0%
+        base: auto 
+        paths: 
+          - "src/cpps/"
