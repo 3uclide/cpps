@@ -5,7 +5,7 @@ foreach(DEPENDENCY ${tests_DEPENDENCIES_CONFIGURED})
   find_package(${DEPENDENCY} CONFIG REQUIRED)
 endforeach()
 
-include(CTest)
+# include(CTest)
 include(Catch)
 
 set(CPPS_UNIT_TESTS_INCLUDES
