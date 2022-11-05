@@ -15,7 +15,6 @@ add_library(cpps STATIC ${CPPS_INCLUDES} ${CPPS_SOURCES})
 
 target_link_libraries(
     cpps
-    PUBLIC project_options project_warnings
-    PRIVATE fmt::fmt range-v3::range-v3)
+    PUBLIC project_options project_warnings fmt::fmt range-v3::range-v3)
 
 target_include_directories(cpps PUBLIC "../")
