@@ -29,7 +29,7 @@ env:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       actions: read
       contents: read
@@ -55,9 +55,6 @@ jobs:
         compiler: ${{ matrix.compiler }}
         build_type: ${{ matrix.build_type }}
         generator: ${{ matrix.generator }}
-
-    - name: Setup Task
-      uses: arduino/setup-task@v1
 
     - name: Setup Cpp
       uses: aminya/setup-cpp@v0.21.0
@@ -88,5 +85,6 @@ jobs:
     - name: Build
       run: |
         cmake --build ./build --config ${{matrix.build_type}}
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
