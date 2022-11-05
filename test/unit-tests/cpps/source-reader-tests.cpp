@@ -6,6 +6,9 @@ namespace CPPS {
 
 TEST_CASE("source_location fmt", "[source_location]")
 {
+    SourceReader sourceReader;
+    (void)sourceReader;
+
     CHECK(true);
 }
 
