@@ -92,13 +92,6 @@ jobs:
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
 
-      - name: Install
-        run: |
-          task install
-        env:
-          CMAKE_GENERATOR: ${{matrix.generator}}
-          CPACK_GENERATOR: ${{matrix.package_generator}}
-
       - name: Publish to Codecov
         uses: codecov/codecov-action@v3.1.1
         with:
