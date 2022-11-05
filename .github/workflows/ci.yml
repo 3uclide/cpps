@@ -70,7 +70,7 @@ jobs:
           ccache: true
           clangtidy: "15.0.2"
           cppcheck: true
-          gcovr: false
+          gcovr: true
           opencppcoverage: true
 
       - name: Coverage
