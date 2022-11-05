@@ -46,22 +46,22 @@ private:
 
 constexpr void Diagnosis::error(std::string message)
 {
-    _errors.push_back(Entry{.message = std::move(message)});
+    _errors.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = std::nullopt});
 }
 
 constexpr void Diagnosis::error(std::string message, SourceLine line)
 {
-    _errors.push_back(Entry{.message = std::move(message), .location = SourceLocation{.line = line, .column = InvalidSourceColumn}});
+    _errors.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = SourceLocation{.line = line, .column = InvalidSourceColumn}});
 }
 
 constexpr void Diagnosis::error(std::string message, SourceLocation location)
 {
-    _errors.push_back(Entry{.message = std::move(message), .location = location});
+    _errors.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = location});
 }
 
 constexpr void Diagnosis::error(std::string message, std::string fixMessage)
 {
-    _errors.push_back(Entry{.message = std::move(message), .fixMessage = std::move(fixMessage)});
+    _errors.push_back(Entry{.message = std::move(message), .fixMessage = std::move(fixMessage), .location = std::nullopt});
 }
 
 constexpr void Diagnosis::error(std::string message, std::string fixMessage, SourceLine line)
@@ -76,22 +76,22 @@ constexpr void Diagnosis::error(std::string message, std::string fixMessage, Sou
 
 constexpr void Diagnosis::warning(std::string message)
 {
-    _warnings.push_back(Entry{.message = std::move(message)});
+    _warnings.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = std::nullopt});
 }
 
 constexpr void Diagnosis::warning(std::string message, SourceLine line)
 {
-    _warnings.push_back(Entry{.message = std::move(message), .location = SourceLocation{.line = line, .column = InvalidSourceColumn}});
+    _warnings.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = SourceLocation{.line = line, .column = InvalidSourceColumn}});
 }
 
 constexpr void Diagnosis::warning(std::string message, SourceLocation location)
 {
-    _warnings.push_back(Entry{.message = std::move(message), .location = location});
+    _warnings.push_back(Entry{.message = std::move(message), .fixMessage = std::nullopt, .location = location});
 }
 
 constexpr void Diagnosis::warning(std::string message, std::string fixMessage)
 {
-    _warnings.push_back(Entry{.message = std::move(message), .fixMessage = std::move(fixMessage)});
+    _warnings.push_back(Entry{.message = std::move(message), .fixMessage = std::move(fixMessage), .location = std::nullopt});
 }
 
 constexpr void Diagnosis::warning(std::string message, std::string fixMessage, SourceLine line)
