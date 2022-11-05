@@ -30,9 +30,11 @@ jobs:
         include:
           - compiler: gcc
             gcov_executable: gcov
+            clangtidy: true
 
           - compiler: llvm-15.0.2
             gcov_executable: "llvm-cov gcov"
+            clangtidy: "15.0.2"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
@@ -41,6 +43,7 @@ jobs:
           - os: windows-2022
             compiler: msvc
             generator: "Visual Studio 17 2022"
+            clangtidy: "15.0.2"
 
     runs-on: ${{ matrix.os }}
 
@@ -68,7 +71,7 @@ jobs:
           conan: true
           vcpkg: false
           ccache: true
-          clangtidy: "15.0.2"
+          clangtidy: ${{matrix.clangtidy}}
           cppcheck: true
           gcovr: true
           opencppcoverage: true
