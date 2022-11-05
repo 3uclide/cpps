@@ -16,7 +16,7 @@ tasks:
     cmds:
       - |
         {{if eq OS "windows"}}
-          OpenCppCoverage.exe --export_type html:./build/coverage --export_type cobertura:./build/coverage.xml --cover_children --sources "src\cpps\*" --modules "build\*" -- task run_template
+          OpenCppCoverage.exe --export_type html:./build/coverage --export_type cobertura:./build/coverage.xml --cover_children --sources "src\cpps\*" --modules "build\*" -- task run
           powershell -c "if (!\$env:CI) { echo '[info] Opening ./build/coverage/index.html...'; start ./build/coverage/index.html }"
         {{else}}
           mkdir -p ./build/coverage/
