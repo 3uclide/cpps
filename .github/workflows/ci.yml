@@ -82,13 +82,13 @@ jobs:
 
       - name: Debug Tests
         run: |
-          task test_debug
+          task test-debug
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
 
       - name: Release Tests
         run: |
-          task test_release
+          task test-release
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
 
