@@ -107,7 +107,7 @@ TEST_CASE("Source cppsify", "[Source]")
 
         SECTION("stop when line type is import")
         {
-            source.add("cpp", Source::Line::Type::Import);
+            source.add("import", Source::Line::Type::Import);
             source.add("comment", Source::Line::Type::Comment);
             source.add("", Source::Line::Type::Empty);
             source.add("cpps", Source::Line::Type::Cpps);
