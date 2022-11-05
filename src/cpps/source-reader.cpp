@@ -1,17 +1,5 @@
 #include "cpps/source-reader.hpp"
 
-#include <iostream>
+namespace cpps {
 
-namespace CPPS {
-
-bool SourceReader::doSomething(bool isTrue)
-{
-    if (isTrue)
-    {
-        std::cout << "is true\n";
-    }
-
-    return isTrue;
-}
-
-}
+} // namespace cpps
