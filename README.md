@@ -1,6 +1,6 @@
 # C++² 
 
-C\+\+² is a programming language that transpile into clean C\+\+.
+C\+\+² is a programming language that transpile to clean C\+\+.
 
 ## Disclaimer
 

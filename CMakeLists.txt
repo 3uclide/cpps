@@ -15,44 +15,38 @@ include(${_project_options_SOURCE_DIR}/Index.cmake)
 project(
     cpps
     VERSION 0.0.1
-    DESCRIPTION "C++² is superset of C++ that transpile to clean C++."
-    LANGUAGES CXX C)
+    DESCRIPTION "C++² a programming language that transpile to clean C++."
+    LANGUAGES CXX C
+)
 
+# options
 option(CPPS_ENABLE_TESTS "Enable the tests" OFF)
 option(CPPS_ENABLE_COVERAGE "Enable code coverage" OFF)
 
-set(CPPS_ENABLE_CLANG_TIDY OFF)
-set(CPPS_ENABLE_CPPCHECK OFF)
-set(CPPS_ENABLE_SANITIZER_ADDRESS OFF)
-set(CPPS_ENABLE_SANITIZER_UNDEFINED_BEHAVIOR OFF)
-set(CPPS_ENABLE_VS_ANALYSIS OFF)
+# prepare options
+if(CPPS_ENABLE_COVERAGE)
+    enable_testing()
+    set(CPPS_ENABLE_COVERAGE "ENABLE_COVERAGE")
+elseif(CPPS_ENABLE_TESTS)
+    enable_testing()
 
-if(CPPS_ENABLE_TESTS)
     set(CPPS_ENABLE_CLANG_TIDY "ENABLE_CLANG_TIDY")
     set(CPPS_ENABLE_CPPCHECK "ENABLE_CPPCHECK")
     set(CPPS_ENABLE_VS_ANALYSIS "ENABLE_VS_ANALYSIS")
 
-    enable_testing()
-
-    if(NOT CPPS_ENABLE_COVERAGE)
-      if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
+    if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
         set(CPPS_ENABLE_SANITIZER_ADDRESS "ENABLE_SANITIZER_ADDRESS")
         set(CPPS_ENABLE_SANITIZER_UNDEFINED_BEHAVIOR "ENABLE_SANITIZER_UNDEFINED_BEHAVIOR")
-      else()
+    else()
         # or it is MSVC and has run vcvarsall
         string(FIND "$ENV{PATH}" "$ENV{VSINSTALLDIR}" index_of_vs_install_dir)
         if(MSVC AND "${index_of_vs_install_dir}" STREQUAL "-1")
-          set(CPPS_ENABLE_SANITIZER_ADDRESS "ENABLE_SANITIZER_ADDRESS")
+            set(CPPS_ENABLE_SANITIZER_ADDRESS "ENABLE_SANITIZER_ADDRESS")
         endif()
-      endif()
-    else()
-      set(CPPS_ENABLE_COVERAGE "ENABLE_COVERAGE")
     endif()
 endif()
 
-set(CPPS_GIT_SHA "Unknown" CACHE STRING "SHA this build was generated from")
-string(SUBSTRING "${CPPS_GIT_SHA}" 0 8 CPPS_GIT_SHORT_SHA)
-
+# set options
 project_options(
     ENABLE_CACHE
     ENABLE_CONAN
@@ -83,23 +77,30 @@ project_options(
     --inconclusive
 )
 
+# project options/warnings
 target_compile_features(project_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
 add_library(cpps::project_options INTERFACE IMPORTED)
 add_library(cpps::project_warnings INTERFACE IMPORTED)
 
+# project directories
 add_subdirectory(src)
 
-if(CPPS_ENABLE_TESTS)
+if(CPPS_ENABLE_TESTS OR CPPS_ENABLE_COVERAGE)
     add_subdirectory(test)
 endif()
 
+# project package
 package_project(
     TARGETS
     cpps-cli
     project_options
     project_warnings
 )
+
+# git sha
+set(CPPS_GIT_SHA "Unknown" CACHE STRING "SHA this build was generated from")
+string(SUBSTRING "${CPPS_GIT_SHA}" 0 8 CPPS_GIT_SHORT_SHA)
 
 set(CPACK_PACKAGE_FILE_NAME
     "${CMAKE_PROJECT_NAME}-${CMAKE_PROJECT_VERSION}-${CPPS_GIT_SHORT_SHA}-${CMAKE_SYSTEM_NAME}-${CMAKE_BUILD_TYPE}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_CXX_COMPILER_VERSION}"
