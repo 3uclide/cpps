@@ -4,16 +4,6 @@
 
 namespace cpps {
 
-TEST_CASE("SourceLocation", "[SourceLocation]")
-{
-    SourceLocation location;
-    location.line = 42;
-    location.column = 24;
-
-    CHECK(location.line == 42);
-    CHECK(location.column == 24);
-}
-
 TEST_CASE("SourceLocation default ctor to invalid", "[SourceLocation]")
 {
     const SourceLocation location;
