@@ -1,0 +1,70 @@
+version: 3
+
+tasks:
+  # The templates called in the other tasks. The variables can be set using the `vars` parameter or by environment variables. To create global variables that are passed to the internally called templates, use `env`
+  # This template accepts the generator, build type and feature flags defined by the vars. Other flags can be passed by `CONFIGURE_FLAGS` and `BUILD_FLAGS`. For example, a specific target can be built by setting BUILD_FLAGS to "--target <NAME>"
+  build:
+    - cmake -S . -B ./build -G '{{.CMAKE_GENERATOR | default "Ninja Multi-Config"}}' -DCMAKE_C_COMPILER:STRING={{.CMAKE_C_COMPILER}} -DCMAKE_CXX_COMPILER:STRING={{.CMAKE_CXX_COMPILER}} -DCMAKE_BUILD_TYPE:STRING={{.CMAKE_BUILD_TYPE}} -DCPPS_ENABLE_TESTS:BOOL={{.CPPS_ENABLE_TESTS | default "OFF"}} -DCPPS_ENABLE_COVERAGE:BOOL={{.CPPS_ENABLE_COVERAGE | default "OFF"}} {{.CONFIGURE_FLAGS}}
+    - cmake --build ./build --config {{.CMAKE_BUILD_TYPE}} {{.BUILD_FLAGS}}
+
+  # Execute the app or the tests
+  run:
+    - cd build && ctest -C {{.CMAKE_BUILD_TYPE}} --output-on-failure
+
+# Run with coverage analysis
+  run-coverage:
+    cmds:
+      - |
+        {{if eq OS "windows"}}
+          OpenCppCoverage.exe --export_type html:./build/coverage --export_type cobertura:./build/coverage.xml --cover_children --sources "src\cpps\*" --modules "build\*" -- task run_template
+          powershell -c "if (!\$env:CI) { echo '[info] Opening ./build/coverage/index.html...'; start ./build/coverage/index.html }"
+        {{else}}
+          mkdir -p ./build/coverage/
+          gcovr -j {{.nproc | default 1}} --delete --filter "src/cpps/" --root ./ --print-summary --html-details ./build/coverage/index.html --xml-pretty --xml ./build/coverage.xml ./build --gcov-executable '{{.GCOV_EXECUTABLE}}' --exclude-lines-by-pattern '.*assert.*'
+          echo "Open ./build/coverage/index.html in a browser for a visual coverage report"
+        {{end}}
+    env:
+      CMAKE_BUILD_TYPE: Debug
+
+  test-debug:
+    - task: build
+      vars:
+        CPPS_ENABLE_TESTS: ON
+        CMAKE_BUILD_TYPE: Debug
+    - task: run
+      vars:
+        CMAKE_BUILD_TYPE: Debug
+
+  test-release:
+    - task: build
+      vars:
+        CPPS_ENABLE_TESTS: ON
+        CMAKE_BUILD_TYPE: Release
+    - task: run
+      vars:
+        CMAKE_BUILD_TYPE: Release
+
+  coverage:
+    - env:
+      CMAKE_BUILD_TYPE: Debug
+    - task: build
+      vars:
+        CPPS_ENABLE_TESTS: ON
+        CPPS_ENABLE_COVERAGE: ON
+        CMAKE_BUILD_TYPE: Debug
+    - task: run
+      vars:
+        CMAKE_BUILD_TYPE: Debug
+    - task: run-coverage
+
+  install:
+    - task: build
+    - cmake --install ./build --prefix {{.INSTALL_PREFIX | default "./install"}}
+    - cd build && cpack -C Release -G {{.CPACK_GENERATOR | default "ZIP"}}
+
+  clean: |
+    {{if eq OS "windows"}}
+      powershell -c 'function rmrf($file) { if (test-path $file) { rm -r -force $file }}; rmrf ./build; rmrf ./install'
+    {{else}}
+      rm -rf ./build ./install
+    {{end}}

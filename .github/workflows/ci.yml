@@ -1,0 +1,119 @@
+name: CI
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+
+env:
+  # Conan cache environment variables
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
+
+jobs:
+  Test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+        compiler:
+          - llvm-15
+          - gcc-12
+        generator:
+          - "Ninja Multi-Config"
+        include:
+          - compiler: gcc-12
+            gcov_executable: gcov-12
+            c_compiler: gcc-12
+            cxx_compiler: g++-12
+
+          - compiler: llvm-15
+            gcov_executable: "llvm-cov-15 gcov"
+            c_compiler: clang-15
+            cxx_compiler: clang++-15
+
+          # Set up preferred package generators, for given build configurations
+          - build_type: Release
+            package_generator: TBZ2
+
+          - os: windows-2022
+            compiler: msvc
+            generator: "Visual Studio 17 2022"
+            c_compiler: cl
+            cxx_compiler: cl
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v0.21.0
+        with:
+          compiler: ${{ matrix.compiler }}
+          vcvarsall: ${{ contains(matrix.os, 'windows') }}
+
+          cmake: true
+          ninja: true
+          conan: true
+          vcpkg: false
+          ccache: true
+          clangtidy: "15.0.0"
+          cppcheck: true
+          gcovr: false
+          opencppcoverage: true
+
+      - name: Coverage
+        run: |
+          task coverage
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
+          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
+          GCOV_EXECUTABLE: ${{matrix.gcov_executable}}
+
+      - name: Debug Tests
+        run: |
+          task test_debug
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
+          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
+
+      - name: Release Tests
+        run: |
+          task test_release
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
+          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
+
+      - name: Install
+        run: |
+          task install
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+          CMAKE_C_COMPILER: ${{matrix.c_compiler}}
+          CMAKE_CXX_COMPILER: ${{matrix.cxx_compiler}}
+          CPACK_GENERATOR: ${{matrix.package_generator}}
+
+      - name: Publish to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        with:
+          flags: ${{ runner.os }}, ${{ matrix.compiler }}
+          name: ${{ runner.os }}-${{ matrix.compiler }}-coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/coverage.xml
