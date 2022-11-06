@@ -103,7 +103,7 @@ jobs:
       - name: Publish to Codecov
         uses: codecov/codecov-action@v3.1.1
         with:
-          flags: ${{ runner.os }}, ${{ matrix.compiler }}
+          flags: ${{ runner.os }}, ${{ matrix.compiler }}, unit-tests
           name: ${{ runner.os }}-${{ matrix.compiler }}-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./build/coverage.xml
