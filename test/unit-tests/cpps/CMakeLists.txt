@@ -15,6 +15,7 @@ set(CPPS_UNIT_TESTS_INCLUDES
 set(CPPS_UNIT_TESTS_SOURCES
     check-diagnosis.cpp
     diagnosis-tests.cpp
+    lexeme-tests.cpp
     source-location-tests.cpp
     source-reader-tests.cpp
     source-tests.cpp
