@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace cpps {
+namespace CPPS {
 
 class Source
 {
@@ -153,4 +153,4 @@ inline Source::Iterator Source::end()
     return _lines.end();
 }
 
-} // namespace cpps
+} // namespace CPPS

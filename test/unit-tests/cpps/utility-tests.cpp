@@ -2,7 +2,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-namespace cpps {
+namespace CPPS {
 
 TEST_CASE("isSpace", "[Utility]")
 {
@@ -134,4 +134,4 @@ TEST_CASE("findFirstIdentifierEnd", "[Utility]")
     CHECK(findFirstIdentifierEnd("-identifier: int;") == std::string_view::npos);
 }
 
-} // namespace cpps
+} // namespace CPPS

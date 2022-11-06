@@ -5,7 +5,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-namespace cpps {
+namespace CPPS {
 
 TEST_CASE("SourceReader", "[SourceReader]")
 {
@@ -232,4 +232,4 @@ TEST_CASE("SourceReader diagnosis", "[Diagnosis], [SourceReader]")
     }
 }
 
-} // namespace cpps
+} // namespace CPPS
