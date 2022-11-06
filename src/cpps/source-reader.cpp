@@ -60,8 +60,8 @@ std::string SourceReader::DiagnosisMessage::unreadableLine()
 }
 
 SourceReader::SourceReader(Diagnosis& diagnosis, Stream& stream)
-    : _stream(stream)
-    , _diagnosis(diagnosis)
+    : _diagnosis(diagnosis)
+    , _stream(stream)
 {
 }
 

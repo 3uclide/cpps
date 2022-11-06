@@ -48,8 +48,8 @@ private:
     void addCurrentLine(Source::Line::Type type);
 
 private:
-    Stream& _stream;
     Diagnosis& _diagnosis;
+    Stream& _stream;
 
     Source _source;
 
