@@ -24,6 +24,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     source-location-tests.cpp
     source-reader-tests.cpp
     source-tests.cpp
+    tokens-tests.cpp
     utility-tests.cpp
 )
 

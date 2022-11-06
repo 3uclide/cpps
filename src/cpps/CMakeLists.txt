@@ -12,6 +12,8 @@ set(CPPS_INCLUDES
     source.hpp
     source-location.hpp
     source-reader.hpp
+    token.hpp
+    tokens.hpp
     utility.hpp
 )
 
