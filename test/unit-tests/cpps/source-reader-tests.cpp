@@ -69,7 +69,7 @@ TEST_CASE("SourceReader", "[SourceReader]")
         check("cpp lines",
               {{"int main()", Source::Line::Type::Cpp},
                {"{", Source::Line::Type::Cpp},
-               {"    return 0;", Source::Line::Type::Cpp},
+               {"    return \"0\";", Source::Line::Type::Cpp},
                {"}", Source::Line::Type::Cpp}});
 
         check("cpp lines with comments",

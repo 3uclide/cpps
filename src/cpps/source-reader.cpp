@@ -329,7 +329,7 @@ bool SourceReader::readAsCommentOrCpp()
                 //  If this isn't an escaped quote
                 if (!_isInComment && previous != '\\' && (_isInStringLiteral || previous != '\''))
                 {
-                    _isInComment = !_isInComment;
+                    _isInStringLiteral = !_isInStringLiteral;
                 }
                 break;
 
