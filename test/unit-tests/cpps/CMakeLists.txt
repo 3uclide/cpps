@@ -9,11 +9,14 @@ endforeach()
 include(Catch)
 
 set(CPPS_UNIT_TESTS_INCLUDES
+    check-diagnosis.hpp
 )
 
 set(CPPS_UNIT_TESTS_SOURCES
+    check-diagnosis.cpp
     diagnosis-tests.cpp
     source-location-tests.cpp
+    source-reader-tests.cpp
     source-tests.cpp
     utility-tests.cpp
 )
@@ -24,6 +27,8 @@ target_link_libraries(
     cpps-unit-tests
     PUBLIC project_options project_warnings
     PRIVATE cpps Catch2::Catch2WithMain fmt::fmt)
+
+target_include_directories(cpps-unit-tests PRIVATE "../")
 
 target_disable_static_analysis(cpps-unit-tests)
 

@@ -29,6 +29,7 @@ public:
         Line(std::string text, Type type);
 
         Type getType() const;
+        void setType(Type type);
 
         const std::string& getText() const;
 
@@ -43,6 +44,9 @@ public:
         Type _type;
     };
 
+    using ConstIterator = std::vector<Line>::const_iterator;
+    using Iterator = std::vector<Line>::iterator;
+
 public:
     bool hasCpp() const;
     bool hasCpps() const;
@@ -54,8 +58,11 @@ public:
 
     void add(std::string text, Line::Type type);
 
-    // set previous adjacent comment/empty line type to cpps
-    void cppsify();
+    ConstIterator begin() const;
+    ConstIterator end() const;
+
+    Iterator begin();
+    Iterator end();
 
 private:
     std::vector<Line> _lines;
@@ -73,6 +80,11 @@ inline Source::Line::Line(std::string text, Type type)
 inline Source::Line::Type Source::Line::getType() const
 {
     return _type;
+}
+
+inline void Source::Line::setType(Type type)
+{
+    _type = type;
 }
 
 inline const std::string& Source::Line::getText() const
@@ -123,21 +135,24 @@ inline void Source::add(std::string text, Line::Type type)
     _hasCpps |= type == Line::Type::Cpps;
 }
 
-inline void Source::cppsify()
+inline Source::ConstIterator Source::begin() const
 {
-    assert(_lines.back().getType() == Line::Type::Cpps);
+    return _lines.begin();
+}
 
-    for (Line& line : ranges::views::reverse(_lines) | ranges::views::drop(1))
-    {
-        const Line::Type lineType = line.getType();
+inline Source::ConstIterator Source::end() const
+{
+    return _lines.end();
+}
 
-        if (lineType != Line::Type::Comment && lineType != Line::Type::Empty)
-        {
-            break;
-        }
+inline Source::Iterator Source::begin()
+{
+    return _lines.begin();
+}
 
-        line._type = Line::Type::Cpps;
-    }
+inline Source::Iterator Source::end()
+{
+    return _lines.end();
 }
 
 } // namespace cpps

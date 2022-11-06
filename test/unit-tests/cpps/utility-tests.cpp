@@ -124,4 +124,14 @@ TEST_CASE("findFirstNotOf", "[Utility]")
     CHECK(findFirstNotOf("0   4", isSpace, 1) == 4);
 }
 
+TEST_CASE("findFirstIdentifierEnd", "[Utility]")
+{
+    CHECK(findFirstIdentifierEnd("i") == 1);
+    CHECK(findFirstIdentifierEnd("identifier: int;") == 10);
+    CHECK(findFirstIdentifierEnd("_identifier: int;") == 11);
+
+    CHECK(findFirstIdentifierEnd("0identifier: int;") == std::string_view::npos);
+    CHECK(findFirstIdentifierEnd("-identifier: int;") == std::string_view::npos);
+}
+
 } // namespace cpps
