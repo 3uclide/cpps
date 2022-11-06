@@ -19,7 +19,7 @@ TEST_CASE("SourceLocation format", "[SourceLocation]")
     CHECK(fmt::format("{}", InvalidSourceLocation) == "invalid");
 }
 
-TEST_CASE("SourceLocation ostream", "[SourceLocation]")
+TEST_CASE("SourceLocation std::ostream", "[SourceLocation]")
 {
     std::stringstream stream;
 
