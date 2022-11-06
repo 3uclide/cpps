@@ -22,6 +22,9 @@ set(CPPS_SOURCES
     grammar/parameter-modifier.cpp
     grammar/pointer-literal.cpp
     source-reader.cpp
+
+    # TODO cleaner integration
+    cpps.natvis
 )
 
 add_library(cpps STATIC ${CPPS_INCLUDES} ${CPPS_SOURCES})
