@@ -11,10 +11,11 @@ FetchContent_Declare(_project_options URL https://github.com/cpp-best-practices/
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
+# C++²
 project(
     cpps
     VERSION 0.0.1
-    DESCRIPTION "C++Square a programming language that transpile to clean C++."
+    DESCRIPTION "C++² a programming language that transpile to clean C++."
     LANGUAGES CXX C
 )
 
