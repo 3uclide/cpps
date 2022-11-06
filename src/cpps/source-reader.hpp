@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace cpps {
+namespace CPPS {
 
 class Diagnosis;
 
@@ -62,4 +62,4 @@ private:
     bool _isInStringLiteral : 1 {false};
 };
 
-} // namespace cpps
+} // namespace CPPS

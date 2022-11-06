@@ -5,7 +5,7 @@
 #include <ostream>
 #include <string>
 
-namespace cpps {
+namespace CPPS {
 
 using SourceLine = std::uint32_t;
 using SourceColumn = std::uint32_t;
@@ -26,17 +26,17 @@ inline constexpr SourceLocation InvalidSourceLocation{InvalidSourceLine, Invalid
 std::ostream& operator<<(std::ostream& os, const SourceLocation& value);
 std::ostream& operator<<(std::ostream& os, const std::optional<SourceLocation>& value);
 
-} // namespace cpps
+} // namespace CPPS
 
 template<>
-struct fmt::formatter<cpps::SourceLocation> : formatter<std::string>
+struct fmt::formatter<CPPS::SourceLocation> : formatter<std::string>
 {
     template<typename FormatContext>
-    auto format(cpps::SourceLocation location, FormatContext& ctx) const
+    auto format(CPPS::SourceLocation location, FormatContext& ctx) const
     {
-        if (location.line != cpps::InvalidSourceLine)
+        if (location.line != CPPS::InvalidSourceLine)
         {
-            if (location.column != cpps::InvalidSourceColumn)
+            if (location.column != CPPS::InvalidSourceColumn)
             {
                 return fmt::format_to(ctx.out(), "{}, {}", location.line, location.column);
             }
@@ -48,7 +48,7 @@ struct fmt::formatter<cpps::SourceLocation> : formatter<std::string>
     }
 };
 
-namespace cpps {
+namespace CPPS {
 
 inline std::ostream& operator<<(std::ostream& os, const SourceLocation& value)
 {
@@ -65,4 +65,4 @@ inline std::ostream& operator<<(std::ostream& os, const std::optional<SourceLoca
     return os << "nullopt";
 }
 
-} // namespace cpps
+} // namespace CPPS

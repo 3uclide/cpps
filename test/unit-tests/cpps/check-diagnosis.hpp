@@ -1,6 +1,6 @@
 #pragma once
 
-namespace cpps {
+namespace CPPS {
 
 class Diagnosis;
 
@@ -8,4 +8,4 @@ void checkNoWarning(const Diagnosis& diagnosis);
 void checkNoError(const Diagnosis& diagnosis);
 void checkNoErrorOrWarning(const Diagnosis& diagnosis);
 
-} // namespace cpps
+} // namespace CPPS

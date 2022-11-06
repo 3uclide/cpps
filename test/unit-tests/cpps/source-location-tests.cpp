@@ -3,7 +3,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 
-namespace cpps {
+namespace CPPS {
 
 TEST_CASE("SourceLocation default ctor to invalid", "[SourceLocation]")
 {
@@ -35,4 +35,4 @@ TEST_CASE("SourceLocation std::ostream", "[SourceLocation]")
     CHECK(stream.str() == expectedString);
 }
 
-} // namespace cpps
+} // namespace CPPS
