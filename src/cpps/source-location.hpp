@@ -1,6 +1,8 @@
 #pragma once
 
 #include <fmt/core.h>
+#include <optional>
+#include <ostream>
 #include <string>
 
 namespace cpps {
@@ -21,6 +23,9 @@ struct SourceLocation
 
 inline constexpr SourceLocation InvalidSourceLocation{InvalidSourceLine, InvalidSourceColumn};
 
+std::ostream& operator<<(std::ostream& os, const SourceLocation& value);
+std::ostream& operator<<(std::ostream& os, const std::optional<SourceLocation>& value);
+
 } // namespace cpps
 
 template<>
@@ -39,6 +44,25 @@ struct fmt::formatter<cpps::SourceLocation> : formatter<std::string>
             return fmt::format_to(ctx.out(), "{}", location.line);
         }
 
-        return ctx.out();
+        return fmt::format_to(ctx.out(), "invalid");
     }
 };
+
+namespace cpps {
+
+inline std::ostream& operator<<(std::ostream& os, const SourceLocation& value)
+{
+    return os << fmt::format("{}", value);
+}
+
+inline std::ostream& operator<<(std::ostream& os, const std::optional<SourceLocation>& value)
+{
+    if (value)
+    {
+        return os << fmt::format("{}", *value);
+    }
+
+    return os << "nullopt";
+}
+
+} // namespace cpps
