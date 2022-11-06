@@ -31,6 +31,7 @@ TEST_CASE("Lexeme", "[Lexeme]")
 
 TEST_CASE("Lexeme format", "[Lexeme]")
 {
+    CHECK(fmt::format("{}", Lexeme{}) == "invalid");
     CHECK(fmt::format("{}", Lexeme{Lexeme::Ampersand}) == "0");
     CHECK(fmt::format("{}", Lexeme{BooleanLiteral::True}) == toStringView(BooleanLiteral::True));
     CHECK(fmt::format("{}", Lexeme{FunctionModifier::Final}) == toStringView(FunctionModifier::Final));
@@ -43,6 +44,7 @@ TEST_CASE("Lexeme operator<< std::ostream", "[Lexeme]")
 {
     std::stringstream stream;
 
+    stream << Lexeme{} << "\n";
     stream << Lexeme{Lexeme::Ampersand} << "\n";
     stream << Lexeme{BooleanLiteral::True} << "\n";
     stream << Lexeme{FunctionModifier::Final} << "\n";
@@ -51,7 +53,9 @@ TEST_CASE("Lexeme operator<< std::ostream", "[Lexeme]")
     stream << Lexeme{PointerLiteral::NullPtr} << "\n";
 
     // clang-format off
-    std::string expectedString = "0\n"; // Lexeme::Ampersand
+    std::string expectedString;
+    expectedString += "invalid"; expectedString += "\n"; // Lexeme{}
+    expectedString += "0"; expectedString += "\n"; // Lexeme::Ampersand
     expectedString += toStringView(BooleanLiteral::True); expectedString += "\n";
     expectedString += toStringView(FunctionModifier::Final); expectedString += "\n";
     expectedString += toStringView(Keyword::Import); expectedString += "\n";
