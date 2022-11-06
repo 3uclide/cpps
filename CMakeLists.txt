@@ -11,7 +11,6 @@ FetchContent_Declare(_project_options URL https://github.com/cpp-best-practices/
 FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
-# CPPS
 project(
     cpps
     VERSION 0.0.1
