@@ -15,7 +15,7 @@ include(${_project_options_SOURCE_DIR}/Index.cmake)
 project(
     cpps
     VERSION 0.0.1
-    DESCRIPTION "C++² a programming language that transpile to clean C++."
+    DESCRIPTION "C++Square a programming language that transpile to clean C++."
     LANGUAGES CXX C
 )
 
