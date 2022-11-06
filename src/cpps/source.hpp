@@ -2,8 +2,6 @@
 
 #include "cpps/source-location.hpp"
 
-#include <assert.h>
-#include <range/v3/view.hpp>
 #include <string>
 #include <vector>
 

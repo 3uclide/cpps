@@ -3,6 +3,7 @@
 #include "cpps/diagnosis.hpp"
 #include "cpps/utility.hpp"
 
+#include <range/v3/view.hpp>
 #include <array>
 
 namespace cpps {
