@@ -13,6 +13,11 @@ set(CPPS_UNIT_TESTS_INCLUDES
 )
 
 set(CPPS_UNIT_TESTS_SOURCES
+    grammar/boolean-literal-tests.cpp
+    grammar/function-modifier-tests.cpp
+    grammar/keyword-tests.cpp
+    grammar/parameter-modifier-tests.cpp
+    grammar/pointer-literal-tests.cpp
     check-diagnosis.cpp
     diagnosis-tests.cpp
     lexeme-tests.cpp
