@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <fmt/format.h>
+#include <ostream>
 #include <string_view>
 
 namespace CPPS {
@@ -91,6 +93,8 @@ enum class Keyword
     Wchar_t,
     While
 };
+
+std::ostream& operator<<(std::ostream& os, Keyword value);
 
 inline constexpr std::array KeywordStrings = std::to_array<std::string_view>(
     {"alignas",
@@ -183,3 +187,13 @@ constexpr std::string_view toStringView(Keyword value)
 }
 
 } // namespace CPPS
+
+template<>
+struct fmt::formatter<CPPS::Keyword> : formatter<std::string_view>
+{
+    template<typename FormatContext>
+    auto format(CPPS::Keyword value, FormatContext& ctx) const
+    {
+        return formatter<std::string_view>::format(toStringView(value), ctx);
+    }
+};

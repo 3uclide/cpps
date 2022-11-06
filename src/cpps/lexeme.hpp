@@ -1,13 +1,14 @@
 #pragma once
 
-#include <cpps/grammar/boolean-literal.hpp>
-#include <cpps/grammar/function-modifier.hpp>
-#include <cpps/grammar/keyword.hpp>
-#include <cpps/grammar/parameter-modifier.hpp>
-#include <cpps/grammar/pointer-literal.hpp>
+#include "cpps/grammar/boolean-literal.hpp"
+#include "cpps/grammar/function-modifier.hpp"
+#include "cpps/grammar/keyword.hpp"
+#include "cpps/grammar/parameter-modifier.hpp"
+#include "cpps/grammar/pointer-literal.hpp"
 
 #include <cassert>
 #include <cstdint>
+#include <fmt/format.h>
 
 namespace CPPS {
 
@@ -147,6 +148,8 @@ private:
 
     Storage _storage{InvalidStorage};
 };
+
+std::ostream& operator<<(std::ostream& os, Lexeme value);
 
 constexpr Lexeme::Lexeme(Basic value)
 {
@@ -296,6 +299,46 @@ requires(std::is_enum_v<T>)
 constexpr void Lexeme::setStorage(Type type, T data)
 {
     _storage = static_cast<Storage>(type) | static_cast<Storage>(static_cast<Storage>(data) << 8u);
+}
+
+} // namespace CPPS
+
+template<>
+struct fmt::formatter<CPPS::Lexeme> : formatter<std::string>
+{
+    template<typename FormatContext>
+    auto format(CPPS::Lexeme lexeme, FormatContext& ctx) const
+    {
+        switch (lexeme.getType())
+        {
+        case CPPS::Lexeme::Type::Basic:
+            return fmt::format_to(ctx.out(),"{}", lexeme.getBasic());
+
+        case CPPS::Lexeme::Type::BooleanLiteral:
+            return fmt::format_to(ctx.out(),"{}", lexeme.getBooleanLiteral());
+
+        case CPPS::Lexeme::Type::FunctionModifier:
+            return fmt::format_to(ctx.out(),"{}", lexeme.getFunctionModifier());
+
+        case CPPS::Lexeme::Type::Keyword:
+            return fmt::format_to(ctx.out(),"{}", lexeme.getKeyword());
+
+        case CPPS::Lexeme::Type::ParameterModifier:
+            return fmt::format_to(ctx.out(),"{}", lexeme.getParameterModifier());
+
+        case CPPS::Lexeme::Type::PointerLiteral:
+            return fmt::format_to(ctx.out(), "{}", lexeme.getPointerLiteral());
+        }
+
+        return fmt::format_to(ctx.out(), "invalid");
+    }
+};
+
+namespace CPPS {
+
+inline std::ostream& operator<<(std::ostream& os, Lexeme value)
+{
+    return os << fmt::format("{}", value);
 }
 
 } // namespace CPPS

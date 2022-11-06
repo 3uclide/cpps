@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include <fmt/format.h>
+#include <ostream>
 #include <string_view>
 
 namespace CPPS {
@@ -12,6 +14,8 @@ enum class FunctionModifier
     Override,
     Virtual
 };
+
+std::ostream& operator<<(std::ostream& os, FunctionModifier value);
 
 inline constexpr std::array FunctionModifierStrings = std::to_array<std::string_view>(
     {"final",
@@ -27,3 +31,13 @@ constexpr std::string_view toStringView(FunctionModifier value)
 }
 
 } // namespace CPPS
+
+template<>
+struct fmt::formatter<CPPS::FunctionModifier> : formatter<std::string_view>
+{
+    template<typename FormatContext>
+    auto format(CPPS::FunctionModifier value, FormatContext& ctx) const
+    {
+        return formatter<std::string_view>::format(toStringView(value), ctx);
+    }
+};
