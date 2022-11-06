@@ -1,11 +1,9 @@
 #pragma once
 
-namespace CPPS {
+namespace cpps {
 
 class SourceReader
 {
-public:
-    bool doSomething(bool isTrue);
 };
 
-} // namespace CPPS
+} // namespace cpps

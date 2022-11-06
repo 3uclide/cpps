@@ -12,7 +12,8 @@ set(CPPS_UNIT_TESTS_INCLUDES
 )
 
 set(CPPS_UNIT_TESTS_SOURCES
-    source-reader-tests.cpp
+    diagnosis-tests.cpp
+    source-location-tests.cpp
 )
 
 add_executable(cpps-unit-tests ${CPPS_UNIT_TESTS_INCLUDES} ${CPPS_UNIT_TESTS_SOURCES})

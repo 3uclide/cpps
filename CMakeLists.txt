@@ -61,7 +61,7 @@ project_options(
     # ENABLE_SANITIZER_THREAD
     # ENABLE_SANITIZER_MEMORY
     ${CPPS_ENABLE_VS_ANALYSIS}
-    ENABLE_WARNING_AS_ERROR
+    WARNINGS_AS_ERRORS
     # ENABLE_BUILD_WITH_TIME_TRACE
     CPPCHECK_OPTIONS
     --enable=style,performance,warning,portability
