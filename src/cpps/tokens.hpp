@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cpps/comment.hpp"
 #include "cpps/token.hpp"
 
 #include <span>
@@ -11,7 +12,8 @@ class Tokens
 {
 public:
     constexpr Tokens() = default;
-    constexpr Tokens(std::vector<Token>&& tokens);
+
+    constexpr explicit Tokens(std::vector<Token>&& tokens);
 
     constexpr Tokens(Tokens&&) = default;
     constexpr Tokens& operator=(Tokens&&) = default;
@@ -32,13 +34,16 @@ public:
     [[nodiscard]] constexpr std::span<Token> on(std::size_t lineIndex) const;
     [[nodiscard]] constexpr const Token& at(std::size_t lineIndex, std::size_t index) const;
 
+    [[nodiscard]] constexpr std::span<const Comment> comments() const;
+
 private:
     static constexpr std::size_t InvalidIndex{std::numeric_limits<std::size_t>::max()};
 
     std::vector<Token> _tokens;
-
     std::vector<std::size_t> _sparse;
     std::vector<std::span<Token>> _dense;
+
+    std::vector<Comment> _comments;
 };
 
 constexpr Tokens::Tokens(std::vector<Token>&& tokens)
@@ -46,33 +51,33 @@ constexpr Tokens::Tokens(std::vector<Token>&& tokens)
 {
     _sparse.resize(_tokens.empty() ? 0 : _tokens.back().location.line + 1u, InvalidIndex);
 
-    auto startIt = _tokens.begin();
+    auto beginIt = _tokens.begin();
     auto it = _tokens.begin();
 
-    const auto end = _tokens.end();
+    const auto endIt = _tokens.end();
 
-    for (; it != end; ++it)
+    for (; it != endIt; ++it)
     {
-        const Token& startToken = *startIt;
+        const Token& beginToken = *beginIt;
         const Token& token = *it;
 
-        if (token.location.line != startToken.location.line)
+        if (token.location.line != beginToken.location.line)
         {
-            _sparse[startToken.location.line] = _dense.size();
+            _sparse[beginToken.location.line] = _dense.size();
 
-            _dense.emplace_back(startIt, it);
+            _dense.emplace_back(beginIt, it);
 
-            startIt = it;
+            beginIt = it;
         }
     }
 
-    if (startIt != end)
+    if (beginIt != endIt)
     {
-        assert(_sparse[startIt->location.line] == InvalidIndex);
+        assert(_sparse[beginIt->location.line] == InvalidIndex);
 
-        _sparse[startIt->location.line] = _dense.size();
+        _sparse[beginIt->location.line] = _dense.size();
 
-        _dense.emplace_back(startIt, end);
+        _dense.emplace_back(beginIt, endIt);
     }
 }
 
@@ -128,6 +133,11 @@ constexpr const Token& Tokens::at(std::size_t lineIndex, std::size_t index) cons
     const std::span span = on(lineIndex);
     assert(index < span.size());
     return span[index];
+}
+
+constexpr std::span<const Comment> Tokens::comments() const
+{
+    return _comments;
 }
 
 } // namespace CPPS
