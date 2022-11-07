@@ -10,9 +10,6 @@ namespace CPPS {
 class Tokens
 {
 public:
-    using ConstIterator = std::vector<Token>::const_iterator;
-
-public:
     constexpr Tokens() = default;
     constexpr Tokens(std::vector<Token>&& tokens);
 
@@ -22,16 +19,18 @@ public:
     constexpr Tokens(const Tokens&) = delete;
     constexpr Tokens& operator=(const Tokens&) = delete;
 
-    [[nodiscard]] constexpr const Token& operator[](std::size_t index) const;
+    [[nodiscard]] constexpr std::size_t lines() const;
 
     [[nodiscard]] constexpr bool empty() const;
     [[nodiscard]] constexpr std::size_t size() const;
+    [[nodiscard]] constexpr const Token& at(std::size_t index) const;
+    [[nodiscard]] constexpr auto begin() const;
+    [[nodiscard]] constexpr auto end() const;
 
-    [[nodiscard]] constexpr std::size_t getLinesSize() const;
-    [[nodiscard]] constexpr std::span<Token> getLine(std::size_t index) const;
-
-    [[nodiscard]] constexpr ConstIterator begin() const;
-    [[nodiscard]] constexpr ConstIterator end() const;
+    [[nodiscard]] constexpr bool exists(std::size_t lineIndex) const;
+    [[nodiscard]] constexpr std::size_t size(std::size_t lineIndex) const;
+    [[nodiscard]] constexpr std::span<Token> on(std::size_t lineIndex) const;
+    [[nodiscard]] constexpr const Token& at(std::size_t lineIndex, std::size_t index) const;
 
 private:
     static constexpr std::size_t InvalidIndex{std::numeric_limits<std::size_t>::max()};
@@ -77,10 +76,11 @@ constexpr Tokens::Tokens(std::vector<Token>&& tokens)
     }
 }
 
-constexpr const Token& Tokens::operator[](std::size_t index) const
+constexpr std::size_t Tokens::lines() const
 {
-    return _tokens[index];
+    return _sparse.size();
 }
+
 constexpr bool Tokens::empty() const
 {
     return _tokens.empty();
@@ -91,26 +91,43 @@ constexpr std::size_t Tokens::size() const
     return _tokens.size();
 }
 
-constexpr std::size_t Tokens::getLinesSize() const
+constexpr const Token& Tokens::at(std::size_t index) const
 {
-    return _sparse.size();
+    assert(index < _tokens.size());
+    return _tokens[index];
 }
 
-constexpr std::span<Token> Tokens::getLine(std::size_t index) const
-{
-    assert(index < _sparse.size());
-
-    return _sparse[index] != InvalidIndex ? _dense[_sparse[index]] : std::span<Token>{};
-}
-
-constexpr Tokens::ConstIterator Tokens::begin() const
+constexpr auto Tokens::begin() const
 {
     return _tokens.begin();
 }
 
-constexpr Tokens::ConstIterator Tokens::end() const
+constexpr auto Tokens::end() const
 {
     return _tokens.end();
+}
+
+constexpr bool Tokens::exists(std::size_t lineIndex) const
+{
+    return lineIndex < _sparse.size() && _sparse[lineIndex] != InvalidIndex;
+}
+
+constexpr std::size_t Tokens::size(std::size_t lineIndex) const
+{
+    return on(lineIndex).size();
+}
+
+constexpr std::span<Token> Tokens::on(std::size_t lineIndex) const
+{
+    assert(lineIndex < _sparse.size());
+    return _sparse[lineIndex] != InvalidIndex ? _dense[_sparse[lineIndex]] : std::span<Token>{};
+}
+
+constexpr const Token& Tokens::at(std::size_t lineIndex, std::size_t index) const
+{
+    const std::span span = on(lineIndex);
+    assert(index < span.size());
+    return span[index];
 }
 
 } // namespace CPPS

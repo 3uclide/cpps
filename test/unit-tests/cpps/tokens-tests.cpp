@@ -28,41 +28,41 @@ TEST_CASE("Tokens", "[Tokens]")
     }()};
 
     REQUIRE(tokens.size() == 10);
-    REQUIRE(tokens.getLinesSize() == 7);
+    REQUIRE(tokens.lines() == 7);
 
-    CHECK(tokens[0].location == SourceLocation{0, 0});
-    CHECK(tokens[1].location == SourceLocation{0, 1});
-    CHECK(tokens[2].location == SourceLocation{0, 2});
-    CHECK(tokens[3].location == SourceLocation{2, 0});
-    CHECK(tokens[4].location == SourceLocation{2, 1});
-    CHECK(tokens[5].location == SourceLocation{2, 2});
-    CHECK(tokens[6].location == SourceLocation{3, 0});
-    CHECK(tokens[7].location == SourceLocation{3, 1});
-    CHECK(tokens[8].location == SourceLocation{4, 0});
-    CHECK(tokens[9].location == SourceLocation{6, 0});
+    CHECK(tokens.at(0).location == SourceLocation{0, 0});
+    CHECK(tokens.at(1).location == SourceLocation{0, 1});
+    CHECK(tokens.at(2).location == SourceLocation{0, 2});
+    CHECK(tokens.at(3).location == SourceLocation{2, 0});
+    CHECK(tokens.at(4).location == SourceLocation{2, 1});
+    CHECK(tokens.at(5).location == SourceLocation{2, 2});
+    CHECK(tokens.at(6).location == SourceLocation{3, 0});
+    CHECK(tokens.at(7).location == SourceLocation{3, 1});
+    CHECK(tokens.at(8).location == SourceLocation{4, 0});
+    CHECK(tokens.at(9).location == SourceLocation{6, 0});
 
-    REQUIRE(tokens.getLine(0).size() == 3);
-    REQUIRE(tokens.getLine(1).size() == 0);
-    REQUIRE(tokens.getLine(2).size() == 3);
-    REQUIRE(tokens.getLine(3).size() == 2);
-    REQUIRE(tokens.getLine(4).size() == 1);
-    REQUIRE(tokens.getLine(5).size() == 0);
-    REQUIRE(tokens.getLine(6).size() == 1);
+    REQUIRE(tokens.size(0) == 3);
+    REQUIRE(tokens.size(1) == 0);
+    REQUIRE(tokens.size(2) == 3);
+    REQUIRE(tokens.size(3) == 2);
+    REQUIRE(tokens.size(4) == 1);
+    REQUIRE(tokens.size(5) == 0);
+    REQUIRE(tokens.size(6) == 1);
 
-    CHECK(tokens.getLine(0)[0].location == SourceLocation{0, 0});
-    CHECK(tokens.getLine(0)[1].location == SourceLocation{0, 1});
-    CHECK(tokens.getLine(0)[2].location == SourceLocation{0, 2});
+    CHECK(tokens.at(0, 0).location == SourceLocation{0, 0});
+    CHECK(tokens.at(0, 1).location == SourceLocation{0, 1});
+    CHECK(tokens.at(0, 2).location == SourceLocation{0, 2});
 
-    CHECK(tokens.getLine(2)[0].location == SourceLocation{2, 0});
-    CHECK(tokens.getLine(2)[1].location == SourceLocation{2, 1});
-    CHECK(tokens.getLine(2)[2].location == SourceLocation{2, 2});
+    CHECK(tokens.at(2, 0).location == SourceLocation{2, 0});
+    CHECK(tokens.at(2, 1).location == SourceLocation{2, 1});
+    CHECK(tokens.at(2, 2).location == SourceLocation{2, 2});
 
-    CHECK(tokens.getLine(3)[0].location == SourceLocation{3, 0});
-    CHECK(tokens.getLine(3)[1].location == SourceLocation{3, 1});
+    CHECK(tokens.at(3, 0).location == SourceLocation{3, 0});
+    CHECK(tokens.at(3, 1).location == SourceLocation{3, 1});
 
-    CHECK(tokens.getLine(4)[0].location == SourceLocation{4, 0});
+    CHECK(tokens.at(4, 0).location == SourceLocation{4, 0});
 
-    CHECK(tokens.getLine(6)[0].location == SourceLocation{6, 0});
+    CHECK(tokens.at(6, 0).location == SourceLocation{6, 0});
 }
 
 TEST_CASE("Tokens default ctor", "[Tokens]")
