@@ -6,26 +6,20 @@ namespace CPPS {
 
 TEST_CASE("Tokens", "[Tokens]")
 {
-    const Tokens tokens{[]() -> std::vector<Token> {
-        std::vector<Token> tokens;
+    const Tokens tokens{
+        {{Lexeme(Lexeme::Slash), SourceLocation{0, 0}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{0, 1}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{0, 2}, ""},
 
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{0, 0}, ""});
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{0, 1}, ""});
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{0, 2}, ""});
+         {Lexeme(Lexeme::Slash), SourceLocation{2, 0}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{2, 1}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{2, 2}, ""},
 
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{2, 0}, ""});
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{2, 1}, ""});
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{2, 2}, ""});
+         {Lexeme(Lexeme::Slash), SourceLocation{3, 0}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{3, 1}, ""},
+         {Lexeme(Lexeme::Slash), SourceLocation{4, 0}, ""},
 
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{3, 0}, ""});
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{3, 1}, ""});
-
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{4, 0}, ""});
-
-        tokens.push_back({Lexeme(Lexeme::Slash), SourceLocation{6, 0}, ""});
-
-        return tokens;
-    }()};
+         {Lexeme(Lexeme::Slash), SourceLocation{6, 0}, ""}}};
 
     REQUIRE(tokens.size() == 10);
     REQUIRE(tokens.lines() == 7);
