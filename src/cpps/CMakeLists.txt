@@ -7,6 +7,7 @@ set(CPPS_INCLUDES
     grammar/keyword.hpp
     grammar/parameter-modifier.hpp
     grammar/pointer-literal.hpp
+    comment.hpp
     diagnosis.hpp
     lexeme.hpp
     source.hpp
