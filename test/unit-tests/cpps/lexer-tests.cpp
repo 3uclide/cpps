@@ -240,7 +240,7 @@ TEST_CASE("Lexer StringLiteral", "[Lexer]")
     check(Lexeme::StringLiteral, R"("a \"quoted\" string")");
 }
 
-TEST_CASE("Lexer Comment")
+TEST_CASE("Lexer Comment", "[Lexer]")
 {
     Diagnosis diagnosis;
     Source source;
@@ -342,7 +342,7 @@ TEST_CASE("Lexer sequence of tokens", "[Lexer]")
     CHECK(tokens.at(5, 0) == token(Lexeme::CloseBrace, 5, 0, "}"));
 }
 
-TEST_CASE("Lexer::DiagnosisMessage", "[Lexer]")
+TEST_CASE("Lexer DiagnosisMessage", "[Lexer]")
 {
     SECTION("binaryLiteralInvalidFormat")
     {
