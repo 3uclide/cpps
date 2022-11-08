@@ -25,7 +25,7 @@ public:
         static std::string hexadecimalLiteralInvalidFormat();
         static std::string stringLiteralMissingClosingQuote();
         static std::string unexpectedCharacter(char c);
-        static std::string universalCharacterNameInvalidFormat(char c, std::size_t size);
+        static std::string universalCharacterNameInvalidFormat(char c);
     };
 
 public:

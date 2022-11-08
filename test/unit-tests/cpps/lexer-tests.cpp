@@ -75,7 +75,7 @@ void check(auto lexeme, std::string_view base)
     }
 }
 
-void checkError(std::string expectedDiagnosisMessage, std::string_view base)
+void checkErrors(std::vector<std::string> expectedDiagnosisMessages, std::string_view base)
 {
     INFO(fmt::format("based on {}", base));
 
@@ -103,17 +103,27 @@ void checkError(std::string expectedDiagnosisMessage, std::string_view base)
 
     const std::span errors = diagnosis.getErrors();
 
-    REQUIRE(errors.size() == tokens.lines());
+    REQUIRE(errors.size() == (tokens.lines() * expectedDiagnosisMessages.size()));
 
-    for (std::size_t i = 0; i < lines.size(); ++i)
+    for (std::size_t l = 0; l < lines.size(); ++l)
     {
-        INFO(fmt::format("Line {}", i));
+        INFO(fmt::format("Line {}", l));
 
-        REQUIRE(errors[i].location);
+        for (std::size_t i = 0; i < expectedDiagnosisMessages.size(); ++i)
+        {
+            const std::size_t e = (l * expectedDiagnosisMessages.size()) + i;
 
-        CHECK(errors[i].message == expectedDiagnosisMessage);
-        CHECK(errors[i].location->line == lines[i].expectedDiagnosisLocation.line);
+            REQUIRE(errors[e].location);
+
+            CHECK(errors[e].message == expectedDiagnosisMessages[i]);
+            CHECK(errors[e].location->line == lines[l].expectedDiagnosisLocation.line);
+        }
     }
+}
+
+void checkError(std::string expectedDiagnosisMessage, std::string_view base)
+{
+    checkErrors(std::vector{std::move(expectedDiagnosisMessage)}, base);
 }
 
 template<typename T>
@@ -382,6 +392,25 @@ TEST_CASE("Lexer DiagnosisMessage", "[Lexer]")
 
     SECTION("universalCharacterNameInvalidFormat")
     {
+        // clang-format off
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'), R"('\u0')");     // too small
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'), R"('\u00000')"); // too big
+        checkErrors({Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'),
+                     Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote()}, R"('\u000Z')"); // invalid char
+
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'), R"('\U0')");         // too small
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'), R"('\U000000000')"); // too big
+        checkErrors({Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'),
+                     Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote()}, R"('\U0000000Z')"); // invalid char
+
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'), R"("\u0")");     // too small
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'), R"("\u00000")"); // too big
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('u'), R"("\u000Z")");  // invalid char
+
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'), R"("\U0")");         // too small
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'), R"("\U000000000")"); // too big
+        checkError(Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat('U'), R"("\U0000000Z")");  // invalid char
+        // clang-format on
     }
 }
 

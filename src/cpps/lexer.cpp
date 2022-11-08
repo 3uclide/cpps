@@ -9,6 +9,9 @@
 
 namespace CPPS {
 
+constexpr std::size_t SmallUniversalCharacterNameLength{4};
+constexpr std::size_t BigUniversalCharacterNameLength{8};
+
 std::string Lexer::DiagnosisMessage::binaryLiteralInvalidFormat()
 {
     return "binary literal cannot be empty, 0b (or 0B) must be followed by binary digits";
@@ -44,9 +47,10 @@ std::string Lexer::DiagnosisMessage::unexpectedCharacter(char c)
     return fmt::format("unexpected text '{}'", c);
 }
 
-std::string Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat(char c, std::size_t size)
+std::string Lexer::DiagnosisMessage::universalCharacterNameInvalidFormat(char c)
 {
-    return fmt::format("invalid universal character name (\\{} must be followed by {} hexadecimal digits)", c, size);
+    assert(c == 'u' || c == 'U');
+    return fmt::format("invalid universal character name (\\{} must be followed by {} hexadecimal digits)", c, c == 'u' ? SmallUniversalCharacterNameLength : BigUniversalCharacterNameLength);
 }
 
 Lexer::Lexer(Diagnosis& diagnosis, const Source& source)
@@ -453,10 +457,12 @@ bool Lexer::tryLexCharacterLiteral()
 
     std::size_t endIndex = findCharacterEndIndex(offset, Quote);
 
-    if (endIndex != std::string_view::npos)
+    if (endIndex == std::string_view::npos)
     {
-        ++endIndex;
+        return false;
     }
+
+    ++endIndex;
 
     if (!validateQuotedLiteralEndIndex(endIndex, Quote))
     {
@@ -727,9 +733,6 @@ std::size_t Lexer::findCharacterEndIndex(std::size_t offset, char quote)
 //    \U { hexadecimal-digit }8
 std::size_t Lexer::findUniversalCharacterEndIndex(std::size_t startOffset)
 {
-    static constexpr std::size_t SmallUniversalCharacterNameLength{4};
-    static constexpr std::size_t BigUniversalCharacterNameLength{8};
-
     std::size_t offset = startOffset;
 
     if (peek(offset) != '\\')
@@ -777,7 +780,7 @@ std::size_t Lexer::findUniversalCharacterEndIndex(std::size_t startOffset)
 
     if (offset - start != requiredSize)
     {
-        _diagnosis.error(DiagnosisMessage::universalCharacterNameInvalidFormat(u, requiredSize),
+        _diagnosis.error(DiagnosisMessage::universalCharacterNameInvalidFormat(u),
                          SourceLocation{.line = static_cast<SourceLine>(_currentLineIndex),
                                         .column = static_cast<SourceColumn>(_currentColumnIndex + startOffset)});
 
