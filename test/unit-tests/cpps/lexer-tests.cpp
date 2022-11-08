@@ -10,10 +10,16 @@
 
 namespace CPPS {
 
-struct Line
+struct CheckLine
 {
     std::string text;
-    std::vector<Token> tokens;
+    std::vector<Token> expectedTokens;
+};
+
+struct CheckErrorLine
+{
+    std::string text;
+    SourceLocation expectedDiagnosisLocation;
 };
 
 Token token(auto lexeme, SourceLine line, SourceColumn column, std::string_view text)
@@ -25,7 +31,7 @@ void check(auto lexeme, std::string_view base)
 {
     INFO(fmt::format("based on {}", base));
 
-    std::array lines = std::to_array<Line>(
+    const std::array lines = std::to_array<CheckLine>(
         {{std::string(base), {token(lexeme, 0, 0, base)}},
          {fmt::format(";{}", base), {token(Lexeme::Semicolon, 1, 0, ";"), token(lexeme, 1, 1, base)}},
          {fmt::format("{};", base), {token(lexeme, 2, 0, base), token(Lexeme::Semicolon, 2, static_cast<SourceColumn>(base.size()), ";")}},
@@ -40,11 +46,11 @@ void check(auto lexeme, std::string_view base)
 
     std::size_t tokensCount{0};
 
-    for (const Line& line : lines)
+    for (const CheckLine& line : lines)
     {
         source.add(line.text, Source::Line::Type::Cpps);
 
-        tokensCount += line.tokens.size();
+        tokensCount += line.expectedTokens.size();
     }
 
     const Tokens tokens{lexer.lex()};
@@ -58,14 +64,55 @@ void check(auto lexeme, std::string_view base)
     {
         INFO(fmt::format("Line {}", l));
 
-        const Line& line = lines[l];
+        const CheckLine& line = lines[l];
 
-        REQUIRE(tokens.on(l).size() == line.tokens.size());
+        REQUIRE(tokens.on(l).size() == line.expectedTokens.size());
 
-        for (std::size_t t = 0; t < line.tokens.size(); ++t)
+        for (std::size_t t = 0; t < line.expectedTokens.size(); ++t)
         {
-            CHECK(tokens.at(l, t) == line.tokens[t]);
+            CHECK(tokens.at(l, t) == line.expectedTokens[t]);
         }
+    }
+}
+
+void checkError(std::string expectedDiagnosisMessage, std::string_view base)
+{
+    INFO(fmt::format("based on {}", base));
+
+    const std::array lines = std::to_array<CheckErrorLine>(
+        {{std::string(base), SourceLocation{0, 0}},
+         {fmt::format(";{}", base), SourceLocation{1, 1}},
+         {fmt::format("{};", base), SourceLocation{2, 0}},
+         {fmt::format("; {}", base), SourceLocation{3, 2}},
+         {fmt::format("{} ;", base), SourceLocation{4, 0}},
+         {fmt::format(";{};", base), SourceLocation{5, 1}},
+         {fmt::format("; {} ;", base), SourceLocation{6, 2}}});
+
+    Diagnosis diagnosis;
+    Source source;
+    Lexer lexer{diagnosis, source};
+
+    for (const CheckErrorLine& line : lines)
+    {
+        source.add(line.text, Source::Line::Type::Cpps);
+    }
+
+    const Tokens tokens{lexer.lex()};
+
+    checkNoWarning(diagnosis);
+
+    const std::span errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == tokens.lines());
+
+    for (std::size_t i = 0; i < lines.size(); ++i)
+    {
+        INFO(fmt::format("Line {}", i));
+
+        REQUIRE(errors[i].location);
+
+        CHECK(errors[i].message == expectedDiagnosisMessage);
+        CHECK(errors[i].location->line == lines[i].expectedDiagnosisLocation.line);
     }
 }
 
@@ -299,35 +346,56 @@ TEST_CASE("Lexer::DiagnosisMessage", "[Lexer]")
 {
     SECTION("binaryLiteralInvalidFormat")
     {
+        checkError(Lexer::DiagnosisMessage::binaryLiteralInvalidFormat(), "0b2");
     }
 
     SECTION("characterLiteralEmpty")
     {
+        checkError(Lexer::DiagnosisMessage::characterLiteralEmpty(), "''");
     }
 
     SECTION("characterLiteralMissingClosingQuote")
     {
+        checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'a");
+        checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'a;");
     }
 
     SECTION("floatingLiteralInvalidFormat")
     {
+        checkError(Lexer::DiagnosisMessage::floatingLiteralInvalidFormat("0."), "0.Z");
     }
 
     SECTION("hexadecimalLiteralInvalidFormat")
     {
+        checkError(Lexer::DiagnosisMessage::hexadecimalLiteralInvalidFormat(), "0xZ");
     }
 
     SECTION("stringLiteralMissingClosingQuote")
     {
+        checkError(Lexer::DiagnosisMessage::stringLiteralMissingClosingQuote(), R"("a string)");
     }
 
     SECTION("unexpectedCharacter")
     {
+        checkError(Lexer::DiagnosisMessage::unexpectedCharacter('@'), "@");
     }
 
     SECTION("universalCharacterNameInvalidFormat")
     {
     }
+}
+
+TEST_CASE("Lexer source is empty", "[Lexer]")
+{
+    Diagnosis diagnosis;
+    Source source;
+    Lexer lexer{diagnosis, source};
+
+    const Tokens tokens = lexer.lex();
+
+    checkNoErrorOrWarning(diagnosis);
+
+    CHECK(tokens.empty());
 }
 
 } // namespace CPPS

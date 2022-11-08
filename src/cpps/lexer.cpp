@@ -444,6 +444,10 @@ bool Lexer::tryLexCharacterLiteral()
     if (peek(offset) == '\'')
     {
         _diagnosis.error(DiagnosisMessage::characterLiteralEmpty(), currentLocation());
+
+        // skip the '
+        next();
+
         return true;
     }
 
