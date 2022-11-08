@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <!-- lexeme -->
+  <Type Name="CPPS::Lexeme">
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Basic">{(CPPS::Lexeme::Basic)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::BooleanLiteral">BooleanLiteral = {(CPPS::BooleanLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::FunctionModifier">FunctionModifier = {(CPPS::FunctionModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Keyword">Keyword = {(CPPS::Keyword)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::ParameterModifier">ParameterModifier = {(CPPS::ParameterModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::PointerLiteral">PointerLiteral = = {(CPPS::PointerLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
+    <DisplayString>{(CPPS::Lexeme::Type)(_storage &amp; 0x00FF)}</DisplayString>
+    <Expand>
+      <Item Name="[Type]">(CPPS::Lexeme::Type)(_storage &amp; 0x00FF)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Basic">(CPPS::Lexeme::Basic)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::BooleanLiteral">(CPPS::BooleanLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::FunctionModifier">(CPPS::FunctionModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Keyword">(CPPS::Keyword)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::ParameterModifier">(CPPS::ParameterModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::PointerLiteral">(CPPS::PointerLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
