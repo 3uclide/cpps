@@ -19,7 +19,8 @@ TEST_CASE("Tokens", "[Tokens]")
          {Lexeme(Lexeme::Slash), SourceLocation{3, 1}, ""},
          {Lexeme(Lexeme::Slash), SourceLocation{4, 0}, ""},
 
-         {Lexeme(Lexeme::Slash), SourceLocation{6, 0}, ""}}};
+         {Lexeme(Lexeme::Slash), SourceLocation{6, 0}, ""}},
+        {}};
 
     REQUIRE(tokens.size() == 10);
     REQUIRE(tokens.lines() == 7);
@@ -64,6 +65,7 @@ TEST_CASE("Tokens default ctor", "[Tokens]")
     const Tokens tokens;
 
     CHECK(tokens.empty());
+    CHECK(tokens.comments().empty());
 }
 
 } // namespace CPPS

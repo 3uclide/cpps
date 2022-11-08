@@ -13,7 +13,7 @@ class Tokens
 public:
     constexpr Tokens() = default;
 
-    constexpr explicit Tokens(std::vector<Token>&& tokens);
+    constexpr explicit Tokens(std::vector<Token>&& tokens, std::vector<Comment>&& comments);
 
     constexpr Tokens(Tokens&&) = default;
     constexpr Tokens& operator=(Tokens&&) = default;
@@ -46,8 +46,9 @@ private:
     std::vector<Comment> _comments;
 };
 
-constexpr Tokens::Tokens(std::vector<Token>&& tokens)
+constexpr Tokens::Tokens(std::vector<Token>&& tokens, std::vector<Comment>&& comments)
     : _tokens(std::move(tokens))
+    , _comments(std::move(comments))
 {
     _sparse.resize(_tokens.empty() ? 0 : _tokens.back().location.line + 1u, InvalidIndex);
 
