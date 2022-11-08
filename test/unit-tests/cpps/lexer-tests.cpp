@@ -366,8 +366,10 @@ TEST_CASE("Lexer DiagnosisMessage", "[Lexer]")
 
     SECTION("characterLiteralMissingClosingQuote")
     {
+        checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'");
         checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'a");
         checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'a;");
+        checkError(Lexer::DiagnosisMessage::characterLiteralMissingClosingQuote(), "'\\");
     }
 
     SECTION("floatingLiteralInvalidFormat")
@@ -388,6 +390,11 @@ TEST_CASE("Lexer DiagnosisMessage", "[Lexer]")
     SECTION("unexpectedCharacter")
     {
         checkError(Lexer::DiagnosisMessage::unexpectedCharacter('@'), "@");
+
+        checkErrors({Lexer::DiagnosisMessage::unexpectedCharacter('\''),
+                     Lexer::DiagnosisMessage::unexpectedCharacter('\\'),
+                     Lexer::DiagnosisMessage::unexpectedCharacter('\\')},
+                    "'\\\\");
     }
 
     SECTION("universalCharacterNameInvalidFormat")
