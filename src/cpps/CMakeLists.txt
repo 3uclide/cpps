@@ -10,6 +10,7 @@ set(CPPS_INCLUDES
     comment.hpp
     diagnosis.hpp
     lexeme.hpp
+    lexer.hpp
     source.hpp
     source-location.hpp
     source-reader.hpp
@@ -24,6 +25,7 @@ set(CPPS_SOURCES
     grammar/keyword.cpp
     grammar/parameter-modifier.cpp
     grammar/pointer-literal.cpp
+    lexer.cpp
     source-reader.cpp
 
     # TODO cleaner integration

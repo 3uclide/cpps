@@ -55,9 +55,9 @@ public:
         MinusMinus,
         Modulo,
         ModuloEqual,
+        Not,
         Multiply,
         MultiplyEqual,
-        Negation,
         OpenBrace,
         OpenBracket,
         OpenParenthesis,
@@ -73,11 +73,75 @@ public:
         Slash,
         SlashEqual,
         Spaceship,
+        StringLiteral,
         Tilde,
         TildeEqual,
 
         BasicCount
     };
+
+    static constexpr std::array BasicStrings = std::to_array<std::string_view>(
+        {
+            "&",   // Ampersand,
+            "&=",  // AmpersandEqual,
+            "->",  // Arrow,
+            "=",   // Assignment,
+            {},    // BinaryLiteral,
+            "^",   // Caret,
+            "^=",  // CaretEqual,
+            {},    // CharacterLiteral,
+            "}",   // CloseBrace,
+            "]",   // CloseBracket,
+            ")",   // CloseParenthesis,
+            ":",   // Colon,
+            ",",   // Comma,
+            "==",  // CompareEqual,
+            "!=",  // CompareNotEqual,
+            {},    // DecimalLiteral,
+            "$",   // Dollar,
+            ".",   // Dot,
+            "::",  // DoubleColon,
+            "...", // Ellipsis,
+            "",    // FloatingLiteral,
+            ">",   // Greater,
+            ">=",  // GreaterEqual,
+            {},    // HexadecimalLiteral,
+            {},    // Identifier,
+            "<<",  // LeftShift,
+            "<<=", // LeftShiftEqual,
+            "<",   // Less,
+            "<=",  // LessEqual,
+            "&&",  // LogicalAnd,
+            "&&=", // LogicalAndEqual,
+            "||",  // LogicalOr,
+            "||=", // LogicalOrEqual,
+            "-",   // Minus,
+            "-=",  // MinusEqual,
+            "--",  // MinusMinus,
+            "%",   // Modulo,
+            "%=",  // ModuloEqual,
+            "!",   // Not,
+            "*",   // Multiply,
+            "*=",  // MultiplyEqual,
+            "{",   // OpenBrace,
+            "[",   // OpenBracket,
+            "(",   // OpenParenthesis,
+            "|",   // Pipe,
+            "|=",  // PipeEqual,
+            "+",   // Plus,
+            "+=",  // PlusEqual,
+            "++",  // PlusPlus,
+            "?",   // QuestionMark,
+            ">>",  // RightShift,
+            ">>=", // RightShiftEqual,
+            ";",   // Semicolon,
+            "/",   // Slash,
+            "/=",  // SlashEqual,
+            "<=>", // Spaceship,
+            {},    // StringLiteral
+            "~",   // Tilde,
+            "~="   // TildeEqual,
+        });
 
     enum class Type : std::uint8_t
     {
@@ -312,19 +376,19 @@ struct fmt::formatter<CPPS::Lexeme> : formatter<std::string>
         switch (lexeme.getType())
         {
         case CPPS::Lexeme::Type::Basic:
-            return fmt::format_to(ctx.out(),"{}", lexeme.getBasic());
+            return fmt::format_to(ctx.out(), "{}", lexeme.getBasic());
 
         case CPPS::Lexeme::Type::BooleanLiteral:
-            return fmt::format_to(ctx.out(),"{}", lexeme.getBooleanLiteral());
+            return fmt::format_to(ctx.out(), "{}", lexeme.getBooleanLiteral());
 
         case CPPS::Lexeme::Type::FunctionModifier:
-            return fmt::format_to(ctx.out(),"{}", lexeme.getFunctionModifier());
+            return fmt::format_to(ctx.out(), "{}", lexeme.getFunctionModifier());
 
         case CPPS::Lexeme::Type::Keyword:
-            return fmt::format_to(ctx.out(),"{}", lexeme.getKeyword());
+            return fmt::format_to(ctx.out(), "{}", lexeme.getKeyword());
 
         case CPPS::Lexeme::Type::ParameterModifier:
-            return fmt::format_to(ctx.out(),"{}", lexeme.getParameterModifier());
+            return fmt::format_to(ctx.out(), "{}", lexeme.getParameterModifier());
 
         case CPPS::Lexeme::Type::PointerLiteral:
             return fmt::format_to(ctx.out(), "{}", lexeme.getPointerLiteral());
