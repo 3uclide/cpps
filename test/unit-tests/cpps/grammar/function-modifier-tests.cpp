@@ -6,12 +6,12 @@
 
 namespace CPPS {
 
-TEST_CASE("FunctionModifier format", "[Lexeme]")
+TEST_CASE("FunctionModifier format", "[FunctionModifier]")
 {
     CHECK(fmt::format("{}", FunctionModifier::Final) == toStringView(FunctionModifier::Final));
 }
 
-TEST_CASE("FunctionModifier operator<< std::ostream", "[Lexeme]")
+TEST_CASE("FunctionModifier operator<< std::ostream", "[FunctionModifier]")
 {
     std::stringstream stream;
 
