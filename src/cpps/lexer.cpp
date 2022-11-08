@@ -571,7 +571,7 @@ bool Lexer::tryLexStringLiteral()
     }
 
     // if valid, the previous character should never be a \ at this point
-    assert(offset == std::string_view::npos || offset > 0 && peek(offset - 1) != '\\');
+    assert(offset == std::string_view::npos || (offset > 0 && peek(offset - 1) != '\\'));
 
     std::size_t endIndex = offset == std::string_view::npos ? std::string_view::npos : _currentColumnIndex + offset;
 
@@ -735,7 +735,7 @@ std::size_t Lexer::findUniversalCharacterEndIndex(std::size_t startOffset)
 
     const char u = peek(offset + 1);
 
-    const std::size_t requiredSize = [u] {
+    const std::size_t requiredSize = [u]() -> std::size_t {
         switch (u)
         {
         case 'u': return SmallUniversalCharacterNameLength;
