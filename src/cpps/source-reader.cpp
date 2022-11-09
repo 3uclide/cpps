@@ -6,7 +6,7 @@
 #include <range/v3/view.hpp>
 #include <array>
 
-namespace cpps {
+namespace CPPS {
 
 namespace Details {
 
@@ -51,7 +51,7 @@ std::string SourceReader::DiagnosisMessage::unexpectedCloseBrace()
 
 std::string SourceReader::DiagnosisMessage::unexpectedCharAfterCppsDefinition(char c)
 {
-    return fmt::format("unexpected char '{}'- after cpps definition closing ; or }}", c);
+    return fmt::format("unexpected char '{}'- after CPPS definition closing ; or }}", c);
 }
 
 std::string SourceReader::DiagnosisMessage::unreadableLine()
@@ -60,8 +60,8 @@ std::string SourceReader::DiagnosisMessage::unreadableLine()
 }
 
 SourceReader::SourceReader(Diagnosis& diagnosis, Stream& stream)
-    : _stream(stream)
-    , _diagnosis(diagnosis)
+    : _diagnosis(diagnosis)
+    , _stream(stream)
 {
 }
 
@@ -403,4 +403,4 @@ void SourceReader::addCurrentLine(Source::Line::Type type)
     _source.add(std::string(_rawLine), type);
 }
 
-} // namespace cpps
+} // namespace CPPS

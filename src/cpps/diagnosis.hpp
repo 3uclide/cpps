@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-namespace cpps {
+namespace CPPS {
 
 class Diagnosis
 {
@@ -114,4 +114,4 @@ constexpr std::span<const Diagnosis::Entry> Diagnosis::getWarnings() const
     return _warnings;
 }
 
-} // namespace cpps
+} // namespace CPPS

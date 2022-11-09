@@ -4,7 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-namespace cpps {
+namespace CPPS {
 
 void checkNoDiagnosis(std::span<const Diagnosis::Entry> entries, std::string_view type, std::string& msg)
 {

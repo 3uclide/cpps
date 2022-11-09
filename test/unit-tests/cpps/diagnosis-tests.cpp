@@ -2,7 +2,7 @@
 
 #include "cpps/diagnosis.hpp"
 
-namespace cpps {
+namespace CPPS {
 
 TEST_CASE("Diagnosis", "[Diagnosis]")
 {
@@ -91,4 +91,4 @@ TEST_CASE("Diagnosis", "[Diagnosis]")
     CHECK(warnings[5].location.value() == SourceLocation{1, 1});
 }
 
-} // namespace cpps
+} // namespace CPPS

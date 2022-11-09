@@ -9,7 +9,7 @@
 #include <string_view>
 #include <vector>
 
-namespace cpps {
+namespace CPPS {
 
 class Diagnosis;
 
@@ -48,8 +48,8 @@ private:
     void addCurrentLine(Source::Line::Type type);
 
 private:
-    Stream& _stream;
     Diagnosis& _diagnosis;
+    Stream& _stream;
 
     Source _source;
 
@@ -62,4 +62,4 @@ private:
     bool _isInStringLiteral : 1 {false};
 };
 
-} // namespace cpps
+} // namespace CPPS

@@ -2,7 +2,7 @@
 
 #include "cpps/source.hpp"
 
-namespace cpps {
+namespace CPPS {
 
 TEST_CASE("Source default ctor", "[Source]")
 {
@@ -73,4 +73,4 @@ TEST_CASE("Source add", "[Source]")
     }
 }
 
-} // namespace cpps
+} // namespace CPPS

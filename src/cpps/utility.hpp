@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string_view>
 
-namespace cpps {
+namespace CPPS {
 
 // white-space:
 inline bool isSpace(char c)
@@ -82,4 +82,4 @@ inline std::size_t findFirstIdentifierEnd(std::string_view line, std::size_t sta
     return index;
 }
 
-} // namespace cpps
+} // namespace CPPS
