@@ -1,11 +1,12 @@
+---
 name: CodeQL
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   push:
-    branches: [ main ]
+    branches: [main]
   
   schedule:
     - cron: '38 0 * * 5'
@@ -28,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'cpp' ]
+        language: ['cpp']
         compiler:
           - gcc-12
         generator:
