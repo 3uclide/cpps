@@ -6,8 +6,8 @@ on:
     branches: [main]
 
   push:
-    branches: [main]
-  
+    branches-ignore: [main]
+
   schedule:
     - cron: '38 0 * * 5'
 
@@ -19,7 +19,7 @@ env:
 
 jobs:
   analyze:
-    name: Analyze
+    name: CodeQL Analysis
     runs-on: ubuntu-22.04
     permissions:
       actions: read
