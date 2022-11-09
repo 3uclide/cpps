@@ -1,12 +1,15 @@
+---
 name: CI
-on:
+
+on:  # yamllint disable-line rule:truthy
   pull_request:
+    branches: [main]
+
   release:
     types: [published]
+
   push:
-    branches:
-      - main
-      - feature/**
+    branches-ignore: [main]
 
 env:
   # Conan cache environment variables
@@ -56,7 +59,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Setup Cache
         uses: ./.github/actions/setup_cache
