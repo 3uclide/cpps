@@ -51,8 +51,7 @@ jobs:
         uses: aminya/setup-cpp@v0.21.0
         with:
           compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
+          vcvarsall: false
           cmake: true
           ninja: true
           conan: true
