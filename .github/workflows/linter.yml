@@ -1,5 +1,5 @@
 ---
-name: Lint Code Base
+name: Lint
 
 on:  # yamllint disable-line rule:truthy
   pull_request:
@@ -10,16 +10,16 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   build:
-    name: Lint Code Base
+    name: Lint
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
+      - name: Super Linter
         uses: github/super-linter/slim@v4.9.7
         env:
           VALIDATE_ALL_CODEBASE: false
