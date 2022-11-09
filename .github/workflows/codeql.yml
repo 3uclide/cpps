@@ -65,7 +65,8 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -S . -B ./build -G "${{matrix.generator}}" -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}}
+          cmake -S . -B ./build -G "${{matrix.generator}}"
+                -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}}
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
