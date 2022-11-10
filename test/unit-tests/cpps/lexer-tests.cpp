@@ -247,11 +247,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
     Source source;
     Lexer lexer{diagnosis, source};
 
-    SECTION("Type::Line")
-    {
-        static constexpr std::string_view CommentText = "// comment";
-
-        source.add(std::string(CommentText), Source::Line::Type::Cpps);
+    auto checkComment = [&lexer](std::string_view commentText, SourceLocation beginLocation, SourceLocation endLocation) {
 
         const Tokens tokens = lexer.lex();
         const std::span comments = tokens.comments();
@@ -259,9 +255,18 @@ TEST_CASE("Lexer Comment", "[Lexer]")
         REQUIRE(comments.size() == 1);
 
         CHECK(comments[0].type == Comment::Type::Line);
-        CHECK(comments[0].text == CommentText);
-        CHECK(comments[0].beginLocation == SourceLocation{0, 0});
-        CHECK(comments[0].endLocation == SourceLocation{0, 9});
+        CHECK(comments[0].text == commentText);
+        CHECK(comments[0].beginLocation == beginLocation);
+        CHECK(comments[0].endLocation == endLocation);
+    };
+
+    SECTION("Type::Line")
+    {
+        static constexpr std::string_view CommentText = "// comment";
+
+        source.add(std::string(CommentText), Source::Line::Type::Cpps);
+
+        checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{0, 9});
     }
 
     SECTION("Type::Block")
@@ -272,15 +277,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
 
             source.add(std::string(CommentText), Source::Line::Type::Cpps);
 
-            const Tokens tokens = lexer.lex();
-            const std::span comments = tokens.comments();
-
-            REQUIRE(comments.size() == 1);
-
-            CHECK(comments[0].type == Comment::Type::Block);
-            CHECK(comments[0].text == CommentText);
-            CHECK(comments[0].beginLocation == SourceLocation{0, 0});
-            CHECK(comments[0].endLocation == SourceLocation{0, 12});
+            checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{0, 12});
         }
 
         SECTION("on multiple line")
@@ -292,15 +289,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
             source.add(std::string(CommentTextLine0), Source::Line::Type::Cpps);
             source.add(std::string(CommentTextLine1), Source::Line::Type::Cpps);
 
-            const Tokens tokens = lexer.lex();
-            const std::span comments = tokens.comments();
-
-            REQUIRE(comments.size() == 1);
-
-            CHECK(comments[0].type == Comment::Type::Block);
-            CHECK(comments[0].text == CommentText);
-            CHECK(comments[0].beginLocation == SourceLocation{0, 0});
-            CHECK(comments[0].endLocation == SourceLocation{1, 2});
+            checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{1, 2});
         }
     }
 }

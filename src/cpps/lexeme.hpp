@@ -111,21 +111,19 @@ struct fmt::formatter<CPPS::Lexeme> : formatter<std::string>
     template<typename FormatContext>
     auto format(CPPS::Lexeme lexeme, FormatContext& ctx) const
     {
-        using namespace CPPS;
-
-        if (lexeme.is<BinaryLiteral>()) return fmt::format_to(ctx.out(), "BinaryLiteral");
-        if (lexeme.is<BooleanLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<BooleanLiteral>());
-        if (lexeme.is<CharacterLiteral>()) return fmt::format_to(ctx.out(), "CharacterLiteral");
-        if (lexeme.is<DecimalLiteral>()) return fmt::format_to(ctx.out(), "DecimalLiteral");
-        if (lexeme.is<FloatingLiteral>()) return fmt::format_to(ctx.out(), "FloatingLiteral");
-        if (lexeme.is<HexadecimalLiteral>()) return fmt::format_to(ctx.out(), "HexadecimalLiteral");
-        if (lexeme.is<FunctionModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<FunctionModifier>());
-        if (lexeme.is<Identifier>()) return fmt::format_to(ctx.out(), "Identifier");
-        if (lexeme.is<Keyword>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<Keyword>());
-        if (lexeme.is<ParameterModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<ParameterModifier>());
-        if (lexeme.is<PointerLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<PointerLiteral>());
-        if (lexeme.is<Punctuator>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<Punctuator>());
-        if (lexeme.is<StringLiteral>()) return fmt::format_to(ctx.out(), "StringLiteral");
+        if (lexeme.is<CPPS::BinaryLiteral>()) return fmt::format_to(ctx.out(), "BinaryLiteral");
+        if (lexeme.is<CPPS::BooleanLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::BooleanLiteral>());
+        if (lexeme.is<CPPS::CharacterLiteral>()) return fmt::format_to(ctx.out(), "CharacterLiteral");
+        if (lexeme.is<CPPS::DecimalLiteral>()) return fmt::format_to(ctx.out(), "DecimalLiteral");
+        if (lexeme.is<CPPS::FloatingLiteral>()) return fmt::format_to(ctx.out(), "FloatingLiteral");
+        if (lexeme.is<CPPS::HexadecimalLiteral>()) return fmt::format_to(ctx.out(), "HexadecimalLiteral");
+        if (lexeme.is<CPPS::FunctionModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::FunctionModifier>());
+        if (lexeme.is<CPPS::Identifier>()) return fmt::format_to(ctx.out(), "Identifier");
+        if (lexeme.is<CPPS::Keyword>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::Keyword>());
+        if (lexeme.is<CPPS::ParameterModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::ParameterModifier>());
+        if (lexeme.is<CPPS::PointerLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::PointerLiteral>());
+        if (lexeme.is<CPPS::Punctuator>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<CPPS::Punctuator>());
+        if (lexeme.is<CPPS::StringLiteral>()) return fmt::format_to(ctx.out(), "StringLiteral");
 
         return fmt::format_to(ctx.out(), "invalid");
     }

@@ -3,6 +3,7 @@
 #include "cpps/diagnosis.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <string>
 
 namespace CPPS {
 
@@ -58,4 +59,4 @@ void checkNoErrorOrWarning(const Diagnosis& diagnosis)
     }
 }
 
-}
+} // namespace CPPS
