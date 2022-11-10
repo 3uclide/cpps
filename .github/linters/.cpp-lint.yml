@@ -1,0 +1,4 @@
+---
+set noparent
+filter=-whitespace,-legal/copyright
+linelength=0
