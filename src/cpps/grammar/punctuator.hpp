@@ -1,9 +1,10 @@
 #pragma once
 
 #include <array>
-#include <fmt/format.h>
 #include <ostream>
 #include <string_view>
+
+#include <fmt/format.h>
 
 namespace CPPS {
 

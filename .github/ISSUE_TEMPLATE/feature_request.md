@@ -6,13 +6,9 @@ labels: 'enhancement'
 assignees: ''
 
 ---
-**Is related to a problem? Please describe.**
+# Feature request
 
-
-**Describe the solution**
-
-
-**Describe the alternatives that were considered**
-
-
-**Additional context**
+* Is related to a problem
+* Describe the solution
+* Describe the alternatives that were considered
+* Additional context

@@ -1,9 +1,10 @@
 #include "cpps/check-diagnosis.hpp"
 
-#include "cpps/diagnosis.hpp"
+#include <string>
 
 #include <catch2/catch_test_macros.hpp>
-#include <string>
+
+#include "cpps/diagnosis.hpp"
 
 namespace CPPS {
 

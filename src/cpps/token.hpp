@@ -1,10 +1,10 @@
 #pragma once
 
-#include "cpps/lexeme.hpp"
-#include "cpps/source-location.hpp"
-
 #include <string>
 #include <string_view>
+
+#include "cpps/lexeme.hpp"
+#include "cpps/source-location.hpp"
 
 namespace CPPS {
 
