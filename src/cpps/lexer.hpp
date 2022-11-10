@@ -93,9 +93,10 @@ private:
 
 private:
     void addToken(std::size_t size, Lexeme lexeme);
-    void addToken(std::size_t size, Lexeme::Basic lexeme);
+    void addToken(std::size_t size, Punctuator lexeme);
 
-    void addTernaryConditionalToken(char conditionCharacter, Lexeme::Basic trueValue, Lexeme::Basic falseValue);
+    void addTernaryConditionalToken(char conditionCharacter, Lexeme trueValue, Lexeme falseValue);
+    void addTernaryConditionalToken(char conditionCharacter, Punctuator trueValue, Punctuator falseValue);
 
 private:
     void addComment(std::string_view text, SourceLocation beginLocation, SourceLocation endLocation);

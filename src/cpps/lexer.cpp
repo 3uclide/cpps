@@ -170,65 +170,65 @@ void Lexer::lexAmpersand()
     {
         if (peek(2) == '=')
         {
-            addToken(3, Lexeme::LogicalAndEqual);
+            addToken(3, Punctuator::LogicalAndEqual);
         }
         else
         {
-            addToken(2, Lexeme::LogicalAnd);
+            addToken(2, Punctuator::LogicalAnd);
         }
     }
     else
     {
-        addTernaryConditionalToken('=', Lexeme::AmpersandEqual, Lexeme::Ampersand);
+        addTernaryConditionalToken('=', Punctuator::AmpersandEqual, Punctuator::Ampersand);
     }
 }
 
 // == =
 void Lexer::lexAssignment()
 {
-    addTernaryConditionalToken('=', Lexeme::CompareEqual, Lexeme::Assignment);
+    addTernaryConditionalToken('=', Punctuator::CompareEqual, Punctuator::Assignment);
 }
 
 // ^= ^
 void Lexer::lexCaret()
 {
-    addTernaryConditionalToken('=', Lexeme::CaretEqual, Lexeme::Caret);
+    addTernaryConditionalToken('=', Punctuator::CaretEqual, Punctuator::Caret);
 }
 
 // }
 void Lexer::lexCloseBrace()
 {
-    addToken(1, Lexeme::CloseBrace);
+    addToken(1, Punctuator::CloseBrace);
 }
 
 // ]
 void Lexer::lexCloseBracket()
 {
-    addToken(1, Lexeme::CloseBracket);
+    addToken(1, Punctuator::CloseBracket);
 }
 
 // )
 void Lexer::lexCloseParenthesis()
 {
-    addToken(1, Lexeme::CloseParenthesis);
+    addToken(1, Punctuator::CloseParenthesis);
 }
 
 // :: :
 void Lexer::lexColon()
 {
-    addTernaryConditionalToken(':', Lexeme::DoubleColon, Lexeme::Colon);
+    addTernaryConditionalToken(':', Punctuator::DoubleColon, Punctuator::Colon);
 }
 
 // ,
 void Lexer::lexComma()
 {
-    addToken(1, Lexeme::Comma);
+    addToken(1, Punctuator::Comma);
 }
 
 // $
 void Lexer::lexDollar()
 {
-    addToken(1, Lexeme::Dollar);
+    addToken(1, Punctuator::Dollar);
 }
 
 // ... .
@@ -236,11 +236,11 @@ void Lexer::lexDot()
 {
     if (peek(1) == '.' && peek(2) == '.')
     {
-        addToken(3, Lexeme::Ellipsis);
+        addToken(3, Punctuator::Ellipsis);
     }
     else
     {
-        addToken(1, Lexeme::Dot);
+        addToken(1, Punctuator::Dot);
     }
 }
 
@@ -251,16 +251,16 @@ void Lexer::lexGreater()
     {
         if (peek(2) == '=')
         {
-            addToken(3, Lexeme::RightShiftEqual);
+            addToken(3, Punctuator::RightShiftEqual);
         }
         else
         {
-            addToken(2, Lexeme::RightShift);
+            addToken(2, Punctuator::RightShift);
         }
     }
     else
     {
-        addTernaryConditionalToken('=', Lexeme::GreaterEqual, Lexeme::Greater);
+        addTernaryConditionalToken('=', Punctuator::GreaterEqual, Punctuator::Greater);
     }
 }
 
@@ -272,27 +272,27 @@ void Lexer::lexLess()
     case '<':
         if (peek(2) == '=')
         {
-            addToken(3, Lexeme::LeftShiftEqual);
+            addToken(3, Punctuator::LeftShiftEqual);
         }
         else
         {
-            addToken(2, Lexeme::LeftShift);
+            addToken(2, Punctuator::LeftShift);
         }
         break;
 
     case '=':
         if (peek(2) == '>')
         {
-            addToken(3, Lexeme::Spaceship);
+            addToken(3, Punctuator::Spaceship);
         }
         else
         {
-            addToken(2, Lexeme::LessEqual);
+            addToken(2, Punctuator::LessEqual);
         }
         break;
 
     default:
-        addToken(1, Lexeme::Less);
+        addToken(1, Punctuator::Less);
         break;
     }
 }
@@ -303,19 +303,19 @@ void Lexer::lexMinus()
     switch (peek(1))
     {
     case '-':
-        addToken(2, Lexeme::MinusMinus);
+        addToken(2, Punctuator::MinusMinus);
         break;
 
     case '=':
-        addToken(2, Lexeme::MinusEqual);
+        addToken(2, Punctuator::MinusEqual);
         break;
 
     case '>':
-        addToken(2, Lexeme::Arrow);
+        addToken(2, Punctuator::Arrow);
         break;
 
     default:
-        addToken(1, Lexeme::Minus);
+        addToken(1, Punctuator::Minus);
         break;
     }
 }
@@ -323,37 +323,37 @@ void Lexer::lexMinus()
 // %= %
 void Lexer::lexModulo()
 {
-    addTernaryConditionalToken('=', Lexeme::ModuloEqual, Lexeme::Modulo);
+    addTernaryConditionalToken('=', Punctuator::ModuloEqual, Punctuator::Modulo);
 }
 
 // *= *
 void Lexer::lexMultiply()
 {
-    addTernaryConditionalToken('=', Lexeme::MultiplyEqual, Lexeme::Multiply);
+    addTernaryConditionalToken('=', Punctuator::MultiplyEqual, Punctuator::Multiply);
 }
 
 // != !
 void Lexer::lexNot()
 {
-    addTernaryConditionalToken('=', Lexeme::CompareNotEqual, Lexeme::Not);
+    addTernaryConditionalToken('=', Punctuator::CompareNotEqual, Punctuator::Not);
 }
 
 // {
 void Lexer::lexOpenBrace()
 {
-    addToken(1, Lexeme::OpenBrace);
+    addToken(1, Punctuator::OpenBrace);
 }
 
 // [
 void Lexer::lexOpenBracket()
 {
-    addToken(1, Lexeme::OpenBracket);
+    addToken(1, Punctuator::OpenBracket);
 }
 
 // (
 void Lexer::lexOpenParenthesis()
 {
-    addToken(1, Lexeme::OpenParenthesis);
+    addToken(1, Punctuator::OpenParenthesis);
 }
 
 // ||= || |= |
@@ -363,16 +363,16 @@ void Lexer::lexPipe()
     {
         if (peek(2) == '=')
         {
-            addToken(3, Lexeme::LogicalOrEqual);
+            addToken(3, Punctuator::LogicalOrEqual);
         }
         else
         {
-            addToken(2, Lexeme::LogicalOr);
+            addToken(2, Punctuator::LogicalOr);
         }
     }
     else
     {
-        addTernaryConditionalToken('=', Lexeme::PipeEqual, Lexeme::Pipe);
+        addTernaryConditionalToken('=', Punctuator::PipeEqual, Punctuator::Pipe);
     }
 }
 
@@ -381,23 +381,23 @@ void Lexer::lexPlus()
 {
     if (peek(1) == '+')
     {
-        addToken(2, Lexeme::PlusPlus);
+        addToken(2, Punctuator::PlusPlus);
     }
     else
     {
-        addTernaryConditionalToken('=', Lexeme::PlusEqual, Lexeme::Plus);
+        addTernaryConditionalToken('=', Punctuator::PlusEqual, Punctuator::Plus);
     }
 }
 
 void Lexer::lexQuestionMark()
 {
-    addToken(1, Lexeme::QuestionMark);
+    addToken(1, Punctuator::QuestionMark);
 }
 
 // ;
 void Lexer::lexSemicolon()
 {
-    addToken(1, Lexeme::Semicolon);
+    addToken(1, Punctuator::Semicolon);
 }
 
 // /* // /= /
@@ -421,7 +421,7 @@ void Lexer::lexSlash()
         break;
 
     default:
-        addTernaryConditionalToken('=', Lexeme::SlashEqual, Lexeme::Slash);
+        addTernaryConditionalToken('=', Punctuator::SlashEqual, Punctuator::Slash);
         break;
     }
 }
@@ -429,7 +429,7 @@ void Lexer::lexSlash()
 // ~= ~
 void Lexer::lexTilde()
 {
-    addTernaryConditionalToken('=', Lexeme::TildeEqual, Lexeme::Tilde);
+    addTernaryConditionalToken('=', Punctuator::TildeEqual, Punctuator::Tilde);
 }
 
 // { encoding-prefix }? ' { c-char }* '
@@ -469,7 +469,7 @@ bool Lexer::tryLexCharacterLiteral()
         endIndex = _currentLine.size();
     }
 
-    addToken(endIndex - _currentColumnIndex + 1, Lexeme::CharacterLiteral);
+    addToken(endIndex - _currentColumnIndex + 1, Lexeme{CharacterLiteral{}});
 
     return true;
 }
@@ -499,7 +499,7 @@ bool Lexer::tryLexNumberLiteral()
         case 'B':
             if (isBinaryDigit(peek(2)))
             {
-                addToken(findFirstNotLiteral(isBinaryDigit, 3), Lexeme::BinaryLiteral);
+                addToken(findFirstNotLiteral(isBinaryDigit, 3), Lexeme{BinaryLiteral{}});
             }
             else
             {
@@ -512,7 +512,7 @@ bool Lexer::tryLexNumberLiteral()
         case 'X':
             if (isHexadecimalDigit(peek(2)))
             {
-                addToken(findFirstNotLiteral(isHexadecimalDigit, 3), Lexeme::HexadecimalLiteral);
+                addToken(findFirstNotLiteral(isHexadecimalDigit, 3), Lexeme{HexadecimalLiteral{}});
             }
             else
             {
@@ -532,7 +532,7 @@ bool Lexer::tryLexNumberLiteral()
 
     if (peek(offset) != '.')
     {
-        addToken(offset, Lexeme::DecimalLiteral);
+        addToken(offset, Lexeme{DecimalLiteral{}});
     }
     else
     {
@@ -544,7 +544,7 @@ bool Lexer::tryLexNumberLiteral()
         }
         else
         {
-            addToken(findFirstNotLiteral(isDigit, offset), Lexeme::FloatingLiteral);
+            addToken(findFirstNotLiteral(isDigit, offset), Lexeme{FloatingLiteral{}});
         }
     }
 
@@ -590,7 +590,7 @@ bool Lexer::tryLexStringLiteral()
         endIndex = _currentLine.size();
     }
 
-    addToken(endIndex - _currentColumnIndex + 1, Lexeme::StringLiteral);
+    addToken(endIndex - _currentColumnIndex + 1, Lexeme{StringLiteral{}});
 
     return true;
 }
@@ -617,7 +617,7 @@ bool Lexer::tryLexIdentifier()
 
     const std::size_t offset = index - _currentColumnIndex;
 
-    addToken(offset, Lexeme::Identifier);
+    addToken(offset, Lexeme{Identifier{}});
 
     return true;
 }
@@ -877,12 +877,12 @@ void Lexer::addToken(std::size_t size, Lexeme lexeme)
     _currentColumnIndex += size - 1;
 }
 
-void Lexer::addToken(std::size_t size, Lexeme::Basic lexeme)
+void Lexer::addToken(std::size_t size, Punctuator lexeme)
 {
     addToken(size, Lexeme{lexeme});
 }
 
-void Lexer::addTernaryConditionalToken(char conditionCharacter, Lexeme::Basic trueValue, Lexeme::Basic falseValue)
+void Lexer::addTernaryConditionalToken(char conditionCharacter, Lexeme trueValue, Lexeme falseValue)
 {
     if (peek(1) == conditionCharacter)
     {
@@ -892,6 +892,11 @@ void Lexer::addTernaryConditionalToken(char conditionCharacter, Lexeme::Basic tr
     {
         addToken(1, falseValue);
     }
+}
+
+void Lexer::addTernaryConditionalToken(char conditionCharacter, Punctuator trueValue, Punctuator falseValue)
+{
+    addTernaryConditionalToken(conditionCharacter, Lexeme{trueValue}, Lexeme{falseValue});
 }
 
 void Lexer::addComment(std::string_view text, SourceLocation beginLocation, SourceLocation endLocation)

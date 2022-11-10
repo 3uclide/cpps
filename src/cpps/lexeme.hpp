@@ -1,368 +1,106 @@
 #pragma once
 
+#include "cpps/grammar/binary-literal.hpp"
 #include "cpps/grammar/boolean-literal.hpp"
+#include "cpps/grammar/character-literal.hpp"
+#include "cpps/grammar/decimal-literal.hpp"
+#include "cpps/grammar/floating-literal.hpp"
 #include "cpps/grammar/function-modifier.hpp"
+#include "cpps/grammar/hexadecimal-literal.hpp"
+#include "cpps/grammar/identifier.hpp"
 #include "cpps/grammar/keyword.hpp"
 #include "cpps/grammar/parameter-modifier.hpp"
 #include "cpps/grammar/pointer-literal.hpp"
+#include "cpps/grammar/punctuator.hpp"
+#include "cpps/grammar/string-literal.hpp"
+#include "cpps/utility/type-list.hpp"
 
 #include <cassert>
 #include <cstdint>
 #include <fmt/format.h>
+#include <ostream>
 
 namespace CPPS {
+
+using LexemeTypes = TypeList<BinaryLiteral,
+                             BooleanLiteral,
+                             CharacterLiteral,
+                             DecimalLiteral,
+                             FloatingLiteral,
+                             FunctionModifier,
+                             HexadecimalLiteral,
+                             Identifier,
+                             Keyword,
+                             ParameterModifier,
+                             PointerLiteral,
+                             Punctuator,
+                             StringLiteral>;
+
+template<typename T>
+concept Lexemable = TypeListContainsV<T, LexemeTypes>;
 
 class Lexeme
 {
 public:
-    enum Basic
-    {
-        Ampersand,
-        AmpersandEqual,
-        Arrow,
-        Assignment,
-        BinaryLiteral,
-        Caret,
-        CaretEqual,
-        CharacterLiteral,
-        CloseBrace,
-        CloseBracket,
-        CloseParenthesis,
-        Colon,
-        Comma,
-        CompareEqual,
-        CompareNotEqual,
-        DecimalLiteral,
-        Dollar,
-        Dot,
-        DoubleColon,
-        Ellipsis,
-        FloatingLiteral,
-        Greater,
-        GreaterEqual,
-        HexadecimalLiteral,
-        Identifier,
-        LeftShift,
-        LeftShiftEqual,
-        Less,
-        LessEqual,
-        LogicalAnd,
-        LogicalAndEqual,
-        LogicalOr,
-        LogicalOrEqual,
-        Minus,
-        MinusEqual,
-        MinusMinus,
-        Modulo,
-        ModuloEqual,
-        Not,
-        Multiply,
-        MultiplyEqual,
-        OpenBrace,
-        OpenBracket,
-        OpenParenthesis,
-        Pipe,
-        PipeEqual,
-        Plus,
-        PlusEqual,
-        PlusPlus,
-        QuestionMark,
-        RightShift,
-        RightShiftEqual,
-        Semicolon,
-        Slash,
-        SlashEqual,
-        Spaceship,
-        StringLiteral,
-        Tilde,
-        TildeEqual,
-
-        BasicCount
-    };
-
-    static constexpr std::array BasicStrings = std::to_array<std::string_view>(
-        {
-            "&",   // Ampersand,
-            "&=",  // AmpersandEqual,
-            "->",  // Arrow,
-            "=",   // Assignment,
-            {},    // BinaryLiteral,
-            "^",   // Caret,
-            "^=",  // CaretEqual,
-            {},    // CharacterLiteral,
-            "}",   // CloseBrace,
-            "]",   // CloseBracket,
-            ")",   // CloseParenthesis,
-            ":",   // Colon,
-            ",",   // Comma,
-            "==",  // CompareEqual,
-            "!=",  // CompareNotEqual,
-            {},    // DecimalLiteral,
-            "$",   // Dollar,
-            ".",   // Dot,
-            "::",  // DoubleColon,
-            "...", // Ellipsis,
-            "",    // FloatingLiteral,
-            ">",   // Greater,
-            ">=",  // GreaterEqual,
-            {},    // HexadecimalLiteral,
-            {},    // Identifier,
-            "<<",  // LeftShift,
-            "<<=", // LeftShiftEqual,
-            "<",   // Less,
-            "<=",  // LessEqual,
-            "&&",  // LogicalAnd,
-            "&&=", // LogicalAndEqual,
-            "||",  // LogicalOr,
-            "||=", // LogicalOrEqual,
-            "-",   // Minus,
-            "-=",  // MinusEqual,
-            "--",  // MinusMinus,
-            "%",   // Modulo,
-            "%=",  // ModuloEqual,
-            "!",   // Not,
-            "*",   // Multiply,
-            "*=",  // MultiplyEqual,
-            "{",   // OpenBrace,
-            "[",   // OpenBracket,
-            "(",   // OpenParenthesis,
-            "|",   // Pipe,
-            "|=",  // PipeEqual,
-            "+",   // Plus,
-            "+=",  // PlusEqual,
-            "++",  // PlusPlus,
-            "?",   // QuestionMark,
-            ">>",  // RightShift,
-            ">>=", // RightShiftEqual,
-            ";",   // Semicolon,
-            "/",   // Slash,
-            "/=",  // SlashEqual,
-            "<=>", // Spaceship,
-            {},    // StringLiteral
-            "~",   // Tilde,
-            "~="   // TildeEqual,
-        });
-
-    enum class Type : std::uint8_t
-    {
-        Basic,
-        BooleanLiteral,
-        FunctionModifier,
-        Keyword,
-        ParameterModifier,
-        PointerLiteral
-    };
-
-public:
     constexpr Lexeme() = default;
-
-    constexpr explicit Lexeme(Basic value);
-    constexpr explicit Lexeme(BooleanLiteral value);
-    constexpr explicit Lexeme(Keyword value);
-    constexpr explicit Lexeme(FunctionModifier value);
-    constexpr explicit Lexeme(ParameterModifier value);
-    constexpr explicit Lexeme(PointerLiteral value);
-
     constexpr bool operator==(const Lexeme& other) const = default;
-    constexpr bool operator==(Basic value) const;
-    constexpr bool operator==(BooleanLiteral value) const;
-    constexpr bool operator==(Keyword value) const;
-    constexpr bool operator==(FunctionModifier value) const;
-    constexpr bool operator==(ParameterModifier value) const;
-    constexpr bool operator==(PointerLiteral value) const;
 
-    constexpr Type getType() const;
+    template<Lexemable T>
+    constexpr explicit Lexeme(T value);
 
-    constexpr Basic getBasic() const;
-    constexpr void setBasic(Basic value);
+    template<Lexemable T>
+    constexpr bool operator==(T value) const;
 
-    constexpr BooleanLiteral getBooleanLiteral() const;
-    constexpr void setBooleanLiteral(BooleanLiteral value);
+    template<Lexemable T>
+    [[nodiscard]] constexpr bool is() const;
 
-    constexpr Keyword getKeyword() const;
-    constexpr void setKeyword(Keyword value);
+    template<Lexemable T>
+    [[nodiscard]] constexpr T get() const;
 
-    constexpr FunctionModifier getFunctionModifier() const;
-    constexpr void setFunctionModifier(FunctionModifier value);
-
-    constexpr ParameterModifier getParameterModifier() const;
-    constexpr void setParameterModifier(ParameterModifier value);
-
-    constexpr PointerLiteral getPointerLiteral() const;
-    constexpr void setPointerLiteral(PointerLiteral value);
+    template<Lexemable T>
+    constexpr void set(T value);
 
 private:
-    using Storage = std::uint16_t;
+    using Data = std::uint16_t;
 
-private:
-    constexpr Type getStorageType() const;
+    static constexpr Data DataTypeMask = 0x00FF;
+    static constexpr Data DataTypeValueMask = 0xFF00;
+    static constexpr Data InvalidData = 0xFFFF;
 
-    template<typename T>
-    requires(std::is_enum_v<T>)
-    constexpr T getStorageTypeData() const;
-
-    template<typename T>
-    requires(std::is_enum_v<T>)
-    constexpr void setStorage(Type type, T data);
-
-    static constexpr Storage StorageTypeMask = 0x00FF;
-    static constexpr Storage StorageTypeDataMask = 0xFF00;
-
-    static constexpr Storage InvalidStorage = 0xFFFF;
-
-    Storage _storage{InvalidStorage};
+    Data _data{InvalidData};
 };
 
 std::ostream& operator<<(std::ostream& os, Lexeme value);
 
-constexpr Lexeme::Lexeme(Basic value)
+template<Lexemable T>
+constexpr Lexeme::Lexeme(T value)
 {
-    setBasic(value);
+    set(value);
 }
 
-constexpr Lexeme::Lexeme(PointerLiteral value)
-{
-    setPointerLiteral(value);
-}
-
-constexpr Lexeme::Lexeme(BooleanLiteral value)
-{
-    setBooleanLiteral(value);
-}
-
-constexpr Lexeme::Lexeme(Keyword value)
-{
-    setKeyword(value);
-}
-
-constexpr Lexeme::Lexeme(FunctionModifier value)
-{
-    setFunctionModifier(value);
-}
-
-constexpr Lexeme::Lexeme(ParameterModifier value)
-{
-    setParameterModifier(value);
-}
-
-constexpr bool Lexeme::operator==(Basic value) const
+template<Lexemable T>
+constexpr bool Lexeme::operator==(T value) const
 {
     return operator==(Lexeme{value});
 }
 
-constexpr bool Lexeme::operator==(BooleanLiteral value) const
+template<Lexemable T>
+constexpr bool Lexeme::is() const
 {
-    return operator==(Lexeme{value});
+    return (_data & DataTypeMask) == IndexOfFromTypeListV<T, LexemeTypes>;
 }
 
-constexpr bool Lexeme::operator==(Keyword value) const
+template<Lexemable T>
+constexpr T Lexeme::get() const
 {
-    return operator==(Lexeme{value});
+    assert(is<T>());
+    return static_cast<T>((_data & DataTypeValueMask) >> 8u);
 }
 
-constexpr bool Lexeme::operator==(FunctionModifier value) const
+template<Lexemable T>
+constexpr void Lexeme::set(T value)
 {
-    return operator==(Lexeme{value});
-}
-
-constexpr bool Lexeme::operator==(ParameterModifier value) const
-{
-    return operator==(Lexeme{value});
-}
-
-constexpr bool Lexeme::operator==(PointerLiteral value) const
-{
-    return operator==(Lexeme{value});
-}
-
-constexpr Lexeme::Type Lexeme::getType() const
-{
-    return getStorageType();
-}
-
-constexpr Lexeme::Basic Lexeme::getBasic() const
-{
-    assert(getType() == Type::Basic);
-    return getStorageTypeData<Basic>();
-}
-
-constexpr void Lexeme::setBasic(Basic value)
-{
-    setStorage(Type::Basic, value);
-}
-
-constexpr BooleanLiteral Lexeme::getBooleanLiteral() const
-{
-    assert(getType() == Type::BooleanLiteral);
-    return getStorageTypeData<BooleanLiteral>();
-}
-
-constexpr void Lexeme::setBooleanLiteral(BooleanLiteral value)
-{
-    setStorage(Type::BooleanLiteral, value);
-}
-
-constexpr Keyword Lexeme::getKeyword() const
-{
-    assert(getType() == Type::Keyword);
-    return getStorageTypeData<Keyword>();
-}
-
-constexpr void Lexeme::setKeyword(Keyword value)
-{
-    setStorage(Type::Keyword, value);
-}
-
-constexpr FunctionModifier Lexeme::getFunctionModifier() const
-{
-    assert(getType() == Type::FunctionModifier);
-    return getStorageTypeData<FunctionModifier>();
-}
-
-constexpr void Lexeme::setFunctionModifier(FunctionModifier value)
-{
-    setStorage(Type::FunctionModifier, value);
-}
-
-constexpr ParameterModifier Lexeme::getParameterModifier() const
-{
-    assert(getType() == Type::ParameterModifier);
-    return getStorageTypeData<ParameterModifier>();
-}
-
-constexpr void Lexeme::setParameterModifier(ParameterModifier value)
-{
-    setStorage(Type::ParameterModifier, value);
-}
-
-constexpr PointerLiteral Lexeme::getPointerLiteral() const
-{
-    assert(getType() == Type::PointerLiteral);
-    return getStorageTypeData<PointerLiteral>();
-}
-
-constexpr void Lexeme::setPointerLiteral(PointerLiteral value)
-{
-    setStorage(Type::PointerLiteral, value);
-}
-
-constexpr Lexeme::Type Lexeme::getStorageType() const
-{
-    return static_cast<Type>(_storage & StorageTypeMask);
-}
-
-template<typename T>
-requires(std::is_enum_v<T>)
-constexpr T Lexeme::getStorageTypeData() const
-{
-    return static_cast<T>((_storage & StorageTypeDataMask) >> 8u);
-}
-
-template<typename T>
-requires(std::is_enum_v<T>)
-constexpr void Lexeme::setStorage(Type type, T data)
-{
-    _storage = static_cast<Storage>(type) | static_cast<Storage>(static_cast<Storage>(data) << 8u);
+    _data = static_cast<Data>(IndexOfFromTypeListV<T, LexemeTypes>) | static_cast<Data>(static_cast<Data>(value) << 8u);
 }
 
 } // namespace CPPS
@@ -373,26 +111,21 @@ struct fmt::formatter<CPPS::Lexeme> : formatter<std::string>
     template<typename FormatContext>
     auto format(CPPS::Lexeme lexeme, FormatContext& ctx) const
     {
-        switch (lexeme.getType())
-        {
-        case CPPS::Lexeme::Type::Basic:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getBasic());
+        using namespace CPPS;
 
-        case CPPS::Lexeme::Type::BooleanLiteral:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getBooleanLiteral());
-
-        case CPPS::Lexeme::Type::FunctionModifier:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getFunctionModifier());
-
-        case CPPS::Lexeme::Type::Keyword:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getKeyword());
-
-        case CPPS::Lexeme::Type::ParameterModifier:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getParameterModifier());
-
-        case CPPS::Lexeme::Type::PointerLiteral:
-            return fmt::format_to(ctx.out(), "{}", lexeme.getPointerLiteral());
-        }
+        if (lexeme.is<BinaryLiteral>()) return fmt::format_to(ctx.out(), "BinaryLiteral");
+        if (lexeme.is<BooleanLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<BooleanLiteral>());
+        if (lexeme.is<CharacterLiteral>()) return fmt::format_to(ctx.out(), "CharacterLiteral");
+        if (lexeme.is<DecimalLiteral>()) return fmt::format_to(ctx.out(), "DecimalLiteral");
+        if (lexeme.is<FloatingLiteral>()) return fmt::format_to(ctx.out(), "FloatingLiteral");
+        if (lexeme.is<HexadecimalLiteral>()) return fmt::format_to(ctx.out(), "HexadecimalLiteral");
+        if (lexeme.is<FunctionModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<FunctionModifier>());
+        if (lexeme.is<Identifier>()) return fmt::format_to(ctx.out(), "Identifier");
+        if (lexeme.is<Keyword>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<Keyword>());
+        if (lexeme.is<ParameterModifier>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<ParameterModifier>());
+        if (lexeme.is<PointerLiteral>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<PointerLiteral>());
+        if (lexeme.is<Punctuator>()) return fmt::format_to(ctx.out(), "{}", lexeme.get<Punctuator>());
+        if (lexeme.is<StringLiteral>()) return fmt::format_to(ctx.out(), "StringLiteral");
 
         return fmt::format_to(ctx.out(), "invalid");
     }

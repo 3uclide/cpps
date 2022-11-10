@@ -33,12 +33,12 @@ void check(auto lexeme, std::string_view base)
 
     const std::array lines = std::to_array<CheckLine>(
         {{std::string(base), {token(lexeme, 0, 0, base)}},
-         {fmt::format(";{}", base), {token(Lexeme::Semicolon, 1, 0, ";"), token(lexeme, 1, 1, base)}},
-         {fmt::format("{};", base), {token(lexeme, 2, 0, base), token(Lexeme::Semicolon, 2, static_cast<SourceColumn>(base.size()), ";")}},
-         {fmt::format("; {}", base), {token(Lexeme::Semicolon, 3, 0, ";"), token(lexeme, 3, 2, base)}},
-         {fmt::format("{} ;", base), {token(lexeme, 4, 0, base), token(Lexeme::Semicolon, 4, static_cast<SourceColumn>(base.size() + 1U), ";")}},
-         {fmt::format(";{};", base), {token(Lexeme::Semicolon, 5, 0, ";"), token(lexeme, 5, 1, base), token(Lexeme::Semicolon, 5, static_cast<SourceColumn>(base.size() + 1U), ";")}},
-         {fmt::format("; {} ;", base), {token(Lexeme::Semicolon, 6, 0, ";"), token(lexeme, 6, 2, base), token(Lexeme::Semicolon, 6, static_cast<SourceColumn>(base.size() + 3U), ";")}}});
+         {fmt::format(";{}", base), {token(Punctuator::Semicolon, 1, 0, ";"), token(lexeme, 1, 1, base)}},
+         {fmt::format("{};", base), {token(lexeme, 2, 0, base), token(Punctuator::Semicolon, 2, static_cast<SourceColumn>(base.size()), ";")}},
+         {fmt::format("; {}", base), {token(Punctuator::Semicolon, 3, 0, ";"), token(lexeme, 3, 2, base)}},
+         {fmt::format("{} ;", base), {token(lexeme, 4, 0, base), token(Punctuator::Semicolon, 4, static_cast<SourceColumn>(base.size() + 1U), ";")}},
+         {fmt::format(";{};", base), {token(Punctuator::Semicolon, 5, 0, ";"), token(lexeme, 5, 1, base), token(Punctuator::Semicolon, 5, static_cast<SourceColumn>(base.size() + 1U), ";")}},
+         {fmt::format("; {} ;", base), {token(Punctuator::Semicolon, 6, 0, ";"), token(lexeme, 6, 2, base), token(Punctuator::Semicolon, 6, static_cast<SourceColumn>(base.size() + 3U), ";")}}});
 
     Diagnosis diagnosis;
     Source source;
@@ -140,10 +140,10 @@ void checkType(std::size_t count)
 
 TEST_CASE("Lexer BinaryLiteral", "[Lexer]")
 {
-    check(Lexeme::BinaryLiteral, "0b01");
-    check(Lexeme::BinaryLiteral, "0B01");
-    check(Lexeme::BinaryLiteral, "0b0'1");
-    check(Lexeme::BinaryLiteral, "0B0'1");
+    check(BinaryLiteral{}, "0b01");
+    check(BinaryLiteral{}, "0B01");
+    check(BinaryLiteral{}, "0b0'1");
+    check(BinaryLiteral{}, "0B0'1");
 }
 
 TEST_CASE("Lexer BooleanLiteral", "[Lexer]")
@@ -154,34 +154,34 @@ TEST_CASE("Lexer BooleanLiteral", "[Lexer]")
 TEST_CASE("Lexer CharacterLiteral", "[Lexer]")
 {
     // basic character
-    check(Lexeme::CharacterLiteral, R"('a')");
+    check(CharacterLiteral{}, R"('a')");
 
     // escape sequence character
-    check(Lexeme::CharacterLiteral, R"('\n')");
-    check(Lexeme::CharacterLiteral, R"('\x01')");
+    check(CharacterLiteral{}, R"('\n')");
+    check(CharacterLiteral{}, R"('\x01')");
 
     // universal character name
-    check(Lexeme::CharacterLiteral, R"('\u01AF')");
-    check(Lexeme::CharacterLiteral, R"('\U00000041')");
+    check(CharacterLiteral{}, R"('\u01AF')");
+    check(CharacterLiteral{}, R"('\U00000041')");
 
     // encoding-prefix
-    check(Lexeme::CharacterLiteral, R"(u'a')");
-    check(Lexeme::CharacterLiteral, R"(u8'a')");
+    check(CharacterLiteral{}, R"(u'a')");
+    check(CharacterLiteral{}, R"(u8'a')");
 
     // quote
-    check(Lexeme::CharacterLiteral, R"('\'')");
+    check(CharacterLiteral{}, R"('\'')");
 }
 
 TEST_CASE("Lexer DecimalLiteral", "[Lexer]")
 {
-    check(Lexeme::DecimalLiteral, "012345679");
-    check(Lexeme::DecimalLiteral, "012'345'679");
+    check(DecimalLiteral{}, "012345679");
+    check(DecimalLiteral{}, "012'345'679");
 }
 
 TEST_CASE("Lexer FloatingLiteral", "[Lexer]")
 {
-    check(Lexeme::FloatingLiteral, "012345.679");
-    check(Lexeme::FloatingLiteral, "012'345.679");
+    check(FloatingLiteral{}, "012345.679");
+    check(FloatingLiteral{}, "012'345.679");
 }
 
 TEST_CASE("Lexer FunctionModifier", "[Lexer]")
@@ -191,31 +191,17 @@ TEST_CASE("Lexer FunctionModifier", "[Lexer]")
 
 TEST_CASE("Lexer HexadecimalLiteral", "[Lexer]")
 {
-    check(Lexeme::HexadecimalLiteral, "0x0f");
-    check(Lexeme::HexadecimalLiteral, "0x0F");
-    check(Lexeme::HexadecimalLiteral, "0x0'f");
-    check(Lexeme::HexadecimalLiteral, "0x0'F");
-    check(Lexeme::HexadecimalLiteral, "0x0ab1022f");
-    check(Lexeme::HexadecimalLiteral, "0x0ab1022F");
+    check(HexadecimalLiteral{}, "0x0f");
+    check(HexadecimalLiteral{}, "0x0F");
+    check(HexadecimalLiteral{}, "0x0'f");
+    check(HexadecimalLiteral{}, "0x0'F");
+    check(HexadecimalLiteral{}, "0x0ab1022f");
+    check(HexadecimalLiteral{}, "0x0ab1022F");
 }
 
 TEST_CASE("Lexer Keyword", "[Lexer]")
 {
     checkType<Keyword>(KeywordCount);
-}
-
-TEST_CASE("Lexer Lexeme::Basic ", "[Lexer]")
-{
-    for (std::size_t i = 0; i < Lexeme::BasicCount; ++i)
-    {
-        const Lexeme::Basic basic = static_cast<Lexeme::Basic>(i);
-        const std::string_view basicSv = Lexeme::BasicStrings[basic];
-
-        if (!basicSv.empty())
-        {
-            check(basic, basicSv);
-        }
-    }
 }
 
 TEST_CASE("Lexer ParameterModifier", "[Lexer]")
@@ -228,26 +214,31 @@ TEST_CASE("Lexer PointerLiteral", "[Lexer]")
     checkType<PointerLiteral>(PointerLiteralCount);
 }
 
+TEST_CASE("Lexer Punctuator ", "[Lexer]")
+{
+    checkType<Punctuator>(PunctuatorCount);
+}
+
 TEST_CASE("Lexer StringLiteral", "[Lexer]")
 {
     // basic character
-    check(Lexeme::StringLiteral, R"("a string")");
+    check(StringLiteral{}, R"("a string")");
 
     // escape sequence character
-    check(Lexeme::StringLiteral, R"("a \n string")");
-    check(Lexeme::StringLiteral, R"("a \x01 string")");
+    check(StringLiteral{}, R"("a \n string")");
+    check(StringLiteral{}, R"("a \x01 string")");
 
     // universal character name
-    check(Lexeme::StringLiteral, R"("a \u01AF string")");
-    check(Lexeme::StringLiteral, R"("a \U00000041 string")");
+    check(StringLiteral{}, R"("a \u01AF string")");
+    check(StringLiteral{}, R"("a \U00000041 string")");
 
     // encoding-prefix
-    check(Lexeme::StringLiteral, R"(u"a string")");
-    check(Lexeme::StringLiteral, R"(u8"a string")");
+    check(StringLiteral{}, R"(u"a string")");
+    check(StringLiteral{}, R"(u8"a string")");
 
     // quote
-    check(Lexeme::StringLiteral, R"("\"")");
-    check(Lexeme::StringLiteral, R"("a \"quoted\" string")");
+    check(StringLiteral{}, R"("\"")");
+    check(StringLiteral{}, R"("a \"quoted\" string")");
 }
 
 TEST_CASE("Lexer Comment", "[Lexer]")
@@ -335,21 +326,21 @@ TEST_CASE("Lexer sequence of tokens", "[Lexer]")
     REQUIRE(comments.size() == 3);
 
     CHECK(tokens.at(0, 0) == token(Keyword::Int, 0, 0, "int"));
-    CHECK(tokens.at(0, 1) == token(Lexeme::Identifier, 0, 4, "main"));
-    CHECK(tokens.at(0, 2) == token(Lexeme::OpenParenthesis, 0, 8, "("));
-    CHECK(tokens.at(0, 3) == token(Lexeme::CloseParenthesis, 0, 9, ")"));
-    CHECK(tokens.at(1, 0) == token(Lexeme::OpenBrace, 1, 0, "{"));
+    CHECK(tokens.at(0, 1) == token(Identifier{}, 0, 4, "main"));
+    CHECK(tokens.at(0, 2) == token(Punctuator::OpenParenthesis, 0, 8, "("));
+    CHECK(tokens.at(0, 3) == token(Punctuator::CloseParenthesis, 0, 9, ")"));
+    CHECK(tokens.at(1, 0) == token(Punctuator::OpenBrace, 1, 0, "{"));
     CHECK(tokens.at(2, 0) == token(Keyword::If, 2, 4, "if"));
-    CHECK(tokens.at(2, 1) == token(Lexeme::OpenParenthesis, 2, 7, "("));
+    CHECK(tokens.at(2, 1) == token(Punctuator::OpenParenthesis, 2, 7, "("));
     CHECK(tokens.at(2, 2) == token(BooleanLiteral::True, 2, 8, "true"));
-    CHECK(tokens.at(2, 3) == token(Lexeme::CloseParenthesis, 2, 12, ")"));
+    CHECK(tokens.at(2, 3) == token(Punctuator::CloseParenthesis, 2, 12, ")"));
     CHECK(tokens.at(3, 0) == token(Keyword::Return, 3, 12, "return"));
-    CHECK(tokens.at(3, 1) == token(Lexeme::DecimalLiteral, 3, 19, "1"));
-    CHECK(tokens.at(3, 2) == token(Lexeme::Semicolon, 3, 20, ";"));
+    CHECK(tokens.at(3, 1) == token(DecimalLiteral{}, 3, 19, "1"));
+    CHECK(tokens.at(3, 2) == token(Punctuator::Semicolon, 3, 20, ";"));
     CHECK(tokens.at(4, 0) == token(Keyword::Return, 4, 4, "return"));
-    CHECK(tokens.at(4, 1) == token(Lexeme::DecimalLiteral, 4, 11, "0"));
-    CHECK(tokens.at(4, 2) == token(Lexeme::Semicolon, 4, 12, ";"));
-    CHECK(tokens.at(5, 0) == token(Lexeme::CloseBrace, 5, 0, "}"));
+    CHECK(tokens.at(4, 1) == token(DecimalLiteral{}, 4, 11, "0"));
+    CHECK(tokens.at(4, 2) == token(Punctuator::Semicolon, 4, 12, ";"));
+    CHECK(tokens.at(5, 0) == token(Punctuator::CloseBrace, 5, 0, "}"));
 }
 
 TEST_CASE("Lexer DiagnosisMessage", "[Lexer]")
