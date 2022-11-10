@@ -5,7 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    assignees
+    assignees:
       - "3uclide"
     reviewers:
       - "3uclide"
