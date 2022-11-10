@@ -247,14 +247,14 @@ TEST_CASE("Lexer Comment", "[Lexer]")
     Source source;
     Lexer lexer{diagnosis, source};
 
-    auto checkComment = [&lexer](std::string_view commentText, SourceLocation beginLocation, SourceLocation endLocation) {
+    auto checkComment = [&lexer](Comment::Type expectedType, std::string_view commentText, SourceLocation beginLocation, SourceLocation endLocation) {
 
         const Tokens tokens = lexer.lex();
         const std::span comments = tokens.comments();
 
         REQUIRE(comments.size() == 1);
 
-        CHECK(comments[0].type == Comment::Type::Line);
+        CHECK(comments[0].type == expectedType);
         CHECK(comments[0].text == commentText);
         CHECK(comments[0].beginLocation == beginLocation);
         CHECK(comments[0].endLocation == endLocation);
@@ -266,7 +266,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
 
         source.add(std::string(CommentText), Source::Line::Type::Cpps);
 
-        checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{0, 9});
+        checkComment(Comment::Type::Line, CommentText, SourceLocation{0, 0}, SourceLocation{0, 9});
     }
 
     SECTION("Type::Block")
@@ -277,7 +277,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
 
             source.add(std::string(CommentText), Source::Line::Type::Cpps);
 
-            checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{0, 12});
+            checkComment(Comment::Type::Block, CommentText, SourceLocation{0, 0}, SourceLocation{0, 12});
         }
 
         SECTION("on multiple line")
@@ -289,7 +289,7 @@ TEST_CASE("Lexer Comment", "[Lexer]")
             source.add(std::string(CommentTextLine0), Source::Line::Type::Cpps);
             source.add(std::string(CommentTextLine1), Source::Line::Type::Cpps);
 
-            checkComment(CommentText, SourceLocation{0, 0}, SourceLocation{1, 2});
+            checkComment(Comment::Type::Block, CommentText, SourceLocation{0, 0}, SourceLocation{1, 2});
         }
     }
 }
