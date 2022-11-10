@@ -1,10 +1,10 @@
 #pragma once
 
-#include "cpps/source-location.hpp"
-
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "cpps/source-location.hpp"
 
 namespace CPPS {
 

@@ -1,12 +1,11 @@
-#include "cpps/lexer.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include <fmt/format.h>
 
 #include "cpps/check-diagnosis.hpp"
 #include "cpps/diagnosis.hpp"
+#include "cpps/lexer.hpp"
 #include "cpps/source.hpp"
 #include "cpps/tokens.hpp"
-
-#include <catch2/catch_test_macros.hpp>
-#include <fmt/format.h>
 
 namespace CPPS {
 
@@ -248,7 +247,6 @@ TEST_CASE("Lexer Comment", "[Lexer]")
     Lexer lexer{diagnosis, source};
 
     auto checkComment = [&lexer](Comment::Type expectedType, std::string_view commentText, SourceLocation beginLocation, SourceLocation endLocation) {
-
         const Tokens tokens = lexer.lex();
         const std::span comments = tokens.comments();
 

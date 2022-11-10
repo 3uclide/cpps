@@ -1,6 +1,6 @@
-#include "cpps/utility.hpp"
-
 #include <catch2/catch_test_macros.hpp>
+
+#include "cpps/utility.hpp"
 
 namespace CPPS {
 

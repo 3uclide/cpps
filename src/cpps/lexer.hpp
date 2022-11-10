@@ -1,10 +1,10 @@
 #pragma once
 
-#include "cpps/comment.hpp"
-#include "cpps/token.hpp"
-
 #include <string>
 #include <vector>
+
+#include "cpps/comment.hpp"
+#include "cpps/token.hpp"
 
 namespace CPPS {
 

@@ -1,7 +1,7 @@
-#include "cpps/lexeme.hpp"
-
 #include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include "cpps/lexeme.hpp"
 
 namespace CPPS {
 

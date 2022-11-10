@@ -1,5 +1,12 @@
 #pragma once
 
+#include <cassert>
+#include <cstdint>
+#include <ostream>
+#include <string>
+
+#include <fmt/format.h>
+
 #include "cpps/grammar/binary-literal.hpp"
 #include "cpps/grammar/boolean-literal.hpp"
 #include "cpps/grammar/character-literal.hpp"
@@ -14,13 +21,6 @@
 #include "cpps/grammar/punctuator.hpp"
 #include "cpps/grammar/string-literal.hpp"
 #include "cpps/utility/type-list.hpp"
-
-#include <cassert>
-#include <cstdint>
-#include <ostream>
-#include <string>
-
-#include <fmt/format.h>
 
 namespace CPPS {
 
