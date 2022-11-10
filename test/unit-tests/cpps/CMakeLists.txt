@@ -18,6 +18,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     grammar/keyword-tests.cpp
     grammar/parameter-modifier-tests.cpp
     grammar/pointer-literal-tests.cpp
+    grammar/punctuator-tests.cpp
     check-diagnosis.cpp
     diagnosis-tests.cpp
     lexeme-tests.cpp

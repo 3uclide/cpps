@@ -2,11 +2,20 @@ find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
+    grammar/binary-literal.hpp
     grammar/boolean-literal.hpp
+    grammar/character-literal.hpp
+    grammar/decimal-literal.hpp
+    grammar/floating-literal.hpp
     grammar/function-modifier.hpp
+    grammar/hexadecimal-literal.hpp
+    grammar/identifier.hpp
     grammar/keyword.hpp
     grammar/parameter-modifier.hpp
     grammar/pointer-literal.hpp
+    grammar/punctuator.hpp
+    grammar/string-literal.hpp
+    utility/type-list.hpp
     comment.hpp
     diagnosis.hpp
     lexeme.hpp
@@ -25,6 +34,7 @@ set(CPPS_SOURCES
     grammar/keyword.cpp
     grammar/parameter-modifier.cpp
     grammar/pointer-literal.cpp
+    grammar/punctuator.cpp
     lexer.cpp
     source-reader.cpp
 

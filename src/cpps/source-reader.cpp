@@ -1,10 +1,12 @@
 #include "cpps/source-reader.hpp"
 
-#include "cpps/diagnosis.hpp"
-#include "cpps/utility.hpp"
+#include <array>
+#include <utility>
 
 #include <range/v3/view.hpp>
-#include <array>
+
+#include "cpps/diagnosis.hpp"
+#include "cpps/utility.hpp"
 
 namespace CPPS {
 

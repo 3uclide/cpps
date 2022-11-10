@@ -1,4 +1,4 @@
-## Security
+# Security
 
 If you believe you have found a security vulnerability, please report it to us as described below.
 

@@ -1,3 +1,4 @@
+---
 name: 'setup_cache'
 description: 'sets up the shared cache'
 inputs:

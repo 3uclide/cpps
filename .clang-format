@@ -5,7 +5,7 @@ AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignConsecutiveMacros: false
 AlignEscapedNewlines: DontAlign
-AlignOperands: true
+AlignOperands: Align
 AlignTrailingComments: true
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: false
@@ -66,6 +66,7 @@ Language: Cpp
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 PointerAlignment: Left
+QualifierAlignment: Left
 ReflowComments: true
 RequiresClausePosition: OwnLine
 SortIncludes: true

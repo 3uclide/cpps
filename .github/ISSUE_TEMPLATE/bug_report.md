@@ -4,14 +4,20 @@ about: Report feature not working as intended
 title: ''
 labels: 'bug'
 assignees: ''
-
 ---
-**Versions**
+
+## Bug report
+
+### Versions
 
 - Example:
 
-**Steps to reproduce**
+### Steps to reproduce
 
-1.
+1. First step
+2. Second step
+3. ...
 
-**Additional context**
+### Additional context
+
+(Optional)

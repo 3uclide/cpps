@@ -1,9 +1,8 @@
-#include "cpps/source-reader.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include "cpps/check-diagnosis.hpp"
 #include "cpps/diagnosis.hpp"
-
-#include <catch2/catch_test_macros.hpp>
+#include "cpps/source-reader.hpp"
 
 namespace CPPS {
 

@@ -1,7 +1,9 @@
-#include "cpps/grammar/keyword.hpp"
+#include <sstream>
 
 #include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include "cpps/grammar/keyword.hpp"
 
 namespace CPPS {
 

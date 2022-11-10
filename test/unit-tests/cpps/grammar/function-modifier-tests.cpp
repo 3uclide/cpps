@@ -1,8 +1,9 @@
-#include "cpps/grammar/function-modifier.hpp"
+#include <sstream>
 
 #include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
-#include <ostream>
+
+#include "cpps/grammar/function-modifier.hpp"
 
 namespace CPPS {
 
