@@ -3,7 +3,9 @@
 #include "cpps/comment.hpp"
 #include "cpps/token.hpp"
 
+#include <limits>
 #include <span>
+#include <utility>
 #include <vector>
 
 namespace CPPS {

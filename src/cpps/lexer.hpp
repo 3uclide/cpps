@@ -3,6 +3,7 @@
 #include "cpps/comment.hpp"
 #include "cpps/token.hpp"
 
+#include <string>
 #include <vector>
 
 namespace CPPS {

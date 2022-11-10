@@ -1,9 +1,11 @@
 #pragma once
 
-#include <fmt/format.h>
+#include <limits>
 #include <optional>
 #include <ostream>
 #include <string>
+
+#include <fmt/format.h>
 
 namespace CPPS {
 

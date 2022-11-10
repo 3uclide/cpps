@@ -17,8 +17,10 @@
 
 #include <cassert>
 #include <cstdint>
-#include <fmt/format.h>
 #include <ostream>
+#include <string>
+
+#include <fmt/format.h>
 
 namespace CPPS {
 

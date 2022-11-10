@@ -5,6 +5,8 @@
 #include "cpps/tokens.hpp"
 #include "cpps/utility.hpp"
 
+#include <utility>
+
 #include <fmt/format.h>
 
 namespace CPPS {
