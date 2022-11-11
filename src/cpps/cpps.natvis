@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-  <!-- lexeme -->
+  <!-- Lexeme -->
   <Type Name="CPPS::Lexeme">
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Basic">{(CPPS::Lexeme::Basic)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::BooleanLiteral">BooleanLiteral = {(CPPS::BooleanLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::FunctionModifier">FunctionModifier = {(CPPS::FunctionModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Keyword">Keyword = {(CPPS::Keyword)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::ParameterModifier">ParameterModifier = {(CPPS::ParameterModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::PointerLiteral">PointerLiteral = = {(CPPS::PointerLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)}</DisplayString>
-    <DisplayString>{(CPPS::Lexeme::Type)(_storage &amp; 0x00FF)}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 2">BinaryLiteral</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 1">BooleanLiteral::{(CPPS::BooleanLiteral)((_data &amp; 0xFF00) &gt;&gt; 8u), en}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 2">CharacterLiteral</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 3">DecimalLiteral</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 4">FloatingLiteral</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 5">FunctionModifier::{(CPPS::FunctionModifier)((_data &amp; 0xFF00) &gt;&gt; 8u)}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 6">HexadecimalLiteral</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 7">Identifier</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 8">Keyword</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 9">ParameterModifier::{(CPPS::ParameterModifier)((_data &amp; 0xFF00) &gt;&gt; 8u)}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 10">PointerLiteral::{(CPPS::PointerLiteral)((_data &amp; 0xFF00) &gt;&gt; 8u)}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 11">Punctuator::{(CPPS::Punctuator)((_data &amp; 0xFF00) &gt;&gt; 8u)}</DisplayString>
+    <DisplayString Condition="(_data &amp; 0x00FF) == 12">StringLiteral</DisplayString>
     <Expand>
-      <Item Name="[Type]">(CPPS::Lexeme::Type)(_storage &amp; 0x00FF)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Basic">(CPPS::Lexeme::Basic)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::BooleanLiteral">(CPPS::BooleanLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::FunctionModifier">(CPPS::FunctionModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::Keyword">(CPPS::Keyword)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::ParameterModifier">(CPPS::ParameterModifier)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-      <Item Name="[Data]" Condition="(_storage &amp; 0x00FF) == CPPS::Lexeme::Type::PointerLiteral">(CPPS::PointerLiteral)((_storage &amp; 0xFF00) &gt;&gt; 8)</Item>
-    </Expand>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 0">"BinaryLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 1">"BooleanLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 2">"CharacterLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 3">"DecimalLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 4">"FloatingLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 5">"FunctionModifier", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 6">"HexadecimalLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 7">"Identifier", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 8">"Keyword", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 9">"ParameterModifier", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 10">"PointerLiteral", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 11">"Punctuator", sb</Item>
+      <Item Name="[Type]" Condition="(_data &amp; 0x00FF) == 12">"StringLiteral", sb</Item>
+
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 1">(CPPS::BooleanLiteral)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 5">(CPPS::FunctionModifier)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 8">(CPPS::Keyword)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 9">(CPPS::ParameterModifier)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 10">(CPPS::PointerLiteral)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+      <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 11">(CPPS::Punctuator)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
+  </Expand>
   </Type>
 </AutoVisualizer>
