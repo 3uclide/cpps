@@ -3,6 +3,7 @@ find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
     cst/.forward-declare-types.hpp
+    cst/.include-types.hpp
     cst/binary-expression.hpp
     cst/compound-statement.hpp
     cst/declaration.hpp
