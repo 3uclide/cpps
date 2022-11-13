@@ -8,13 +8,13 @@ namespace CPPS::CST {
 
 struct FunctionSignature
 {
-    using returns_t = std::variant<
+    using Returns = std::variant<
         std::monostate,
         IdentifierExpression,
         ParameterDeclarationList>;
 
     ParameterDeclarationList parameters;
-    returns_t returns;
+    Returns returns;
     bool throws{false};
 };
 

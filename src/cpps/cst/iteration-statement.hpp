@@ -2,9 +2,10 @@
 
 namespace CPPS::CST {
 
+// TODO
 struct IterationStatement
 {
-    // TODO
+    SourceLocation getLocation() const { return {}; }
 };
 
 } // namespace CPPS::CST

@@ -18,7 +18,7 @@ struct Declaration
 {
     using Type = std::variant<FunctionSignature, IdentifierExpression>;
 
-    Declaration(const Token& token);
+    explicit Declaration(UnqualifiedIdentifier&& identifier);
 
     SourceLocation getLocation() const;
 
@@ -41,8 +41,8 @@ struct Declaration
     SourceLocation equalLocation;
 };
 
-inline Declaration::Declaration(const Token& token)
-    : identifier(token)
+inline Declaration::Declaration(UnqualifiedIdentifier&& identifier)
+    : identifier(identifier)
 {
 }
 

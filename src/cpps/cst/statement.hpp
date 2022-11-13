@@ -23,7 +23,39 @@ struct Statement
         ReturnStatement,
         SelectionStatement>;
 
-    Type _type;
+    template<typename T>
+    [[nodiscard]] bool isType() const;
+
+    template<typename T>
+    const T& getType() const;
+
+    [[nodiscard]] SourceLocation getLocation() const;
+
+    Type type;
 };
+
+template<>
+inline bool Statement::isType<Declaration>() const
+{
+    return std::holds_alternative<std::unique_ptr<Declaration>>(type);
+}
+
+template<typename T>
+bool Statement::isType() const
+{
+    return std::holds_alternative<T>(type);
+}
+
+template<>
+inline const Declaration& Statement::getType<Declaration>() const
+{
+    return *std::get<std::unique_ptr<Declaration>>(type);
+}
+
+template<typename T>
+const T& Statement::getType() const
+{
+    return std::get<T>(type);
+}
 
 } // namespace CPPS::CST

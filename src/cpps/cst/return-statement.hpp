@@ -8,14 +8,14 @@ namespace CPPS::CST {
 
 struct ReturnStatement
 {
-    [[nodiscard]] SourceLocation getSourceLocation() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     TokenRef identifier;
     std::unique_ptr<Expression> expression;
 
 };
 
-inline SourceLocation ReturnStatement::getSourceLocation() const
+inline SourceLocation ReturnStatement::getLocation() const
 {
     return identifier.get().location;
 }

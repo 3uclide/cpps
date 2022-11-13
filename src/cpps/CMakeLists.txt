@@ -15,6 +15,7 @@ set(CPPS_INCLUDES
     cst/identifier.hpp
     cst/identifier-expression.hpp
     cst/iteration-statement.hpp
+    cst/list.hpp
     cst/parameter-declaration.hpp
     cst/parameter-declaration-list.hpp
     cst/postfix-expression.hpp
@@ -54,6 +55,7 @@ set(CPPS_INCLUDES
 )
 
 set(CPPS_SOURCES
+    cst/statement.cpp
     grammar/boolean-literal.cpp
     grammar/function-modifier.cpp
     grammar/keyword.cpp

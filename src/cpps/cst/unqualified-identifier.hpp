@@ -7,7 +7,7 @@ namespace CPPS::CST {
 
 struct UnqualifiedIdentifier
 {
-    UnqualifiedIdentifier(const Token& token);
+    explicit UnqualifiedIdentifier(const Token& token);
 
     SourceLocation getLocation() const;
 

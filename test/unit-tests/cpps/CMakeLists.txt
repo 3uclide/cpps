@@ -20,6 +20,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     grammar/pointer-literal-tests.cpp
     grammar/punctuator-tests.cpp
     check-diagnosis.cpp
+    cst-tests.cpp
     diagnosis-tests.cpp
     lexeme-tests.cpp
     lexer-tests.cpp
