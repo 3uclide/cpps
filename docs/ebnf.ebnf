@@ -5,10 +5,10 @@ TranslationUnit = [DeclarationSeq] Declaration
 Declaration = Identifier UunamedDeclaration
 
 UnamedDeclaration = FunctionSignature = Statement |
-                    [IdExpression] = Statement |
-                    IdExpression]
+                    [IdentifierExpression] = Statement |
+                    IdentifierExpression]
 
-FunctionSignature = ParameterDeclarationList [ThrowsSpecifier] [ReturnList]
+FunctionSignature = ( ParameterDeclarationList ) [ThrowsSpecifier] -> [ReturnList]
 
 ParameterDeclarationList = ParameterDeclaration |
                            ParameterDeclarationList, ParameterDeclaration
@@ -29,12 +29,12 @@ PostfixExpression = PrimaryExpression |
                     PrimaryExpression PostfixOperator | (*without whitespace before the operator*)
                     PrimaryExpression [ [ExpressionList] ]
                     PrimaryExpression ( [ExpressionList] )
-                    PrimaryExpression . IdExpression
+                    PrimaryExpression . IdentifierExpression
 
-PrimaryExpression = Literal | 
-                    IdExpression
+PrimaryExpression = Literal |
+                    IdentifierExpression
                     UnnamedDeclaration
                     ( [ExpressionList] )
 
-IdExpression = UnqualifiedId |
-               QualifiedId
+IdentifierExpression = UnqualifiedIdentifier |
+                       QualifiedIdentifier
