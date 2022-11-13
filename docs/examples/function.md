@@ -5,7 +5,7 @@ Parameter are *in* by default
 ```c++
 [function_name]<[templates]>: [[lambda_capture]]([parameters...]) -> [return_type] = 
 {
-	[function_body]	
+    [function_body]
 }
 ```
 
@@ -15,7 +15,7 @@ Parameter are *in* by default
 // normal function
 my_func: (i: int) -> int =
 {
-	return 0;
+    return 0;
 }
 
 // lambda
