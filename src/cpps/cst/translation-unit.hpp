@@ -7,8 +7,7 @@ namespace CPPS::CST {
 class TranslationUnit
 {
 public:
-
     DeclarationList _declarations;
 };
 
-} // namespace CPPS
+} // namespace CPPS::CST

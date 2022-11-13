@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/expression-list.hpp"
 #include "cpps/cst/identifier-expression.hpp"

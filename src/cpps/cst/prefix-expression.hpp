@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/postfix-expression.hpp"
 #include "cpps/token-ref.hpp"

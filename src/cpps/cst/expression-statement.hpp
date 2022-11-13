@@ -1,7 +1,8 @@
 #pragma once
 
+#include <memory>
+
 #include "cpps/cst/.forward-declare-types.hpp"
-#include "cpps/cst/expression.hpp"
 
 namespace CPPS::CST {
 
