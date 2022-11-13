@@ -11,7 +11,7 @@
 
 namespace CPPS::CST {
 
-struct PostfixExpression
+struct PostfixExpression : PrimaryExpression
 {
     struct Term
     {
@@ -26,8 +26,6 @@ struct PostfixExpression
         // This is used if *_operator is [ or (
         std::optional<TokenRef> closeOp;
     };
-
-    std::unique_ptr<PrimaryExpression> expr;
 
     std::vector<Term> terms;
 };

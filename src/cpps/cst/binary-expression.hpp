@@ -52,8 +52,7 @@ struct AssignmentExpression : BinaryExpression<LogicalOrExpression> {};
 template<typename ExpressionTypeT>
 SourceLocation BinaryExpression<ExpressionTypeT>::getLocation() const
 {
-    const ExpressionTypeT& base{*this};
-    return base.getLocation();
+    return ExpressionTypeT::getLocation();
 }
 
 template<typename ExpressionTypeT>
@@ -61,8 +60,7 @@ template<typename T>
 requires(std::is_base_of_v<ExpressionTypeT, T>)
 [[nodiscard]] const std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf() const
 {
-    const T& expression{*this};
-    return expression.terms;
+    return ExpressionTypeT::terms;
 }
 
 template<typename ExpressionTypeT>
@@ -70,7 +68,6 @@ template<typename T>
 requires(std::is_base_of_v<ExpressionTypeT, T> )
 [[nodiscard]] std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf()
 {
-    T& expression{*this};
-    return expression.terms;
+    return T::terms;
 }
 } // namespace CPPS::CST

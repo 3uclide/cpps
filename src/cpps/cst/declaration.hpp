@@ -18,6 +18,8 @@ struct Declaration
 {
     using Type = std::variant<FunctionSignature, IdentifierExpression>;
 
+    Declaration(const Token& token);
+
     SourceLocation getLocation() const;
 
     template<typename T>
@@ -39,7 +41,12 @@ struct Declaration
     SourceLocation equalLocation;
 };
 
-SourceLocation Declaration::getLocation() const
+inline Declaration::Declaration(const Token& token)
+    : identifier(token)
+{
+}
+
+inline SourceLocation Declaration::getLocation() const
 {
     return startLocation;
 }

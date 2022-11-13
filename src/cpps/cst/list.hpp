@@ -5,6 +5,8 @@
 #include <utility>
 #include <vector>
 
+#include "cpps/source-location.hpp"
+
 namespace CPPS::CST {
 
 template<typename T>
@@ -36,8 +38,10 @@ public:
 
     const T& operator[](std::size_t index) const;
 
-    ConstIterator begin() const;
-    ConstIterator end() const;
+    [[nodiscard]] ConstIterator begin() const;
+    [[nodiscard]] ConstIterator end() const;
+
+    [[nodiscard]] SourceLocation getLocation() const;
 
 private:
     std::vector<Ptr> _pointers;
@@ -97,6 +101,13 @@ template<typename T>
 typename List<T>::ConstIterator List<T>::end() const
 {
     return ConstIterator{_pointers.begin()};
+}
+
+template<typename T>
+SourceLocation List<T>::getLocation() const
+{
+    assert(!_pointers.empty());
+    return _pointers[0]->getLocation();
 }
 
 } // namespace CPPS::CST

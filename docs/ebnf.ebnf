@@ -27,13 +27,13 @@ PrefixExpression = PostfixExpression |
 
 PostfixExpression = PrimaryExpression |
                     PrimaryExpression PostfixOperator | (*without whitespace before the operator*)
-                    PrimaryExpression [ [ExpressionList] ]
-                    PrimaryExpression ( [ExpressionList] )
+                    PrimaryExpression [ [ExpressionList] ] |
+                    PrimaryExpression ( [ExpressionList] ) |
                     PrimaryExpression . IdentifierExpression
 
 PrimaryExpression = Literal |
-                    IdentifierExpression
-                    UnnamedDeclaration
+                    IdentifierExpression |
+                    UnnamedDeclaration |
                     ( [ExpressionList] )
 
 IdentifierExpression = UnqualifiedIdentifier |

@@ -10,7 +10,14 @@ namespace CPPS::CST {
 
 struct PrefixExpression : PostfixExpression
 {
+    SourceLocation getLocation() const;
+
     std::vector<TokenRef> ops;
 };
+
+inline SourceLocation PrefixExpression::getLocation() const
+{
+    return ops.empty() ? PostfixExpression::getLocation() : ops[0].get().location;
+}
 
 } // namespace CPPS::CST
