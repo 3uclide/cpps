@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/declaration.hpp"
 #include "cpps/token-ref.hpp"
