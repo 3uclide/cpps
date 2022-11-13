@@ -2,7 +2,7 @@
 
 namespace CPPS::CST {
 
-class PrimaryExpression
+struct PrimaryExpression
 {
 };
 

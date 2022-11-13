@@ -8,13 +8,9 @@
 
 namespace CPPS::CST {
 
-class PrefixExpression : public PostfixExpression
+struct PrefixExpression : PostfixExpression
 {
-public:
-    [[nodiscard]] constexpr const std::vector<TokenRef>& getOperators() const { return _operators; }
-
-private:
-    std::vector<TokenRef> _operators;
+    std::vector<TokenRef> ops;
 };
 
 } // namespace CPPS::CST

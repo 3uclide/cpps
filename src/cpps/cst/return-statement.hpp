@@ -2,7 +2,7 @@
 
 namespace CPPS::CST {
 
-class ReturnStatement
+struct ReturnStatement
 {
 
 };

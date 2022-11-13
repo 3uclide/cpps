@@ -2,7 +2,7 @@
 
 namespace CPPS::CST {
 
-class QualifiedIdentifier
+struct QualifiedIdentifier
 {
 };
 

@@ -6,11 +6,10 @@
 
 namespace CPPS::CST {
 
-class ExpressionStatement
+struct ExpressionStatement
 {
-public:
-    std::unique_ptr<Expression> _expression;
-    bool _hasSemicolon{false};
+    std::unique_ptr<Expression> expression;
+    bool hasSemicolon{false};
 };
 
 } // namespace CPPS::CST

@@ -5,9 +5,8 @@
 
 namespace CPPS::CST {
 
-class DeclarationList : public List<Declaration>
+struct DeclarationList : List<Declaration>
 {
-public:
     using List<Declaration>::List;
 };
 

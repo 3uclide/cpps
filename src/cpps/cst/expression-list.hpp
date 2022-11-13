@@ -5,9 +5,8 @@
 
 namespace CPPS::CST {
 
-class ExpressionList : public List<Expression>
+struct ExpressionList : List<Expression>
 {
-public:
     using List<Expression>::List;
 };
 

@@ -5,9 +5,8 @@
 
 namespace CPPS::CST {
 
-class ParameterDeclarationList : public List<ParameterDeclaration>
+struct ParameterDeclarationList : List<ParameterDeclaration>
 {
-public:
     using List<ParameterDeclaration>::List;
 };
 

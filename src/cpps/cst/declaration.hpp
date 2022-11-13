@@ -1,8 +1,8 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <variant>
-#include <functional>
 
 #include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/function-signature.hpp"
@@ -14,22 +14,46 @@
 
 namespace CPPS::CST {
 
-class Declaration
+struct Declaration
 {
-public:
     using Type = std::variant<FunctionSignature, IdentifierExpression>;
 
-public:
-    UnqualifiedIdentifier _identifier;
+    SourceLocation getLocation() const;
 
-    Type _type;
+    template<typename T>
+    bool isType() const;
 
-    std::unique_ptr<Statement> _initializer;
-    std::optional<TokenRef> _pointerDeclaration;
+    template<typename T>
+    const T& getType() const;
 
-    SourceLocation _startLocation;
-    SourceLocation _endLocation;
-    SourceLocation _equalLocation;
+    UnqualifiedIdentifier identifier;
+
+    Type type;
+
+    std::optional<TokenRef> pointerDeclaration;
+
+    std::unique_ptr<Statement> initializer;
+
+    SourceLocation startLocation;
+    SourceLocation endLocation;
+    SourceLocation equalLocation;
 };
+
+SourceLocation Declaration::getLocation() const
+{
+    return startLocation;
+}
+
+template<typename T>
+bool Declaration::isType() const
+{
+    return std::holds_alternative<T>(type);
+}
+
+template<typename T>
+const T& Declaration::getType() const
+{
+    return std::get<T>(type);
+}
 
 } // namespace CPPS::CST

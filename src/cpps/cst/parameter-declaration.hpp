@@ -9,12 +9,11 @@
 
 namespace CPPS::CST {
 
-class ParameterDeclaration
+struct ParameterDeclaration
 {
-public:
-    std::unique_ptr<Declaration> _declaration;
+    std::unique_ptr<Declaration> declaration;
 
-    ParameterModifier _modifier{ParameterModifier::In};
+    ParameterModifier modifier{ParameterModifier::In};
 
     SourceLocation location;
 };

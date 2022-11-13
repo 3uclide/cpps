@@ -5,31 +5,17 @@
 
 namespace CPPS::CST {
 
-class CompoundStatement : public StatementList
+struct CompoundStatement : StatementList
 {
-public:
     SourceLocation getLocation() const;
-    SourceLocation getOpenBraceLocation() const;
-    SourceLocation getCloseBraceLocation() const;
 
-private:
-    SourceLocation _openBraceLocation;
-    SourceLocation _closeBraceLocation;
+    SourceLocation openBraceLocation;
+    SourceLocation closeBraceLocation;
 };
 
 inline SourceLocation CompoundStatement::getLocation() const
 {
-    return getOpenBraceLocation();
-}
-
-inline SourceLocation CompoundStatement::getOpenBraceLocation() const
-{
-    return _openBraceLocation;
-}
-
-inline SourceLocation CompoundStatement::getCloseBraceLocation() const
-{
-    return _closeBraceLocation;
+    return openBraceLocation;
 }
 
 } // namespace CPPS::CST

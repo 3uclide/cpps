@@ -13,9 +13,8 @@
 
 namespace CPPS::CST {
 
-class Statement
+struct Statement
 {
-public:
     using Type = std::variant<
         std::unique_ptr<Declaration>,
         CompoundStatement,

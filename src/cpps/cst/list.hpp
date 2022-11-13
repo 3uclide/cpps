@@ -30,7 +30,7 @@ public:
 
 public:
     List() = default;
-    List(std::vector<Ptr>&& expressions);
+    explicit List(std::vector<Ptr>&& expressions);
 
     std::size_t size() const;
 

@@ -12,23 +12,36 @@
 
 namespace CPPS::CST {
 
-class IdentifierExpression
+struct IdentifierExpression
 {
-public:
-    IdentifierExpression(QualifiedIdentifier&& qualifiedIdentifier, SourceLocation location);
-    IdentifierExpression(UnqualifiedIdentifier&& unqualifiedIdentifier, SourceLocation location);
-
-    template<typename T>
-    bool is() const;
-
-    template<typename T>
-    const T& as() const;
-
     SourceLocation getLocation() const;
 
-private:
-    Identifier _identifier;
-    SourceLocation _location;
+    template<typename T>
+    bool isType() const;
+
+    template<typename T>
+    const T& getType() const;
+
+    Identifier type;
+    SourceLocation location;
 };
+
+inline SourceLocation IdentifierExpression::getLocation() const
+{
+    return location;
+}
+
+template<typename T>
+bool IdentifierExpression::isType() const
+{
+    return std::holds_alternative<T>(type);
+}
+
+template<typename T>
+const T& IdentifierExpression::getType() const
+{
+    return std::get<T>(type);
+}
+
 
 } // namespace CPPS::CST

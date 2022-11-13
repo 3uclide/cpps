@@ -5,7 +5,7 @@
 
 namespace CPPS::CST {
 
-class Expression : public AssignmentExpression
+struct Expression : AssignmentExpression
 {
 };
 

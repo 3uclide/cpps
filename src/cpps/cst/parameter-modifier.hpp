@@ -1,10 +1,9 @@
 #pragma once
 
+#include "cpps/grammar/parameter-modifier.hpp"
+
 namespace CPPS::CST {
 
-enum class ParameterModifier
-{
-    In
-};
+using CPPS::ParameterModifier;
 
 } // namespace CPPS::CST

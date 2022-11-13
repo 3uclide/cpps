@@ -2,7 +2,7 @@
 
 namespace CPPS::CST {
 
-class IterationStatement
+struct IterationStatement
 {
     // TODO
 };

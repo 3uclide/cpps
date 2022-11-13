@@ -11,28 +11,25 @@
 
 namespace CPPS::CST {
 
-class PostfixExpression
+struct PostfixExpression
 {
-public:
     struct Term
     {
-        TokenRef _operator;
+        TokenRef op;
 
         // This is used if *_operator is .
-        std::optional<IdentifierExpression> _identifierExpression;
+        std::optional<IdentifierExpression> identifierExpression;
 
         // These is used if *_operator is [ or (
-        std::optional<ExpressionList> _expressions;
+        std::optional<ExpressionList> expressions;
 
         // This is used if *_operator is [ or (
-        std::optional<TokenRef> _closeOperator;
+        std::optional<TokenRef> closeOp;
     };
-
-    [[nodiscard]] constexpr const std::vector<Term>& getTerms() const { return _terms; }
 
     std::unique_ptr<PrimaryExpression> expr;
 
-    std::vector<Term> _terms;
+    std::vector<Term> terms;
 };
 
 } // namespace CPPS::CST

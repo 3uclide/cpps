@@ -4,10 +4,9 @@
 
 namespace CPPS::CST {
 
-class TranslationUnit
+struct TranslationUnit
 {
-public:
-    DeclarationList _declarations;
+    DeclarationList declarations;
 };
 
 } // namespace CPPS::CST

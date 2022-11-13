@@ -12,74 +12,65 @@
 namespace CPPS::CST {
 
 template<typename ExpressionTypeT>
-class BinaryExpression : public ExpressionTypeT
+struct BinaryExpression : ExpressionTypeT
 {
-public:
     struct Term : ExpressionTypeT
     {
-        TokenRef identifier;
+        TokenRef op;
     };
 
-public:
-    [[nodiscard]] const std::vector<Term>& getTerms() const;
-    [[nodiscard]] std::vector<Term>& getTerms();
+    SourceLocation getLocation() const;
 
     template<typename T>
     requires(std::is_base_of_v<ExpressionTypeT, T>)
-    [[nodiscard]] const std::vector<typename T::Term>& getTermsOf() const;
+    [[nodiscard]] const std::vector<typename T::Term>& termsOf() const;
 
     template<typename T>
     requires(std::is_base_of_v<ExpressionTypeT, T>)
-    [[nodiscard]] std::vector<typename T::Term>& getTermsOf();
+    [[nodiscard]] std::vector<typename T::Term>& termsOf();
 
-protected:
     // cppcheck-suppress duplInheritedMember
-    std::vector<Term> _terms;
+    std::vector<Term> terms;
 };
 
 // clang-format off
-class IsAsExpression : public BinaryExpression<PrefixExpression> {};
-class MultiplicativeExpression : public BinaryExpression<IsAsExpression> {};
-class AdditiveExpression : public BinaryExpression<MultiplicativeExpression> {};
-class ShiftExpression : public BinaryExpression<AdditiveExpression> {};
-class CompareExpression : public BinaryExpression<ShiftExpression> {};
-class RelationalExpression : public BinaryExpression<CompareExpression> {};
-class EqualityExpression : public BinaryExpression<RelationalExpression> {};
-class BitAndExpression : public BinaryExpression<EqualityExpression> {};
-class BitXorExpression : public BinaryExpression<BitAndExpression> {};
-class BitOrExpression : public BinaryExpression<BitXorExpression> {};
-class LogicalAndExpression : public BinaryExpression<BitOrExpression> {};
-class LogicalOrExpression : public BinaryExpression<LogicalAndExpression> {};
-class AssignmentExpression : public BinaryExpression<LogicalOrExpression> {};
+struct IsAsExpression : BinaryExpression<PrefixExpression> {};
+struct MultiplicativeExpression : BinaryExpression<IsAsExpression> {};
+struct AdditiveExpression : BinaryExpression<MultiplicativeExpression> {};
+struct ShiftExpression : BinaryExpression<AdditiveExpression> {};
+struct CompareExpression : BinaryExpression<ShiftExpression> {};
+struct RelationalExpression : BinaryExpression<CompareExpression> {};
+struct EqualityExpression : BinaryExpression<RelationalExpression> {};
+struct BitAndExpression : BinaryExpression<EqualityExpression> {};
+struct BitXorExpression : BinaryExpression<BitAndExpression> {};
+struct BitOrExpression : BinaryExpression<BitXorExpression> {};
+struct LogicalAndExpression : BinaryExpression<BitOrExpression> {};
+struct LogicalOrExpression : BinaryExpression<LogicalAndExpression> {};
+struct AssignmentExpression : BinaryExpression<LogicalOrExpression> {};
 // clang-format on
 
 template<typename ExpressionTypeT>
-const std::vector<typename BinaryExpression<ExpressionTypeT>::Term>& BinaryExpression<ExpressionTypeT>::getTerms() const
+SourceLocation BinaryExpression<ExpressionTypeT>::getLocation() const
 {
-    return _terms;
-}
-
-template<typename ExpressionTypeT>
-std::vector<typename BinaryExpression<ExpressionTypeT>::Term>& BinaryExpression<ExpressionTypeT>::getTerms()
-{
-    return _terms;
+    const ExpressionTypeT& base{*this};
+    return base.getLocation();
 }
 
 template<typename ExpressionTypeT>
 template<typename T>
 requires(std::is_base_of_v<ExpressionTypeT, T>)
-[[nodiscard]] const std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::getTermsOf() const
+[[nodiscard]] const std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf() const
 {
     const T& expression{*this};
-    return expression.getTerms();
+    return expression.terms;
 }
 
 template<typename ExpressionTypeT>
 template<typename T>
 requires(std::is_base_of_v<ExpressionTypeT, T> )
-[[nodiscard]] std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::getTermsOf()
+[[nodiscard]] std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf()
 {
     T& expression{*this};
-    return expression.getTerms();
+    return expression.terms;
 }
 } // namespace CPPS::CST

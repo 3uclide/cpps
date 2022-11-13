@@ -6,16 +6,16 @@
 
 namespace CPPS::CST {
 
-class FunctionSignature
+struct FunctionSignature
 {
     using returns_t = std::variant<
         std::monostate,
         IdentifierExpression,
         ParameterDeclarationList>;
 
-    ParameterDeclarationList _parameters;
-    returns_t _returns;
-    bool _throws{false};
+    ParameterDeclarationList parameters;
+    returns_t returns;
+    bool throws{false};
 };
 
 } // namespace CPPS::CST
