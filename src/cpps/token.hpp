@@ -8,8 +8,12 @@
 
 namespace CPPS {
 
-struct Token
+class Token
 {
+public:
+    Token() = default;
+    Token(Lexeme lexeme_, SourceLocation src, std::string_view text_);
+
     bool operator==(const Token&) const = default;
 
     Lexeme lexeme;
@@ -18,6 +22,13 @@ struct Token
 };
 
 std::ostream& operator<<(std::ostream& os, const Token& value);
+
+inline Token::Token(Lexeme lexeme_, SourceLocation src, std::string_view text_)
+    : lexeme(lexeme_)
+    , location(src)
+    , text(text_)
+{
+}
 
 } // namespace CPPS
 

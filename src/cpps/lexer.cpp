@@ -871,10 +871,7 @@ void Lexer::addToken(std::size_t size, Lexeme lexeme)
 {
     const std::string_view text = _currentLine.substr(_currentColumnIndex, size);
 
-    _tokens.push_back(Token{
-        .lexeme = lexeme,
-        .location = currentLocation(),
-        .text = text});
+    _tokens.emplace_back(lexeme, currentLocation(), text);
 
     _currentColumnIndex += size - 1;
 }
