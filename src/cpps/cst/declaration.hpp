@@ -18,15 +18,15 @@ struct Declaration
 {
     using Type = std::variant<FunctionSignature, IdentifierExpression>;
 
-    explicit Declaration(UnqualifiedIdentifier&& identifier);
+    explicit Declaration(UnqualifiedIdentifier&& identifier_);
 
-    SourceLocation getLocation() const;
-
-    template<typename T>
-    bool isType() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     template<typename T>
-    const T& getType() const;
+    [[nodiscard]] bool isType() const;
+
+    template<typename T>
+    [[nodiscard]] const T& getType() const;
 
     UnqualifiedIdentifier identifier;
 
@@ -41,8 +41,8 @@ struct Declaration
     SourceLocation equalLocation;
 };
 
-inline Declaration::Declaration(UnqualifiedIdentifier&& identifier)
-    : identifier(identifier)
+inline Declaration::Declaration(UnqualifiedIdentifier&& identifier_)
+    : identifier(identifier_)
 {
 }
 
