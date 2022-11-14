@@ -7,12 +7,7 @@
 namespace CPPS {
 
 /**
- * Bump pointer allocator (bump down)
- *
- * You must call ctor and dtor. Deallocate is only useful if the pointer was the last allocated.
- *
- * https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html
- *
+ * ref https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html
  */
 template<std::size_t BlockCapacityT = 1024>
 requires(BlockCapacityT > 0)
