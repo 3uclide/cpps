@@ -77,14 +77,16 @@ TEST_CASE_METHOD(NodeFixture, "Node accessor", "[Node], [CST]")
 
     SECTION("Read")
     {
+        const Node<NodeMock>& node = _node;
+
         SECTION("operator*")
         {
-            CHECK((*std::as_const(_node)).value == 42);
+            CHECK((*node).value == 42);
         }
 
         SECTION("operator->")
         {
-            CHECK(std::as_const(_node)->value == 42);
+            CHECK(node->value == 42);
         }
     }
 
