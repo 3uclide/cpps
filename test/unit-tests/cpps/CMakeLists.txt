@@ -19,6 +19,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     grammar/parameter-modifier-tests.cpp
     grammar/pointer-literal-tests.cpp
     grammar/punctuator-tests.cpp
+    utility/bump-pointer-allocator-tests.cpp
     check-diagnosis.cpp
     cst-tests.cpp
     diagnosis-tests.cpp

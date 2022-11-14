@@ -41,6 +41,7 @@ set(CPPS_INCLUDES
     grammar/pointer-literal.hpp
     grammar/punctuator.hpp
     grammar/string-literal.hpp
+    utility/bump-pointer-allocator.hpp
     utility/type-list.hpp
     comment.hpp
     diagnosis.hpp
