@@ -28,10 +28,10 @@ public:
     [[nodiscard]] T* allocate();
 
     template<typename T>
-    void deallocate(T* ptr);
+    void deallocate(const T* ptr);
 
     [[nodiscard]] void* allocate(std::size_t size, std::size_t align);
-    void deallocate(void* ptr, std::size_t, std::size_t align);
+    void deallocate(const void* ptr, std::size_t, std::size_t align);
 
     [[nodiscard]] std::size_t getBlockCapacity() const;
     [[nodiscard]] std::size_t getBlockCount() const;
@@ -71,7 +71,7 @@ T* BumpPointerAllocator<BlockCapacityT>::allocate()
 template<std::size_t BlockCapacityT>
 requires(BlockCapacityT > 0)
 template<typename T>
-void BumpPointerAllocator<BlockCapacityT>::deallocate(T* ptr)
+void BumpPointerAllocator<BlockCapacityT>::deallocate(const T* ptr)
 {
     deallocate(ptr, sizeof(T), alignof(T));
 }
@@ -110,15 +110,18 @@ void* BumpPointerAllocator<BlockCapacityT>::allocate(std::size_t size, std::size
 
 template<std::size_t BlockCapacityT>
 requires(BlockCapacityT > 0)
-void BumpPointerAllocator<BlockCapacityT>::deallocate(void* ptr, std::size_t size, std::size_t align)
+void BumpPointerAllocator<BlockCapacityT>::deallocate(const void* ptr, std::size_t size, std::size_t align)
 {
     assert(isValid(size, align));
 
     if (ptr == _ptr)
     {
-        _ptr += size;
+        const std::uintptr_t intPtr = reinterpret_cast<std::uintptr_t>(_ptr);
+        const std::uintptr_t newIntPtr = intPtr + size;
+        const std::uintptr_t align_ = ~(align - 1);
+        const std::uintptr_t alignedIntPtr = newIntPtr & align_;
 
-        std::memset(ptr, 0, size);
+        _ptr = static_cast<std::byte*>(reinterpret_cast<void*>(alignedIntPtr)); // NOLINT(performance-no-int-to-ptr)
     }
 }
 
