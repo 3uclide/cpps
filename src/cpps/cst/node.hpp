@@ -14,7 +14,7 @@ public:
     Node& operator=(const Node&) = delete;
 
 public:
-    Node(auto& allocator);
+    explicit Node(auto& allocator);
     Node(Node&& other);
     Node& operator=(Node&& other);
     ~Node();
