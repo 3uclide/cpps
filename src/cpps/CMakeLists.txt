@@ -16,6 +16,7 @@ set(CPPS_INCLUDES
     cst/identifier-expression.hpp
     cst/iteration-statement.hpp
     cst/list.hpp
+    cst/node.hpp
     cst/parameter-declaration.hpp
     cst/parameter-declaration-list.hpp
     cst/postfix-expression.hpp
