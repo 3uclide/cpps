@@ -71,6 +71,19 @@ TEST_CASE_METHOD(NodeFixture, "Node dtor", "[Node], [CST]")
     CHECK(dtorCalled);
 }
 
+TEST_CASE_METHOD(NodeFixture, "Node move", "[Node], [CST]")
+{
+    Node<NodeMock> node;
+    Node<NodeMock> newNode;
+
+    newNode.create(_allocator);
+
+    node = std::move(newNode);
+
+    CHECK(node);
+    CHECK_FALSE(newNode);
+}
+
 TEST_CASE_METHOD(NodeFixture, "Node accessor", "[Node], [CST]")
 {
     _node.create(_allocator);
