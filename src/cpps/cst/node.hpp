@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 namespace CPPS::CST {
 
 /*
@@ -14,12 +16,17 @@ public:
     Node& operator=(const Node&) = delete;
 
 public:
-    explicit Node(auto& allocator);
+    template<typename... ArgsT>
+    explicit Node(auto& allocator, ArgsT... args);
+
     Node(Node&& other);
     Node& operator=(Node&& other);
     ~Node();
 
     operator bool() const;
+
+    const T& get() const;
+    T& get();
 
     const T& operator*() const;
     T& operator*();
@@ -28,21 +35,24 @@ public:
     T* operator->();
 
 public:
-    void create(auto& allocator);
-    void destroy(auto& allocator);
+    template<typename... ArgsT>
+    void create(auto& allocator, ArgsT... args);
+    void destroy(auto& allocator); // calling destroy is optional
 
 private:
-    void ctor();
-    void dtor();
+    template<typename... ArgsT>
+    static void ctor(T* node, ArgsT... args);
+    static void dtor(T* node);
 
 private:
     T* _node{nullptr};
 };
 
 template<typename T>
-Node<T>::Node(auto& allocator)
+template<typename... ArgsT>
+Node<T>::Node(auto& allocator, ArgsT... args)
 {
-    create(allocator);
+    create(allocator, std::forward<ArgsT>(args)...);
 }
 
 template<typename T>
@@ -59,7 +69,7 @@ Node<T>& Node<T>::operator=(Node&& other)
     {
         if (_node != nullptr)
         {
-            dtor();
+            dtor(_node);
         }
 
         _node = other._node;
@@ -75,7 +85,7 @@ Node<T>::~Node()
 {
     if (_node != nullptr)
     {
-        dtor();
+        dtor(_node);
     }
 }
 
@@ -83,6 +93,20 @@ template<typename T>
 Node<T>::operator bool() const
 {
     return _node != nullptr;
+}
+
+template<typename T>
+const T& Node<T>::get() const
+{
+    assert(_node != nullptr);
+    return *_node;
+}
+
+template<typename T>
+T& Node<T>::get()
+{
+    assert(_node != nullptr);
+    return *_node;
 }
 
 template<typename T>
@@ -114,13 +138,14 @@ T* Node<T>::operator->()
 }
 
 template<typename T>
-void Node<T>::create(auto& allocator)
+template<typename... ArgsT>
+void Node<T>::create(auto& allocator, ArgsT... args)
 {
     assert(_node == nullptr);
 
     _node = allocator.template allocate<T>();
 
-    ctor();
+    ctor(_node, std::forward<ArgsT>(args)...);
 }
 
 template<typename T>
@@ -128,7 +153,7 @@ void Node<T>::destroy(auto& allocator)
 {
     assert(_node != nullptr);
 
-    dtor();
+    dtor(_node);
 
     allocator.template deallocate<T>(_node);
 
@@ -136,15 +161,16 @@ void Node<T>::destroy(auto& allocator)
 }
 
 template<typename T>
-void Node<T>::ctor()
+template<typename... ArgsT>
+void Node<T>::ctor(T* node, ArgsT... args)
 {
-    new (_node) T();
+    new (node) T(std::forward<ArgsT>(args)...);
 }
 
 template<typename T>
-void Node<T>::dtor()
+void Node<T>::dtor(T* node)
 {
-    _node->~T();
+    node->~T();
 }
 
 } // namespace CPPS::CST

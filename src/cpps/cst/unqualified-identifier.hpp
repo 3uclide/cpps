@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include <cpps/token-ref.hpp>
 #include <cpps/token.hpp>
 
@@ -9,7 +11,7 @@ struct UnqualifiedIdentifier
 {
     explicit UnqualifiedIdentifier(const Token& token);
 
-    SourceLocation getLocation() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     TokenRef identifier;
     std::optional<TokenRef> constIdentifier;

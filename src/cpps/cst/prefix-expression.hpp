@@ -2,15 +2,16 @@
 
 #include <vector>
 
-#include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/postfix-expression.hpp"
+#include "cpps/source-location.hpp"
 #include "cpps/token-ref.hpp"
+#include "cpps/token.hpp"
 
 namespace CPPS::CST {
 
 struct PrefixExpression : PostfixExpression
 {
-    SourceLocation getLocation() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     std::vector<TokenRef> ops;
 };

@@ -1,17 +1,22 @@
 #pragma once
 
-#include <memory>
+#include "cpps/cst/node.hpp"
 
-#include "cpps/cst/.forward-declare-types.hpp"
-#include "cpps/source-location.hpp"
+namespace CPPS {
+struct SourceLocation;
+}
 
 namespace CPPS::CST {
 
+struct Expression;
+
 struct ExpressionStatement
 {
+    ~ExpressionStatement();
+
     [[nodiscard]] SourceLocation getLocation() const;
 
-    std::unique_ptr<Expression> expression;
+    Node<Expression> expression;
     bool hasSemicolon{false};
 };
 

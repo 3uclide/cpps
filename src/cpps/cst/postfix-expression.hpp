@@ -1,15 +1,16 @@
 #pragma once
 
-#include <memory>
+#include <optional>
 #include <vector>
 
-#include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/expression-list.hpp"
-#include "cpps/cst/identifier-expression.hpp"
+#include "cpps/cst/node.hpp"
 #include "cpps/cst/primary-expression.hpp"
 #include "cpps/token-ref.hpp"
 
 namespace CPPS::CST {
+
+struct IdentifierExpression;
 
 struct PostfixExpression : PrimaryExpression
 {
@@ -18,7 +19,7 @@ struct PostfixExpression : PrimaryExpression
         TokenRef op;
 
         // This is used if *_operator is .
-        std::optional<IdentifierExpression> identifierExpression;
+        Node<IdentifierExpression> identifierExpression;
 
         // These is used if *_operator is [ or (
         std::optional<ExpressionList> expressions;

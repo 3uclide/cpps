@@ -1,20 +1,22 @@
 #pragma once
 
-#include <memory>
-
-#include "cpps/cst/.forward-declare-types.hpp"
-#include "cpps/token.hpp"
+#include "cpps/cst/node.hpp"
+#include "cpps/source-location.hpp"
 #include "cpps/token-ref.hpp"
+#include "cpps/token.hpp"
 
 namespace CPPS::CST {
 
+struct Expression;
+
 struct ReturnStatement
 {
+    ~ReturnStatement();
+
     [[nodiscard]] SourceLocation getLocation() const;
 
     TokenRef identifier;
-    std::unique_ptr<Expression> expression;
-
+    Node<Expression> expression;
 };
 
 inline SourceLocation ReturnStatement::getLocation() const

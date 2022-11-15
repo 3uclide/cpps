@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cpps/cst/declaration.hpp"
 #include "cpps/cst/declaration-list.hpp"
 
 namespace CPPS::CST {

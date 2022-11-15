@@ -1,13 +1,16 @@
 #pragma once
 
-#include "cpps/cst/.forward-declare-types.hpp"
-#include "cpps/cst/list.hpp"
+#include "cpps/cst/node-list.hpp"
 
 namespace CPPS::CST {
 
-struct StatementList : List<Statement>
+struct Statement;
+
+struct StatementList : NodeList<Statement>
 {
-    using List<Statement>::List;
+    using NodeList<Statement>::NodeList;
+
+    ~StatementList();
 };
 
 } // namespace CPPS::CST

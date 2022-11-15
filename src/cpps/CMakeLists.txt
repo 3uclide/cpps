@@ -2,8 +2,6 @@ find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
-    cst/.forward-declare-types.hpp
-    cst/.include-types.hpp
     cst/binary-expression.hpp
     cst/compound-statement.hpp
     cst/declaration.hpp
@@ -15,8 +13,9 @@ set(CPPS_INCLUDES
     cst/identifier.hpp
     cst/identifier-expression.hpp
     cst/iteration-statement.hpp
-    cst/list.hpp
     cst/node.hpp
+    cst/node-list.hpp
+    cst/node-variant.hpp
     cst/parameter-declaration.hpp
     cst/parameter-declaration-list.hpp
     cst/postfix-expression.hpp
@@ -45,6 +44,7 @@ set(CPPS_INCLUDES
     utility/bump-pointer-allocator.hpp
     utility/type-list.hpp
     comment.hpp
+    cst.hpp
     diagnosis.hpp
     lexeme.hpp
     lexer.hpp
@@ -57,7 +57,25 @@ set(CPPS_INCLUDES
 )
 
 set(CPPS_SOURCES
+    cst/declaration.cpp
+    cst/declaration-list.cpp
+    cst/expression.cpp
+    cst/expression-list.cpp
+    cst/expression-statement.cpp
+    cst/function-signature.cpp
+    cst/identifier.cpp
+    cst/identifier-expression.cpp
+    cst/node.hpp
+    cst/node-list.hpp
+    cst/node-variant.hpp
+    cst/parameter-declaration.cpp
+    cst/parameter-declaration-list.cpp
+    cst/postfix-expression.cpp
+    cst/prefix-expression.cpp
+    cst/primary-expression.cpp
+    cst/return-statement.cpp
     cst/statement.cpp
+    cst/statement-list.cpp
     grammar/boolean-literal.cpp
     grammar/function-modifier.cpp
     grammar/keyword.cpp

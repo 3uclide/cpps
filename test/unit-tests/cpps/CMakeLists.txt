@@ -14,6 +14,7 @@ set(CPPS_UNIT_TESTS_INCLUDES
 
 set(CPPS_UNIT_TESTS_SOURCES
     cst/node-tests.cpp
+    cst/node-variant-tests.cpp
     grammar/boolean-literal-tests.cpp
     grammar/function-modifier-tests.cpp
     grammar/keyword-tests.cpp

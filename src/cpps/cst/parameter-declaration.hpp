@@ -1,17 +1,18 @@
 #pragma once
 
-#include <memory>
-
-#include "cpps/cst/.forward-declare-types.hpp"
-#include "cpps/cst/declaration.hpp"
+#include "cpps/cst/node.hpp"
 #include "cpps/cst/parameter-modifier.hpp"
 #include "cpps/source-location.hpp"
 
 namespace CPPS::CST {
 
+struct Declaration;
+
 struct ParameterDeclaration
 {
-    std::unique_ptr<Declaration> declaration;
+    ~ParameterDeclaration();
+
+    Node<Declaration> declaration;
 
     ParameterModifier modifier{ParameterModifier::In};
 

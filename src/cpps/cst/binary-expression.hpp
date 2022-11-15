@@ -4,7 +4,6 @@
 #include <variant>
 #include <vector>
 
-#include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/prefix-expression.hpp"
 #include "cpps/source-location.hpp"
 #include "cpps/token-ref.hpp"

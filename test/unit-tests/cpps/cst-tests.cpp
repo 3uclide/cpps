@@ -1,9 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "cpps/cst/.include-types.hpp"
+#include "cpps/cst.hpp"
 #include "cpps/lexeme.hpp"
 #include "cpps/source-location.hpp"
 #include "cpps/token.hpp"
+#include "cpps/utility/bump-pointer-allocator.hpp"
 
 namespace CPPS::CST {
 
@@ -32,30 +33,32 @@ struct ConcreteSyntaxTreeFixture
 
 TEST_CASE_METHOD(ConcreteSyntaxTreeFixture, "Concrete Syntax Tree Compilation", "[CST]")
 {
+    BumpPointerAllocator<> allocator;
+
     TranslationUnit tu;
 
     {
-        std::unique_ptr decl = std::make_unique<Declaration>(UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var")});
+        Node<Declaration> decl(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var")});
 
-        decl->type = FunctionSignature();
-        decl->initializer = std::make_unique<Statement>();
-        decl->initializer->type = std::make_unique<Declaration>(UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "i")});
+        decl->type = Node<FunctionSignature>(allocator);
+        decl->initializer = Node<Statement>(allocator);
+        decl->initializer.value()->type = Node<Declaration>(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "i")});
 
         tu.declarations.add(std::move(decl));
     }
 
     {
-        std::unique_ptr decl = std::make_unique<Declaration>(UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var2")});
+        Node<Declaration> decl = Node<Declaration>(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var2")});
 
-        decl->type = IdentifierExpression();
-        decl->initializer = std::make_unique<Statement>();
+        decl->type = Node<IdentifierExpression>(allocator);
+        decl->initializer = Node<Statement>(allocator);
 
         tu.declarations.add(std::move(decl));
     }
 
-    CHECK(tu.declarations[0].isType<FunctionSignature>());
-    CHECK(tu.declarations[0].initializer->isType<Declaration>());
-    CHECK(tu.declarations[1].isType<IdentifierExpression>());
+    CHECK(tu.declarations[0].type.is<FunctionSignature>());
+    CHECK(tu.declarations[0].initializer.value()->type.is<Declaration>());
+    CHECK(tu.declarations[1].type.is<IdentifierExpression>());
 }
 
 } // namespace CPPS::CST

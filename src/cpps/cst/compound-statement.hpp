@@ -7,7 +7,7 @@ namespace CPPS::CST {
 
 struct CompoundStatement : StatementList
 {
-    SourceLocation getLocation() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     SourceLocation openBraceLocation;
     SourceLocation closeBraceLocation;

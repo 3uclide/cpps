@@ -1,17 +1,19 @@
 #include "cpps/cst/statement.hpp"
 
-#include "cpps/cst/.include-types.hpp"
+#include "cpps/cst.hpp"
 
 namespace CPPS::CST {
 
+Statement::~Statement() = default;
+
 SourceLocation Statement::getLocation() const
 {
-    if (isType<Declaration>()) { return getType<Declaration>().getLocation(); }
-    if (isType<CompoundStatement>()) { return getType<CompoundStatement>().getLocation(); }
-    if (isType<ExpressionStatement>()) { return getType<ExpressionStatement>().getLocation(); }
-    if (isType<IterationStatement>()) { return getType<IterationStatement>().getLocation(); }
-    if (isType<ReturnStatement>()) { return getType<ReturnStatement>().getLocation(); }
-    if (isType<SelectionStatement>()) { return getType<SelectionStatement>().getLocation(); }
+    if (type.is<Declaration>()) { return type.as<Declaration>().getLocation(); }
+    if (type.is<CompoundStatement>()) { return type.as<CompoundStatement>().getLocation(); }
+    if (type.is<ExpressionStatement>()) { return type.as<ExpressionStatement>().getLocation(); }
+    if (type.is<IterationStatement>()) { return type.as<IterationStatement>().getLocation(); }
+    if (type.is<ReturnStatement>()) { return type.as<ReturnStatement>().getLocation(); }
+    if (type.is<SelectionStatement>()) { return type.as<SelectionStatement>().getLocation(); }
 
     return InvalidSourceLocation;
 }

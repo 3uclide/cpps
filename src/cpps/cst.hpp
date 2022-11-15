@@ -1,6 +1,5 @@
 #pragma once
 
-#include "cpps/cst/.forward-declare-types.hpp"
 #include "cpps/cst/binary-expression.hpp"
 #include "cpps/cst/compound-statement.hpp"
 #include "cpps/cst/declaration-list.hpp"

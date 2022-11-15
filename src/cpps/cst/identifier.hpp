@@ -1,10 +1,19 @@
 #pragma once
 
-#include "cpps/cst/qualified-identifier.hpp"
-#include "cpps/cst/unqualified-identifier.hpp"
+#include "cpps/cst/node-variant.hpp"
 
 namespace CPPS::CST {
 
-using Identifier = std::variant<QualifiedIdentifier, UnqualifiedIdentifier>;
+struct QualifiedIdentifier;
+struct UnqualifiedIdentifier;
+
+struct Identifier
+{
+    using Type = NodeVariant<QualifiedIdentifier, UnqualifiedIdentifier>;
+
+    ~Identifier();
+
+    Type type;
+};
 
 } // namespace CPPS::CST

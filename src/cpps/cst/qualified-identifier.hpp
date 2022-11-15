@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include <cpps/cst/unqualified-identifier.hpp>
-#include <cpps/token-ref.hpp>
+#include "cpps/cst/unqualified-identifier.hpp"
+#include "cpps/token-ref.hpp"
 
 namespace CPPS::CST {
 
