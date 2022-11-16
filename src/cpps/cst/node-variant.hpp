@@ -18,14 +18,14 @@ class NodeVariant
 {
 public:
     template<typename T>
-    using NodeTypeT = typename Details::NodeType<T>::Type;
+    using NodeType = typename Details::NodeType<T>::Type;
 
 public:
     NodeVariant() = default;
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
-    NodeVariant(NodeTypeT<T>&& value); // cppcheck-suppress noExplicitConstructor
+    NodeVariant(NodeType<T>&& value); // cppcheck-suppress noExplicitConstructor
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
@@ -42,13 +42,13 @@ public:
     [[nodiscard]] T& as();
 
 private:
-    std::variant<NodeTypeT<TypesT>...> _variant;
+    std::variant<NodeType<TypesT>...> _variant;
 };
 
 template<typename... TypesT>
 template<typename T>
 requires(TypesContainsV<T, TypesT...>)
-NodeVariant<TypesT...>::NodeVariant(NodeTypeT<T>&& value)
+NodeVariant<TypesT...>::NodeVariant(NodeType<T>&& value)
     : _variant(std::move(value))
 {
 }
@@ -74,21 +74,21 @@ template<typename... TypesT>
 template<typename T>
 [[nodiscard]] bool NodeVariant<TypesT...>::is() const
 {
-    return std::holds_alternative<NodeTypeT<T>>(_variant);
+    return std::holds_alternative<NodeType<T>>(_variant);
 }
 
 template<typename... TypesT>
 template<typename T>
 [[nodiscard]] const T& NodeVariant<TypesT...>::as() const
 {
-    return std::get<NodeTypeT<T>>(_variant).get();
+    return std::get<NodeType<T>>(_variant).get();
 }
 
 template<typename... TypesT>
 template<typename T>
 [[nodiscard]] T& NodeVariant<TypesT...>::as()
 {
-    return std::get<NodeTypeT<T>>(_variant).get();
+    return std::get<NodeType<T>>(_variant).get();
 }
 
 } // namespace CPPS::CST
