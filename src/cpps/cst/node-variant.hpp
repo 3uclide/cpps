@@ -26,9 +26,7 @@ public:
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
-    // cppcheck-suppress noExplicitConstructor
-    // NOLINT(*)
-    NodeVariant(NodeType<T>&& value);
+    NodeVariant(NodeType<T>&& value); // cppcheck-suppress noExplicitConstructor
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
