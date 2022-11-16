@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #include <variant>
 
 #include "cpps/cst/details/node-type.hpp"
@@ -25,7 +26,9 @@ public:
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
-    NodeVariant(NodeType<T>&& value); // cppcheck-suppress noExplicitConstructor
+    // cppcheck-suppress noExplicitConstructor
+    // NOLINT(*)
+    NodeVariant(NodeType<T>&& value);
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
