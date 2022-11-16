@@ -2,6 +2,7 @@
 
 #include <variant>
 
+#include "cpps/cst/details/node-type.hpp"
 #include "cpps/cst/node.hpp"
 #include "cpps/token-ref.hpp"
 #include "cpps/utility/type-list.hpp"
@@ -17,25 +18,7 @@ class NodeVariant
 {
 public:
     template<typename T>
-    struct NodeType
-    {
-        using Type = Node<T>;
-    };
-
-    template<>
-    struct NodeType<std::monostate>
-    {
-        using Type = std::monostate;
-    };
-
-    template<>
-    struct NodeType<Token>
-    {
-        using Type = TokenRef;
-    };
-
-    template<typename T>
-    using NodeTypeT = typename NodeType<T>::Type;
+    using NodeTypeT = typename Details::NodeType<T>::Type;
 
 public:
     NodeVariant() = default;

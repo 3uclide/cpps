@@ -2,6 +2,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
+    cst/details/node-type.hpp
     cst/binary-expression.hpp
     cst/compound-statement.hpp
     cst/declaration.hpp
