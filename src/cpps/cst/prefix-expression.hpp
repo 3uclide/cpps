@@ -9,7 +9,7 @@
 
 namespace CPPS::CST {
 
-struct PrefixExpression : PostfixExpression
+struct PrefixExpression
 {
     [[nodiscard]] SourceLocation getLocation() const;
 
@@ -18,7 +18,7 @@ struct PrefixExpression : PostfixExpression
 
 inline SourceLocation PrefixExpression::getLocation() const
 {
-    return ops.empty() ? PostfixExpression::getLocation() : ops[0].get().location;
+    return ops.empty() ? InvalidSourceLocation : ops[0].get().location;
 }
 
 } // namespace CPPS::CST

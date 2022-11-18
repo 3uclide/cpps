@@ -1,11 +1,21 @@
 #pragma once
 
-#include "cpps/cst/binary-expression.hpp"
+#include "cpps/cst/node.hpp"
 
-namespace CPPS::CST {
+namespace CPPS {
 
-struct Expression : AssignmentExpression
+struct SourceLocation;
+
+namespace CST {
+
+struct AssignmentExpression;
+
+struct Expression
 {
+    [[nodiscard]] SourceLocation getLocation() const;
+
+    Node<AssignmentExpression> assignment;
 };
 
-} // namespace CPPS::CST
+} // namespace CST
+} // namespace CPPS

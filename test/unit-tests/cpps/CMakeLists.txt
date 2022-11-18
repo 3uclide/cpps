@@ -13,6 +13,7 @@ set(CPPS_UNIT_TESTS_INCLUDES
 )
 
 set(CPPS_UNIT_TESTS_SOURCES
+    cst/compilation-tests.cpp
     cst/node-tests.cpp
     cst/node-variant-tests.cpp
     grammar/boolean-literal-tests.cpp
@@ -23,7 +24,6 @@ set(CPPS_UNIT_TESTS_SOURCES
     grammar/punctuator-tests.cpp
     utility/bump-pointer-allocator-tests.cpp
     check-diagnosis.cpp
-    cst-tests.cpp
     diagnosis-tests.cpp
     lexeme-tests.cpp
     lexer-tests.cpp

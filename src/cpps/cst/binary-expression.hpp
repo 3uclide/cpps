@@ -1,10 +1,7 @@
 #pragma once
 
-#include <functional>
-#include <variant>
-#include <vector>
-
-#include "cpps/cst/prefix-expression.hpp"
+#include "cpps/cst/basic-expression.hpp"
+#include "cpps/cst/node-list.hpp"
 #include "cpps/source-location.hpp"
 #include "cpps/token-ref.hpp"
 
@@ -18,22 +15,22 @@ struct BinaryExpression : ExpressionTypeT
         TokenRef op;
     };
 
-    SourceLocation getLocation() const;
+    [[nodiscard]] SourceLocation getLocation() const;
 
     template<typename T>
     requires(std::is_base_of_v<ExpressionTypeT, T>)
-    [[nodiscard]] const std::vector<typename T::Term>& termsOf() const;
+    [[nodiscard]] const NodeList<typename T::Term>& termsOf() const;
 
     template<typename T>
     requires(std::is_base_of_v<ExpressionTypeT, T>)
-    [[nodiscard]] std::vector<typename T::Term>& termsOf();
+    [[nodiscard]] NodeList<typename T::Term>& termsOf();
 
     // cppcheck-suppress duplInheritedMember
-    std::vector<Term> terms;
+    NodeList<Term> terms;
 };
 
 // clang-format off
-struct IsAsExpression : BinaryExpression<PrefixExpression> {};
+struct IsAsExpression : BinaryExpression<BasicExpression> {};
 struct MultiplicativeExpression : BinaryExpression<IsAsExpression> {};
 struct AdditiveExpression : BinaryExpression<MultiplicativeExpression> {};
 struct ShiftExpression : BinaryExpression<AdditiveExpression> {};
@@ -57,16 +54,17 @@ SourceLocation BinaryExpression<ExpressionTypeT>::getLocation() const
 template<typename ExpressionTypeT>
 template<typename T>
 requires(std::is_base_of_v<ExpressionTypeT, T>)
-[[nodiscard]] const std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf() const
+[[nodiscard]] const NodeList<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf() const
 {
     return ExpressionTypeT::terms;
 }
 
 template<typename ExpressionTypeT>
 template<typename T>
-requires(std::is_base_of_v<ExpressionTypeT, T> )
-[[nodiscard]] std::vector<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf()
+requires(std::is_base_of_v<ExpressionTypeT, T>)
+[[nodiscard]] NodeList<typename T::Term>& BinaryExpression<ExpressionTypeT>::termsOf()
 {
     return T::terms;
 }
+
 } // namespace CPPS::CST

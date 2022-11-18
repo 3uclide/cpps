@@ -12,7 +12,7 @@ namespace CPPS::CST {
 
 struct IdentifierExpression;
 
-struct PostfixExpression : PrimaryExpression
+struct PostfixExpression
 {
     struct Term
     {

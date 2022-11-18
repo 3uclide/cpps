@@ -15,19 +15,19 @@ struct ConcreteSyntaxTreeFixture
         tokens.reserve(32);
     }
 
-    const Token& newToken(Lexeme lexeme, std::string text)
+    const Token& newToken(Lexeme lexeme, std::string_view text)
     {
         return newToken(lexeme, SourceLocation{0, 0}, text);
     }
 
-    const Token& newToken(Lexeme lexeme, SourceLocation location, std::string text)
+    const Token& newToken(Lexeme lexeme, SourceLocation location, std::string_view text)
     {
         assert(tokens.size() < tokens.capacity());
         tokens.emplace_back(lexeme, location, text);
         return tokens.back();
     }
 
-    // must not realloc
+    // must not re-alloc
     std::vector<Token> tokens;
 };
 
@@ -52,9 +52,14 @@ TEST_CASE_METHOD(ConcreteSyntaxTreeFixture, "Concrete Syntax Tree Compilation", 
 
         decl->type = Node<IdentifierExpression>(allocator);
         decl->initializer = Node<Statement>(allocator);
+        decl->initializer.value()->type = Node<ExpressionStatement>(allocator);
+        decl->initializer.value()->type.as<ExpressionStatement>().expression = Node<Expression>(allocator);
 
         tu.declarations.add(std::move(decl));
     }
+
+    Node<int> nullnode;
+    (void)nullnode;
 
     CHECK(tu.declarations[0].type.is<FunctionSignature>());
     CHECK(tu.declarations[0].initializer.value()->type.is<Declaration>());

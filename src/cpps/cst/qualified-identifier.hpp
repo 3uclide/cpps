@@ -9,13 +9,13 @@ namespace CPPS::CST {
 
 struct QualifiedIdentifier
 {
-    struct term
+    struct Term
     {
         TokenRef scope;
         UnqualifiedIdentifier identifier;
     };
 
-    std::vector<term> terms;
+    std::vector<Term> terms;
 };
 
 } // namespace CPPS::CST

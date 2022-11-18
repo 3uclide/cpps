@@ -2,7 +2,7 @@ find_package(fmt CONFIG REQUIRED)
 find_package(range-v3 CONFIG REQUIRED)
 
 set(CPPS_INCLUDES
-    cst/details/node-type.hpp
+    cst/basic-expression.hpp
     cst/binary-expression.hpp
     cst/compound-statement.hpp
     cst/declaration.hpp
@@ -58,6 +58,7 @@ set(CPPS_INCLUDES
 )
 
 set(CPPS_SOURCES
+    cst/basic-expression.cpp
     cst/declaration.cpp
     cst/declaration-list.cpp
     cst/expression.cpp

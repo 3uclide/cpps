@@ -19,7 +19,7 @@ struct Declaration
 {
     using Type = NodeVariant<FunctionSignature, IdentifierExpression>;
 
-    explicit Declaration(UnqualifiedIdentifier&& unqualId);
+    explicit Declaration(UnqualifiedIdentifier&& id);
 
     ~Declaration();
 
@@ -38,8 +38,8 @@ struct Declaration
     SourceLocation equalLocation;
 };
 
-inline Declaration::Declaration(UnqualifiedIdentifier&& unqualId)
-    : identifier(unqualId)
+inline Declaration::Declaration(UnqualifiedIdentifier&& id)
+    : identifier(id)
 {
 }
 

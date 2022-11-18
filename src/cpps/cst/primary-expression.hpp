@@ -1,9 +1,9 @@
 #pragma once
 
 #include "cpps/cst/node-variant.hpp"
-#include "cpps/token-ref.hpp"
 
 namespace CPPS {
+class Token;
 struct SourceLocation;
 } // namespace CPPS
 
@@ -13,20 +13,15 @@ struct Declaration;
 struct ExpressionList;
 struct IdentifierExpression;
 
-struct PrimaryExpression
+using BasePrimaryExpression = NodeVariant<std::monostate, IdentifierExpression, Declaration, Token, ExpressionList>;
+
+struct PrimaryExpression : BasePrimaryExpression
 {
+    using BasePrimaryExpression::BasePrimaryExpression;
+
     ~PrimaryExpression();
 
-    using Type = NodeVariant<
-        std::monostate,
-        IdentifierExpression,
-        Declaration,
-        TokenRef,
-        ExpressionList>;
-
     [[nodiscard]] SourceLocation getLocation() const;
-
-    Type type;
 };
 
 } // namespace CPPS::CST

@@ -21,19 +21,19 @@ public:
     explicit Node(auto& allocator, ArgsT... args);
 
     Node(Node&& other);
-    Node& operator=(Node&& other);
+    Node& operator=(Node&& other) noexcept;
     ~Node();
 
-    operator bool() const;
+    [[nodiscard]] operator bool() const;
 
-    const T& get() const;
-    T& get();
+    [[nodiscard]] const T& get() const;
+    [[nodiscard]] T& get();
 
-    const T& operator*() const;
-    T& operator*();
+    [[nodiscard]] const T& operator*() const;
+    [[nodiscard]] T& operator*();
 
-    const T* operator->() const;
-    T* operator->();
+    [[nodiscard]] const T* operator->() const;
+    [[nodiscard]] T* operator->();
 
 public:
     template<typename... ArgsT>
@@ -64,7 +64,7 @@ Node<T>::Node(Node&& other)
 }
 
 template<typename T>
-Node<T>& Node<T>::operator=(Node&& other)
+Node<T>& Node<T>::operator=(Node&& other) noexcept
 {
     if (this != &other)
     {
