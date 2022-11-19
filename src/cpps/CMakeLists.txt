@@ -43,6 +43,7 @@ set(CPPS_INCLUDES
     grammar/punctuator.hpp
     grammar/string-literal.hpp
     utility/bump-pointer-allocator.hpp
+    utility/strings.hpp
     utility/type-list.hpp
     comment.hpp
     cst.hpp
@@ -54,7 +55,6 @@ set(CPPS_INCLUDES
     source-reader.hpp
     token.hpp
     tokens.hpp
-    utility.hpp
 )
 
 set(CPPS_SOURCES

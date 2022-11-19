@@ -7,7 +7,6 @@
 #include "cpps/diagnosis.hpp"
 #include "cpps/source.hpp"
 #include "cpps/tokens.hpp"
-#include "cpps/utility.hpp"
 
 namespace CPPS {
 
