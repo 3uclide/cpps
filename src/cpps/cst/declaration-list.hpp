@@ -10,6 +10,10 @@ struct DeclarationList : NodeList<Declaration>
 {
     using NodeList<Declaration>::NodeList;
 
+    DeclarationList() = default;
+    DeclarationList(DeclarationList&& other) = default;
+    DeclarationList& operator=(DeclarationList&& other) = default;
+
     ~DeclarationList();
 };
 

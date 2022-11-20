@@ -25,6 +25,11 @@ public:
 
 public:
     NodeVariant() = default;
+    NodeVariant(NodeVariant&& other) = default;
+    NodeVariant& operator=(NodeVariant&& other) = default;
+
+    NodeVariant(const NodeVariant& other) = delete;
+    NodeVariant& operator=(const NodeVariant& other) = delete;
 
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)

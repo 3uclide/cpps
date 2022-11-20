@@ -50,6 +50,7 @@ set(CPPS_INCLUDES
     diagnosis.hpp
     lexeme.hpp
     lexer.hpp
+    parser.hpp
     source.hpp
     source-location.hpp
     source-reader.hpp
@@ -85,6 +86,7 @@ set(CPPS_SOURCES
     grammar/pointer-literal.cpp
     grammar/punctuator.cpp
     lexer.cpp
+    parser.cpp
     source-reader.cpp
 
     # TODO cleaner integration

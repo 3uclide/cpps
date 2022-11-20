@@ -3,6 +3,8 @@
 #include <cassert>
 #include <utility>
 
+#include "cpps/utility/bump-pointer-allocator.hpp"
+
 namespace CPPS::CST {
 
 /*
@@ -17,8 +19,8 @@ public:
     Node& operator=(const Node&) = delete;
 
 public:
-    template<typename... ArgsT>
-    explicit Node(auto& allocator, ArgsT... args);
+    template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
+    explicit Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args);
 
     Node(Node&& other);
     Node& operator=(Node&& other) noexcept;
@@ -36,9 +38,11 @@ public:
     [[nodiscard]] T* operator->();
 
 public:
-    template<typename... ArgsT>
-    void create(auto& allocator, ArgsT... args);
-    void destroy(auto& allocator); // calling destroy is optional
+    template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
+    void create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args);
+
+    template<std::size_t AllocatorBlockCapacityT>
+    void destroy(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator); // calling destroy is optional
 
 private:
     template<typename... ArgsT>
@@ -50,8 +54,8 @@ private:
 };
 
 template<typename T>
-template<typename... ArgsT>
-Node<T>::Node(auto& allocator, ArgsT... args)
+template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
+Node<T>::Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args)
 {
     create(allocator, std::forward<ArgsT>(args)...);
 }
@@ -139,8 +143,8 @@ T* Node<T>::operator->()
 }
 
 template<typename T>
-template<typename... ArgsT>
-void Node<T>::create(auto& allocator, ArgsT... args)
+template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
+void Node<T>::create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args)
 {
     assert(_node == nullptr);
 
@@ -150,7 +154,8 @@ void Node<T>::create(auto& allocator, ArgsT... args)
 }
 
 template<typename T>
-void Node<T>::destroy(auto& allocator)
+template<std::size_t AllocatorBlockCapacityT>
+void Node<T>::destroy(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator)
 {
     assert(_node != nullptr);
 

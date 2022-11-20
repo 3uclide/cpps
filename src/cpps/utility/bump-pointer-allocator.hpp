@@ -16,6 +16,11 @@ class BumpPointerAllocator
 {
 public:
     BumpPointerAllocator() = default;
+    BumpPointerAllocator(BumpPointerAllocator&&) = default;
+    BumpPointerAllocator& operator=(BumpPointerAllocator&&) = default;
+
+    BumpPointerAllocator(const BumpPointerAllocator&) = delete;
+    BumpPointerAllocator& operator=(const BumpPointerAllocator&) = delete;
 
     template<typename T>
     requires(sizeof(T) <= BlockCapacityT)

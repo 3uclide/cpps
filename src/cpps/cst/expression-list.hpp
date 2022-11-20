@@ -10,6 +10,10 @@ struct ExpressionList : NodeList<Expression>
 {
     using NodeList<Expression>::NodeList;
 
+    ExpressionList() = default;
+    ExpressionList(ExpressionList&& other) = default;
+    ExpressionList& operator=(ExpressionList&& other) = default;
+
     ~ExpressionList();
 };
 

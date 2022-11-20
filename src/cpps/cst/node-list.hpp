@@ -43,6 +43,11 @@ public:
 
 public:
     NodeList() = default;
+    NodeList(NodeList&& other) = default;
+    NodeList& operator=(NodeList&& other) = default;
+
+    NodeList(const NodeList& other) = delete;
+    NodeList& operator=(const NodeList& other) = delete;
 
     explicit NodeList(std::vector<Node<T>>&& nodes);
 
