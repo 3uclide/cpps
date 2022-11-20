@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cassert>
+#include <memory>
 #include <vector>
 
 namespace CPPS {
@@ -9,7 +10,7 @@ namespace CPPS {
 /**
  * ref https://fitzgeraldnick.com/2019/11/01/always-bump-downwards.html
  */
-template<std::size_t BlockCapacityT = 1024>
+template<std::size_t BlockCapacityT = 500'000>
 requires(BlockCapacityT > 0)
 class BumpPointerAllocator
 {
@@ -39,11 +40,12 @@ private:
 
 private:
     using Block = std::array<std::byte, BlockCapacityT>;
-    using Blocks = std::vector<Block>;
+    using BlockPtr = std::unique_ptr<Block>;
+    using Blocks = std::vector<BlockPtr>;
 
 private:
-    Blocks _blocks{Block{std::byte{}}};
-    std::byte* _ptr{_blocks.back().data() + BlockCapacityT};
+    Blocks _blocks{[] {Blocks blocks; blocks.emplace_back(std::make_unique<Block>()); return blocks; }()};
+    std::byte* _ptr{_blocks.back()->data() + BlockCapacityT};
 };
 
 template<std::size_t BlockCapacityT>
@@ -85,15 +87,15 @@ void* BumpPointerAllocator<BlockCapacityT>::allocate(std::size_t size, std::size
         return static_cast<std::byte*>(reinterpret_cast<void*>(alignedIntPtr)); // NOLINT(performance-no-int-to-ptr)
     };
 
-    std::byte* data = _blocks.back().data();
+    std::byte* data = _blocks.back()->data();
 
     std::byte* newPtr = getNextAligned(_ptr);
 
     if (newPtr < data)
     {
-        _blocks.emplace_back(Block{std::byte{}});
+        _blocks.emplace_back(std::make_unique<Block>());
 
-        data = _blocks.back().data();
+        data = _blocks.back()->data();
 
         newPtr = getNextAligned(data + BlockCapacityT);
     }
@@ -145,10 +147,10 @@ template<std::size_t BlockCapacityT>
 requires(BlockCapacityT > 0)
 [[nodiscard]] std::size_t BumpPointerAllocator<BlockCapacityT>::getUsedBytesCount() const
 {
-    assert(_ptr >= _blocks.back().data() && _ptr < _blocks.back().data() + BlockCapacityT);
+    assert(_ptr >= _blocks.back()->data() && _ptr < _blocks.back()->data() + BlockCapacityT);
 
     const std::size_t filledBlockBytesCount = (_blocks.size() - 1) * BlockCapacityT;
-    const std::size_t remainingBlockBytesCount = reinterpret_cast<std::uintptr_t>(_blocks.back().data()) + BlockCapacityT - reinterpret_cast<std::uintptr_t>(_ptr);
+    const std::size_t remainingBlockBytesCount = reinterpret_cast<std::uintptr_t>(_blocks.back()->data()) + BlockCapacityT - reinterpret_cast<std::uintptr_t>(_ptr);
 
     return filledBlockBytesCount + remainingBlockBytesCount;
 }
