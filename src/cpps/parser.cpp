@@ -1,5 +1,7 @@
 #include "cpps/parser.hpp"
 
+#include <utility>
+
 namespace CPPS {
 
 Parser::Parser(Diagnosis& diagnosis, const Tokens& tokens)
