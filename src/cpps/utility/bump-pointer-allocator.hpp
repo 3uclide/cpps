@@ -17,8 +17,6 @@ class BumpPointerAllocator
 public:
     BumpPointerAllocator() = default;
 
-    explicit BumpPointerAllocator(std::size_t startBlockCount);
-
     template<typename T>
     requires(sizeof(T) <= BlockCapacityT)
     [[nodiscard]] T* allocate();
@@ -50,14 +48,6 @@ private:
 
 template<std::size_t BlockCapacityT>
 requires(BlockCapacityT > 0)
-BumpPointerAllocator<BlockCapacityT>::BumpPointerAllocator(std::size_t startBlockCount)
-{
-    assert(startBlockCount > 0);
-    _blocks.reserve(startBlockCount);
-}
-
-template<std::size_t BlockCapacityT>
-requires(BlockCapacityT > 0)
 template<typename T>
 requires(sizeof(T) <= BlockCapacityT)
 T* BumpPointerAllocator<BlockCapacityT>::allocate()
@@ -82,8 +72,7 @@ void* BumpPointerAllocator<BlockCapacityT>::allocate(std::size_t size, std::size
     auto getNextAligned = [align, size](std::byte* ptr) -> std::byte* {
         const std::uintptr_t intPtr = reinterpret_cast<std::uintptr_t>(ptr);
         const std::uintptr_t newIntPtr = intPtr - size;
-        const std::uintptr_t align_ = ~(align - 1);
-        const std::uintptr_t alignedIntPtr = newIntPtr & align_;
+        const std::uintptr_t alignedIntPtr = newIntPtr & ~(align - 1);
         return static_cast<std::byte*>(reinterpret_cast<void*>(alignedIntPtr)); // NOLINT(performance-no-int-to-ptr)
     };
 
@@ -115,8 +104,7 @@ void BumpPointerAllocator<BlockCapacityT>::deallocate(const void* ptr, std::size
     {
         const std::uintptr_t intPtr = reinterpret_cast<std::uintptr_t>(_ptr);
         const std::uintptr_t newIntPtr = intPtr + size;
-        const std::uintptr_t align_ = ~(align - 1);
-        const std::uintptr_t alignedIntPtr = newIntPtr & align_;
+        const std::uintptr_t alignedIntPtr = newIntPtr & ~(align - 1);
 
         _ptr = static_cast<std::byte*>(reinterpret_cast<void*>(alignedIntPtr)); // NOLINT(performance-no-int-to-ptr)
     }
