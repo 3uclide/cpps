@@ -20,7 +20,7 @@ public:
 
 public:
     template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
-    explicit Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args);
+    explicit Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT&&... args);
 
     Node(Node&& other);
     Node& operator=(Node&& other) noexcept;
@@ -39,14 +39,14 @@ public:
 
 public:
     template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
-    void create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args);
+    void create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT&&... args);
 
     template<std::size_t AllocatorBlockCapacityT>
     void destroy(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator); // calling destroy is optional
 
 private:
     template<typename... ArgsT>
-    static void ctor(T* node, ArgsT... args);
+    static void ctor(T* node, ArgsT&&... args);
     static void dtor(T* node);
 
 private:
@@ -55,7 +55,7 @@ private:
 
 template<typename T>
 template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
-Node<T>::Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args)
+Node<T>::Node(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT&&... args)
 {
     create(allocator, std::forward<ArgsT>(args)...);
 }
@@ -144,7 +144,7 @@ T* Node<T>::operator->()
 
 template<typename T>
 template<std::size_t AllocatorBlockCapacityT, typename... ArgsT>
-void Node<T>::create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT... args)
+void Node<T>::create(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator, ArgsT&&... args)
 {
     assert(_node == nullptr);
 
@@ -168,7 +168,7 @@ void Node<T>::destroy(BumpPointerAllocator<AllocatorBlockCapacityT>& allocator)
 
 template<typename T>
 template<typename... ArgsT>
-void Node<T>::ctor(T* node, ArgsT... args)
+void Node<T>::ctor(T* node, ArgsT&&... args)
 {
     new (node) T(std::forward<ArgsT>(args)...);
 }
