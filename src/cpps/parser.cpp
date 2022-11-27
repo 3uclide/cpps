@@ -1,5 +1,6 @@
 #include "cpps/parser.hpp"
 
+#include <string>
 #include <utility>
 
 #include "cpps/diagnosis.hpp"
@@ -537,7 +538,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
             return {};
         }
 
-        postfix->terms.emplace_back(CST::PostfixExpression::Term{.op = current()});
+        postfix->terms.emplace_back(current());
         CST::PostfixExpression::Term& term{postfix->terms.back()};
 
         next();

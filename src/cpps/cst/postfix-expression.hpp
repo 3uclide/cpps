@@ -16,6 +16,8 @@ struct PostfixExpression
 {
     struct Term
     {
+        explicit Term(const Token& token);
+
         TokenRef op;
 
         // This is used if *_operator is .
@@ -30,5 +32,11 @@ struct PostfixExpression
 
     std::vector<Term> terms;
 };
+
+inline PostfixExpression::Term::Term(const Token& token)
+    : op(token)
+{
+
+}
 
 } // namespace CPPS::CST
