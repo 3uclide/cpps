@@ -1,0 +1,14 @@
+{
+  "hasModules": false,
+  "threshold": 0,
+  "configurations": {
+    "reporters": [ "html", "verbose" ],
+    "format": [
+      "cpp",
+      "c"
+    ],
+    "ignore": [ "**/test/**" ],
+    "min-tokens": 200,
+    "absolute": true
+  }
+}
