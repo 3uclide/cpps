@@ -53,10 +53,14 @@ public:
 
     void add(Node<T>&& node);
 
+    [[nodiscard]] bool empty() const;
     [[nodiscard]] std::size_t size() const;
 
     [[nodiscard]] const T& operator[](std::size_t index) const;
     [[nodiscard]] T& operator[](std::size_t index);
+
+    [[nodiscard]] const T& back() const;
+    [[nodiscard]] T& back();
 
     [[nodiscard]] ConstIterator begin() const;
     [[nodiscard]] ConstIterator end() const;
@@ -69,6 +73,15 @@ public:
 private:
     std::vector<Node<T>> _nodes;
 };
+
+template<typename T>
+struct IsNodeList : std::false_type { };
+
+template<typename T>
+struct IsNodeList<NodeList<T>> : std::true_type { };
+
+template<typename T>
+inline constexpr bool IsNodeListV = IsNodeList<T>::value;
 
 template<typename T>
 NodeList<T>::ConstIterator::ConstIterator(typename std::vector<Node<T>>::const_iterator it)
@@ -134,6 +147,12 @@ void NodeList<T>::add(Node<T>&& node)
 }
 
 template<typename T>
+bool NodeList<T>::empty() const
+{
+    return _nodes.empty();
+}
+
+template<typename T>
 std::size_t NodeList<T>::size() const
 {
     return _nodes.size();
@@ -151,6 +170,20 @@ T& NodeList<T>::operator[](std::size_t index)
 {
     assert(index < _nodes.size());
     return *_nodes[index];
+}
+
+template<typename T>
+const T& NodeList<T>::back() const
+{
+    assert(!_nodes.empty());
+    return *_nodes.back();
+}
+
+template<typename T>
+T& NodeList<T>::back()
+{
+    assert(!_nodes.empty());
+    return *_nodes.back();
 }
 
 template<typename T>

@@ -11,8 +11,11 @@ struct StatementList : NodeList<Statement>
     using NodeList<Statement>::NodeList;
 
     StatementList() = default;
-    StatementList(StatementList&& other) = default;
-    StatementList& operator=(StatementList&& other) = default;
+    StatementList(StatementList&&) = default;
+    StatementList& operator=(StatementList&&) = default;
+
+    StatementList(const StatementList&) = delete;
+    StatementList& operator=(const StatementList&) = delete;
 
     ~StatementList();
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cpps/cst/node-list.hpp"
+#include "cpps/source-location.hpp"
 
 namespace CPPS::CST {
 
@@ -15,6 +16,9 @@ struct ParameterDeclarationList : NodeList<ParameterDeclaration>
     ParameterDeclarationList& operator=(ParameterDeclarationList&& other) = default;
 
     ~ParameterDeclarationList();
+
+    SourceLocation openParenthesisLocation;
+    SourceLocation closeParenthesisLocation;
 };
 
 } // namespace CPPS::CST

@@ -4,8 +4,8 @@
 #include <memory>
 #include <variant>
 
+#include "cpps/cst/node.hpp"
 #include "cpps/cst/node-variant.hpp"
-#include "cpps/cst/unqualified-identifier.hpp"
 #include "cpps/source-location.hpp"
 #include "cpps/token-ref.hpp"
 
@@ -14,18 +14,17 @@ namespace CPPS::CST {
 struct Statement;
 struct FunctionSignature;
 struct IdentifierExpression;
+struct UnqualifiedIdentifier;
 
 struct Declaration
 {
     using Type = NodeVariant<FunctionSignature, IdentifierExpression>;
 
-    explicit Declaration(UnqualifiedIdentifier&& id);
-
     ~Declaration();
 
     [[nodiscard]] SourceLocation getLocation() const;
 
-    UnqualifiedIdentifier identifier;
+    Node<UnqualifiedIdentifier> identifier;
 
     Type type;
 
@@ -37,11 +36,6 @@ struct Declaration
     SourceLocation endLocation;
     SourceLocation equalLocation;
 };
-
-inline Declaration::Declaration(UnqualifiedIdentifier&& id)
-    : identifier(id)
-{
-}
 
 inline SourceLocation Declaration::getLocation() const
 {

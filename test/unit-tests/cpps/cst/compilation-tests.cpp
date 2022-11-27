@@ -38,18 +38,21 @@ TEST_CASE_METHOD(ConcreteSyntaxTreeFixture, "Concrete Syntax Tree Compilation", 
     TranslationUnit tu;
 
     {
-        Node<Declaration> decl(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var")});
+        Node<Declaration> decl(allocator);
 
+        decl->identifier = Node<UnqualifiedIdentifier>(allocator, newToken(Lexeme{CPPS::Identifier{}}, "my_var"));
         decl->type = Node<FunctionSignature>(allocator);
         decl->initializer = Node<Statement>(allocator);
-        decl->initializer.value()->type = Node<Declaration>(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "i")});
+        decl->initializer.value()->type = Node<Declaration>(allocator);
+        decl->initializer.value()->type.as<Declaration>().identifier = Node<UnqualifiedIdentifier>(allocator, newToken(Lexeme{CPPS::Identifier{}}, "i"));
 
         tu.declarations.add(std::move(decl));
     }
 
     {
-        Node<Declaration> decl = Node<Declaration>(allocator, UnqualifiedIdentifier{newToken(Lexeme{CPPS::Identifier{}}, "my_var2")});
+        Node<Declaration> decl = Node<Declaration>(allocator);
 
+        decl->identifier = Node<UnqualifiedIdentifier>(allocator, newToken(Lexeme{CPPS::Identifier{}}, "my_var2"));
         decl->type = Node<IdentifierExpression>(allocator);
         decl->initializer = Node<Statement>(allocator);
         decl->initializer.value()->type = Node<ExpressionStatement>(allocator);

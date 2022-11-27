@@ -12,6 +12,8 @@ struct BinaryExpression : ExpressionTypeT
 {
     struct Term : ExpressionTypeT
     {
+        explicit Term(const Token& token);
+
         TokenRef op;
     };
 
@@ -44,6 +46,12 @@ struct LogicalAndExpression : BinaryExpression<BitOrExpression> {};
 struct LogicalOrExpression : BinaryExpression<LogicalAndExpression> {};
 struct AssignmentExpression : BinaryExpression<LogicalOrExpression> {};
 // clang-format on
+
+template<typename ExpressionTypeT>
+BinaryExpression<ExpressionTypeT>::Term::Term(const Token& token)
+    : op(token)
+{
+}
 
 template<typename ExpressionTypeT>
 SourceLocation BinaryExpression<ExpressionTypeT>::getLocation() const

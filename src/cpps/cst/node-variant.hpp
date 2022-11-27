@@ -3,6 +3,7 @@
 #include <utility>
 #include <variant>
 
+#include "cpps/cst/node-list.hpp"
 #include "cpps/cst/node.hpp"
 #include "cpps/token-ref.hpp"
 #include "cpps/utility/type-list.hpp"
@@ -38,7 +39,7 @@ public:
     template<typename T>
     requires(TypesContainsV<T, TypesT...>)
     NodeVariant& operator=(Node<T>&& value);
-    NodeVariant& operator=(TokenRef&& value);
+    NodeVariant& operator=(const Token& value) requires(TypesContainsV<Token, TypesT...>);
 
     template<typename T>
     [[nodiscard]] bool is() const;
@@ -89,10 +90,9 @@ NodeVariant<TypesT...>& NodeVariant<TypesT...>::operator=(Node<T>&& value)
 }
 
 template<typename... TypesT>
-NodeVariant<TypesT...>& NodeVariant<TypesT...>::operator=(TokenRef&& value)
+NodeVariant<TypesT...>& NodeVariant<TypesT...>::operator=(const Token& value) requires(TypesContainsV<Token, TypesT...>)
 {
-    static_assert(TypesContainsV<Token, TypesT...>);
-    _variant = std::move(value);
+    _variant = std::ref(value);
     return *this;
 }
 

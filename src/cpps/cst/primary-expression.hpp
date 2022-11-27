@@ -13,15 +13,15 @@ struct Declaration;
 struct ExpressionList;
 struct IdentifierExpression;
 
-using BasePrimaryExpression = NodeVariant<std::monostate, IdentifierExpression, Declaration, Token, ExpressionList>;
-
-struct PrimaryExpression : BasePrimaryExpression
+struct PrimaryExpression
 {
-    using BasePrimaryExpression::BasePrimaryExpression;
+    using Type = NodeVariant<std::monostate, IdentifierExpression, Declaration, Token, ExpressionList>;
 
     ~PrimaryExpression();
 
     [[nodiscard]] SourceLocation getLocation() const;
+
+    Type type;
 };
 
 } // namespace CPPS::CST

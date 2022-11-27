@@ -7,15 +7,16 @@ namespace CPPS::CST {
 
 struct TranslationUnit
 {
-    using Allocator = BumpPointerAllocator<1024ULL * 500ULL>;
+    using Allocator = BumpPointerAllocator<1024ULL * 50ULL>;
 
     TranslationUnit() = default;
     TranslationUnit(TranslationUnit&&) = default;
     TranslationUnit& operator=(TranslationUnit&&) = default;
 
-    DeclarationList declarations;
-
+    // Must stay first to be destroyed last
     Allocator allocator;
+
+    DeclarationList declarations;
 };
 
 } // namespace CPPS::CST

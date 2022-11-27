@@ -11,6 +11,8 @@ struct Expression;
 
 struct ReturnStatement
 {
+    explicit ReturnStatement(const Token& id);
+
     ~ReturnStatement();
 
     [[nodiscard]] SourceLocation getLocation() const;
@@ -18,6 +20,11 @@ struct ReturnStatement
     TokenRef identifier;
     Node<Expression> expression;
 };
+
+inline ReturnStatement::ReturnStatement(const Token& id)
+    : identifier(id)
+{
+}
 
 inline SourceLocation ReturnStatement::getLocation() const
 {
