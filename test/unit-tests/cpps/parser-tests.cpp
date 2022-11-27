@@ -232,11 +232,11 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
             CHECK(parameterDeclaration.modifier == parameterModifier);
             CHECK(parameterDeclaration.location == location);
 
-            const CST::Declaration& declaration = *parameterDeclaration.declaration;
+            const CST::Declaration& decl = *parameterDeclaration.declaration;
 
-            CHECK(declaration.identifier->identifier.get().text == name);
+            CHECK(decl.identifier->identifier.get().text == name);
 
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(declaration.type);
+            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(decl.type);
             const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == type);
