@@ -1,6 +1,5 @@
 #include "cpps/parser.hpp"
 
-#include <string>
 #include <utility>
 
 #include "cpps/diagnosis.hpp"

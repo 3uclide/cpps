@@ -397,7 +397,7 @@ TEST_CASE("Parser binary expression", "[Parser], [CST]")
 
         CHECK(term.op.get().lexeme == punctuator);
         CHECK(getAs<Token>(term.primary->type).text == rhs_v);
-    };
+    }; // NOLINT(readability/braces)
 
     check("*", "my_var: int = 4 * 2;", "4", Punctuator::Multiply, "2", static_cast<CST::MultiplicativeExpression*>(nullptr));
     check("/", "my_var: int = 4 / 2;", "4", Punctuator::Slash, "2", static_cast<CST::MultiplicativeExpression*>(nullptr));
