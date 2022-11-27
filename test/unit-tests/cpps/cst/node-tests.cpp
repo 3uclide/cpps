@@ -38,17 +38,38 @@ struct NodeFixture
 
 TEST_CASE_METHOD(NodeFixture, "Node create", "[Node], [CST]")
 {
-    Node<NodeMock> node;
+    SECTION("ctor is called")
+    {
+        CHECK_FALSE(_node);
+        CHECK_FALSE(ctorCalled);
+        CHECK_FALSE(dtorCalled);
 
-    CHECK_FALSE(node);
-    CHECK_FALSE(ctorCalled);
-    CHECK_FALSE(dtorCalled);
+        _node.create(_allocator);
 
-    node.create(_allocator);
+        CHECK(_node);
+        CHECK(ctorCalled);
+        CHECK_FALSE(dtorCalled);
+    }
 
-    CHECK(node);
-    CHECK(ctorCalled);
-    CHECK_FALSE(dtorCalled);
+    SECTION("perfect forwarding")
+    {
+        struct RefOwner
+        {
+            explicit RefOwner(const NodeMock& node)
+                : _node(node)
+            {
+            }
+
+            std::reference_wrapper<const NodeMock> _node;
+        };
+
+        NodeMock mock;
+        Node<RefOwner> node;
+        node.create(_allocator, mock);
+
+        CHECK(node);
+        CHECK(&node->_node.get() == &mock);
+    }
 }
 
 TEST_CASE_METHOD(NodeFixture, "Node destroy", "[Node], [CST]")
