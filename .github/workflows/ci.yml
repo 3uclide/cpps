@@ -23,7 +23,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ubuntu-latest
+        os: 
+          - ubuntu-latest
         container:
           - 3uclide/cpps:ubuntu-gcc-12
           - 3uclide/cpps:ubuntu-clang-15
