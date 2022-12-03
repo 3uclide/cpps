@@ -23,38 +23,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-22.04
-          - windows-2022
-        compiler:
-          - llvm-15.0.2
-          - gcc-12
+        os: ubuntu-latest
+        container:
+          - 3uclide/cpps:ubuntu-gcc-12
+          - 3uclide/cpps:ubuntu-clang-15
         generator:
           - "Ninja Multi-Config"
-        exclude:
-          - os: ubuntu-22.04
-            compiler: llvm-15.0.2
-
-          - os: windows-2022
-            compiler: gcc-12
 
         include:
-          - compiler: gcc-12
-            gcov_executable: gcov-12
-            clangtidy: true
-
-          - compiler: llvm-15.0.2
+          - container: 3uclide/cpps:ubuntu-gcc-12
+            gcov_executable: gcov
+          
+          - container: 3uclide/cpps:ubuntu-clang-15
             gcov_executable: "llvm-cov gcov"
-            clangtidy: "15.0.2"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             package_generator: TBZ2
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            clangtidy: "15.0.2"
 
     runs-on: ${{ matrix.os }}
 
@@ -68,22 +53,6 @@ jobs:
           compiler: ${{ matrix.compiler }}
           build_type: ${{ matrix.build_type }}
           generator: ${{ matrix.generator }}
-
-      - name: Setup Cpp
-        uses: aminya/setup-cpp@v0.23.0
-        with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows') }}
-          task: true
-          cmake: true
-          ninja: true
-          conan: true
-          vcpkg: false
-          ccache: true
-          clangtidy: ${{matrix.clangtidy}}
-          cppcheck: true
-          gcovr: true
-          opencppcoverage: true
 
       - name: Coverage
         run: |
