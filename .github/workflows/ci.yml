@@ -25,24 +25,41 @@ jobs:
       matrix:
         os: 
           - ubuntu
+          - windows
 
         compiler:
           - gcc-12
           - clang-15
+          - msvc-17
           
         generator:
           - "Ninja Multi-Config"
 
         include:
+          - os: windows
+            compiler: msvc-17
+            generator: "Visual Studio 2022"
+
           - compiler: gcc-12
             gcov_executable: gcov-12
           
-          - container: clang-15
+          - compiler: clang-15
             gcov_executable: "llvm-cov-15 gcov"
+
+          - compiler: msvc-17
+            gcov_executable: opencppcoverage
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             package_generator: TBZ2
+
+        exclude:
+          - os: windows
+            compiler: gcc-12
+
+          - os: ubuntu
+            compiler: msvc-17
+
 
     runs-on: ubuntu-22.04
     container: 3uclide/cpps:${{ matrix.os }}-${{ matrix.compiler }}
@@ -80,7 +97,7 @@ jobs:
       - name: Publish to Codecov
         uses: codecov/codecov-action@v3.1.1
         with:
-          flags: ${{ runner.os }}, ${{ matrix.compiler }}, unit-tests
-          name: ${{ runner.os }}-${{ matrix.compiler }}-coverage
+          flags: ${{ matrix.os }}, ${{ matrix.compiler }}, unit-tests
+          name: ${{ matrix.os }}-${{ matrix.compiler }}-coverage
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./build/coverage.xml
