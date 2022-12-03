@@ -25,45 +25,20 @@ jobs:
       matrix:
         os: 
           - ubuntu
-          - windows
 
         compiler:
-          - gcc-12
           - clang-15
-          - msvc-17
           
         generator:
           - "Ninja Multi-Config"
 
         include:
-          - os: windows
-            compiler: msvc-17
-            generator: "Visual Studio 2022"
-
-          - compiler: gcc-12
-            gcov_executable: gcov-12
-          
           - compiler: clang-15
             gcov_executable: "llvm-cov-15 gcov"
-
-          - compiler: msvc-17
-            gcov_executable: opencppcoverage
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             package_generator: TBZ2
-
-        exclude:
-          - os: windows
-            compiler: gcc-12
-
-          - os: windows
-            compiler: msvc-17
-            generator: "Ninja Multi-Config"
-            
-          - os: ubuntu
-            compiler: msvc-17
-
 
     runs-on: ${{ matrix.os }}-latest
     container: 3uclide/cpps:${{ matrix.os }}-${{ matrix.compiler }}
