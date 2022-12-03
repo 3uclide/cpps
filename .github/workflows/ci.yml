@@ -24,26 +24,28 @@ jobs:
       fail-fast: false
       matrix:
         os: 
-          - ubuntu-22.04
-        container:
-          - 3uclide/cpps:ubuntu-gcc-12
-          - 3uclide/cpps:ubuntu-clang-15
+          - ubuntu
+
+        compiler:
+          - gcc-12
+          - clang-15
+          
         generator:
           - "Ninja Multi-Config"
 
         include:
-          - container: 3uclide/cpps:ubuntu-gcc-12
-            gcov_executable: gcov
+          - compiler: gcc-12
+            gcov_executable: gcov-12
           
-          - container: 3uclide/cpps:ubuntu-clang-15
-            gcov_executable: "llvm-cov gcov"
+          - container: clang-15
+            gcov_executable: "llvm-cov-15 gcov"
 
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             package_generator: TBZ2
 
-    runs-on: ${{ matrix.os }}
-    container: ${{ matrix.container }}
+    runs-on: ubuntu-22.04
+    container: 3uclide/cpps:${{ matrix.os }}-${{ matrix.compiler }}
 
     steps:
       - name: Checkout
