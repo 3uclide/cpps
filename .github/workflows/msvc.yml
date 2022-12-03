@@ -71,7 +71,6 @@ jobs:
           task coverage
         env:
           CMAKE_GENERATOR: ${{matrix.generator}}
-          GCOV_EXECUTABLE: ${{matrix.gcov_executable}}
 
       - name: Debug Tests
         run: |
