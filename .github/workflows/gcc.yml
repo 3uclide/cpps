@@ -23,19 +23,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: 
+        os:
           - ubuntu
 
         compiler:
           - gcc-12
-          
+
         generator:
           - "Ninja Multi-Config"
 
         include:
           - compiler: gcc-12
             gcov_executable: gcov-12
-          
+
           # Set up preferred package generators, for given build configurations
           - build_type: Release
             package_generator: TBZ2
