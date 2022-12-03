@@ -27,8 +27,7 @@ jobs:
           - windows-2022
 
         compiler:
-          - gcc-12
-          - clang-15
+          - msvc
           
         generator:
           - "Visual Studio 17 2022"
