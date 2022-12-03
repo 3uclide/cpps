@@ -43,6 +43,7 @@ jobs:
             package_generator: TBZ2
 
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
 
     steps:
       - name: Checkout
