@@ -1,0 +1,93 @@
+---
+name: MSVC
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches: [main]
+
+  release:
+    types: [published]
+
+  push:
+    branches-ignore: [main]
+
+env:
+  # Conan cache environment variables
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
+
+jobs:
+  Test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-2022
+
+        compiler:
+          - msvc
+
+        generator:
+          - "Visual Studio 17 2022"
+
+        include:
+          # Set up preferred package generators, for given build configurations
+          - build_type: Release
+            package_generator: TBZ2
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v0.23.0
+        with:
+          compiler: ${{ matrix.compiler }}
+          vcvarsall: true
+          task: true
+          cmake: true
+          ninja: false
+          conan: true
+          vcpkg: false
+          ccache: true
+          clangtidy: "15.0.2"
+          cppcheck: true
+          gcovr: false
+          opencppcoverage: true
+
+      - name: Coverage
+        run: |
+          task coverage
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+
+      - name: Debug Tests
+        run: |
+          task test-debug
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+
+      - name: Release Tests
+        run: |
+          task test-release
+        env:
+          CMAKE_GENERATOR: ${{matrix.generator}}
+
+      - name: Publish to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        with:
+          flags: ${{ matrix.os }}, ${{ matrix.compiler }}, unit-tests
+          name: ${{ matrix.os }}-${{ matrix.compiler }}-coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/coverage.xml
