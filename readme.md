@@ -1,3 +1,5 @@
+# C\+\+²
+
 <div align="center">
 
 [![Clang](https://github.com/3uclide/cpps/actions/workflows/clang.yml/badge.svg)](https://github.com/3uclide/cpps/actions/workflows/clang.yml)
@@ -11,7 +13,7 @@
 
 </div>
 
-# C\+\+²
+## About
 
 C\+\+² is a programming language that transpile to clean C\+\+.
 
