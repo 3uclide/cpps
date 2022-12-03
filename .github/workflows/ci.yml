@@ -57,11 +57,15 @@ jobs:
           - os: windows
             compiler: gcc-12
 
+          - os: windows
+            compiler: msvc-17
+            generator: "Ninja Multi-Config"
+            
           - os: ubuntu
             compiler: msvc-17
 
 
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}-latest
     container: 3uclide/cpps:${{ matrix.os }}-${{ matrix.compiler }}
 
     steps:
