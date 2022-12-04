@@ -734,6 +734,20 @@ TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
     CHECK(errors[1].location == SourceLocation{0, 30});
 }
 
+TEST_CASE("Parser diagnosis missing semicolon at end declaration", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int)");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 1);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration());
+    CHECK(errors[0].location == SourceLocation{0, 0});
+}
+
 TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = 1)");
