@@ -11,8 +11,11 @@ namespace CPPS {
 class Token
 {
 public:
-    Token() = default;
-    Token(Lexeme lexeme_, SourceLocation src, std::string_view text_);
+    static const Token& invalid();
+
+public:
+    constexpr Token() = default;
+    constexpr Token(Lexeme lexeme_, SourceLocation src, std::string_view text_);
 
     bool operator==(const Token&) const = default;
 
@@ -23,7 +26,13 @@ public:
 
 std::ostream& operator<<(std::ostream& os, const Token& value);
 
-inline Token::Token(Lexeme lexeme_, SourceLocation src, std::string_view text_)
+inline const Token& Token::invalid()
+{
+    static const Token Invalid{};
+    return Invalid;
+}
+
+constexpr Token::Token(Lexeme lexeme_, SourceLocation src, std::string_view text_)
     : lexeme(lexeme_)
     , location(src)
     , text(text_)
