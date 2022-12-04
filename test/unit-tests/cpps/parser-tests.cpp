@@ -703,4 +703,35 @@ TEST_CASE("Parser expression list", "[Parser], [CST]")
     checkTerm(expressions[2], ParameterModifier::Out, "o");
 }
 
+TEST_CASE("Parser DiagnosisMessage::dotMustFollowedByValidMemberName", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = my_obj.;)");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 1);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::dotMustFollowedByValidMemberName());
+    CHECK(errors[0].location == SourceLocation{0, 20});
+}
+
+TEST_CASE("Parser DiagnosisMessage::invalidReturnExpression", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> int = { return }");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 2);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::invalidReturnExpression());
+    CHECK(errors[0].location == SourceLocation{0, 30});
+
+    CHECK(errors[1].message == Parser::DiagnosisMessage::invalidStatementInCompoundStatement());
+    CHECK(errors[1].location == SourceLocation{0, 30});
+}
+
 } // namespace CPPS

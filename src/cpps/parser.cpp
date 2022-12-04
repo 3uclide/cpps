@@ -596,7 +596,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
 
             if (!term.identifierExpression)
             {
-                _diagnosis.error(DiagnosisMessage::dotMustFollowedByValidMemberName(), current().location);
+                _diagnosis.error(DiagnosisMessage::dotMustFollowedByValidMemberName(), term.op.get().location);
                 return {};
             }
         }
@@ -1210,8 +1210,7 @@ bool Parser::isEnd() const
 
 const Token& Parser::current() const
 {
-    assert(!isEnd());
-    return _tokens.at(_currentTokenIndex);
+    return !isEnd() ? _tokens.at(_currentTokenIndex) : Token::invalid();
 }
 
 const Token& Parser::peekBack(std::size_t offset) const
