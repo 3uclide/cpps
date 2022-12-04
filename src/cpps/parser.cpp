@@ -52,6 +52,11 @@ std::string Parser::DiagnosisMessage::invalidExpressionAfter(std::string_view to
     return fmt::format("invalid expression after {}", token);
 }
 
+std::string Parser::DiagnosisMessage::invalidReturnParameterModifier(ParameterModifier modifier)
+{
+    return fmt::format("a return value cannot be '{}'", modifier);
+}
+
 std::string Parser::DiagnosisMessage::invalidReturnExpression()
 {
     return "invalid return expression";
@@ -95,16 +100,6 @@ std::string Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration()
 std::string Parser::DiagnosisMessage::missingSemicolonAtEndStatement()
 {
     return "missing ';' at the end of the statement";
-}
-
-std::string Parser::DiagnosisMessage::missingSemicolonEndStatement()
-{
-    return "missing ';' at end of the return statement";
-}
-
-std::string Parser::DiagnosisMessage::parenthesisNotFollowedByExpressionList()
-{
-    return "( is not followed by a valid expression list";
 }
 
 std::string Parser::DiagnosisMessage::subscriptExpressionBracketEmpty()
@@ -243,7 +238,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
 
         if (declaration->initializer == std::nullopt)
         {
-            _diagnosis.error(DiagnosisMessage::illFormedInitializer(), current().location);
+            error(DiagnosisMessage::illFormedInitializer(), declaration->equalLocation);
             next();
             return {};
         }
@@ -252,7 +247,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
     {
         if (declaration->type.is<CST::FunctionSignature>())
         {
-            _diagnosis.error(DiagnosisMessage::missingEqualBeforeFunctionBody(), current().location);
+            error(DiagnosisMessage::missingEqualBeforeFunctionBody(), declaration->getLocation());
             return {};
         }
 
@@ -263,7 +258,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
         }
         else if (mustEndWithSemicolon)
         {
-            _diagnosis.error(DiagnosisMessage::missingSemicolonAtEndDeclaration(), current().location);
+            error(DiagnosisMessage::missingSemicolonAtEndDeclaration(), declaration->getLocation());
             return {};
         }
     }
@@ -312,16 +307,16 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
     {
         params.add(std::move(param));
 
-        const Token& curr = current();
+        const Token& token = current();
 
-        if (curr.lexeme == Punctuator::CloseParenthesis)
+        if (token.lexeme == Punctuator::CloseParenthesis)
         {
             break;
         }
 
-        if (curr.lexeme != Punctuator::Comma)
+        if (token.lexeme != Punctuator::Comma)
         {
-            _diagnosis.error(DiagnosisMessage::missingCommaBetweenParameterDeclarations(), curr.location);
+            error(DiagnosisMessage::missingCommaBetweenParameterDeclarations(), token.location);
             return false;
         }
 
@@ -333,7 +328,7 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
 
     if (closeParenthesisToken.lexeme != Punctuator::CloseParenthesis)
     {
-        _diagnosis.error(DiagnosisMessage::missingCloseParenthesisForParameterList(), closeParenthesisToken.location);
+        error(DiagnosisMessage::missingCloseParenthesisForParameterList(), closeParenthesisToken.location);
         next();
         return false;
     }
@@ -365,7 +360,7 @@ CST::Node<CST::ParameterDeclaration> Parser::parseParameterDeclaration(bool retu
         case ParameterModifier::Move:
             if (returns)
             {
-                _diagnosis.error(fmt::format("a return value cannot be '{}'", startToken.lexeme.get<ParameterModifier>()), current().location);
+                error(DiagnosisMessage::invalidReturnParameterModifier(startToken.lexeme.get<ParameterModifier>()), startToken.location);
                 return {};
             }
             parameterModifier = startToken.lexeme.get<ParameterModifier>();
@@ -453,7 +448,7 @@ std::optional<CST::ExpressionList> Parser::parseExpressionList(SourceLocation op
             }
             else
             {
-                _diagnosis.error(DiagnosisMessage::invalidTextInExpressionList());
+                error(DiagnosisMessage::invalidTextInExpressionList());
                 return {};
             }
         }
@@ -550,7 +545,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
 
             if (term.expressions == std::nullopt)
             {
-                _diagnosis.error(errMsgExpressionsNullptrGetter(), current().location);
+                error(errMsgExpressionsNullptrGetter(), term.op.get().location);
                 return false;
             }
 
@@ -558,7 +553,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
 
             if (closeToken.lexeme != closeLexeme)
             {
-                _diagnosis.error(errMsgNotMatchCloseGetter(), current().location);
+                error(errMsgNotMatchCloseGetter());
                 return false;
             }
 
@@ -596,7 +591,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
 
             if (!term.identifierExpression)
             {
-                _diagnosis.error(DiagnosisMessage::dotMustFollowedByValidMemberName(), term.op.get().location);
+                error(DiagnosisMessage::dotMustFollowedByValidMemberName(), term.op.get().location);
                 return {};
             }
         }
@@ -645,7 +640,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
     {
         if (!declaration->type.is<CST::FunctionSignature>())
         {
-            _diagnosis.error(DiagnosisMessage::unnamedDeclarationAtExpressionScopeMustBeFunction(), current().location);
+            error(DiagnosisMessage::unnamedDeclarationAtExpressionScopeMustBeFunction(), declaration->getLocation());
 
             next();
 
@@ -656,7 +651,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
 
         if (func.returns.is<CST::ParameterDeclarationList>())
         {
-            _diagnosis.error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues(), current().location);
+            error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues());
 
             next();
 
@@ -681,7 +676,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression(
 
     if (!expressionsOpt.has_value())
     {
-        _diagnosis.error(DiagnosisMessage::unexpectedTextAfterOpenParenthesis(), current().location);
+        error(DiagnosisMessage::unexpectedTextAfterOpenParenthesis());
 
         next();
 
@@ -692,7 +687,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression(
 
     if (current().lexeme != Punctuator::CloseParenthesis)
     {
-        _diagnosis.error(DiagnosisMessage::unexpectedTextAfterExpressionList(), current().location);
+        error(DiagnosisMessage::unexpectedTextAfterExpressionList());
 
         next();
 
@@ -766,7 +761,7 @@ CST::Node<CST::FunctionSignature> Parser::parseFunctionSignature()
             }
             else
             {
-                _diagnosis.error(DiagnosisMessage::missingFunctionReturnAfterArrow(), current().location);
+                error(DiagnosisMessage::missingFunctionReturnAfterArrow());
                 return {};
             }
         }
@@ -798,7 +793,7 @@ bool Parser::parseBinaryExpression(BinaryExpressionT& binaryExpression, auto par
         // parse the expression
         if (!(this->*parseExpressionMethod)(binaryExpression.terms.back(), args...))
         {
-            _diagnosis.error(DiagnosisMessage::invalidExpressionAfter(binaryExpression.terms.back().op.get().text), current().location);
+            error(DiagnosisMessage::invalidExpressionAfter(binaryExpression.terms.back().op.get().text));
             return false;
         }
     }
@@ -1069,7 +1064,7 @@ CST::Node<CST::CompoundStatement> Parser::parseCompoundStatement(SourceLocation 
         }
         else
         {
-            _diagnosis.error(DiagnosisMessage::invalidStatementInCompoundStatement(), current().location);
+            error(DiagnosisMessage::invalidStatementInCompoundStatement());
             return {};
         }
     }
@@ -1105,7 +1100,7 @@ CST::Node<CST::ExpressionStatement> Parser::parseExpressionStatement(bool mustEn
     }
     else if (mustEndWithSemicolon)
     {
-        _diagnosis.error(DiagnosisMessage::missingSemicolonAtEndStatement(), current().location);
+        error(DiagnosisMessage::missingSemicolonAtEndStatement());
         return {};
     }
 
@@ -1227,6 +1222,16 @@ const Token& Parser::peekBack(std::size_t offset) const
 void Parser::next()
 {
     ++_currentTokenIndex;
+}
+
+void Parser::error(std::string message)
+{
+    error(std::move(message), isEnd() ? peekBack(1).location : current().location);
+}
+
+void Parser::error(std::string message, SourceLocation location)
+{
+    _diagnosis.error(std::move(message), location);
 }
 
 CST::TranslationUnit::Allocator& Parser::allocator()

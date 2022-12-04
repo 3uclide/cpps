@@ -703,7 +703,7 @@ TEST_CASE("Parser expression list", "[Parser], [CST]")
     checkTerm(expressions[2], ParameterModifier::Out, "o");
 }
 
-TEST_CASE("Parser DiagnosisMessage::dotMustFollowedByValidMemberName", "[Parser], [CST]")
+TEST_CASE("Parser diagnosis dot must be followed by valid member name", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = my_obj.;)");
 
@@ -717,7 +717,7 @@ TEST_CASE("Parser DiagnosisMessage::dotMustFollowedByValidMemberName", "[Parser]
     CHECK(errors[0].location == SourceLocation{0, 20});
 }
 
-TEST_CASE("Parser DiagnosisMessage::invalidReturnExpression", "[Parser], [CST]")
+TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> int = { return }");
 
@@ -733,5 +733,20 @@ TEST_CASE("Parser DiagnosisMessage::invalidReturnExpression", "[Parser], [CST]")
     CHECK(errors[1].message == Parser::DiagnosisMessage::invalidStatementInCompoundStatement());
     CHECK(errors[1].location == SourceLocation{0, 30});
 }
+
+TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = 1)");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 1);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::missingSemicolonAtEndStatement());
+    CHECK(errors[0].location == SourceLocation{0, 14});
+}
+
 
 } // namespace CPPS

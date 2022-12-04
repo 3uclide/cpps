@@ -18,6 +18,7 @@ public:
         static std::string illFormedInitializer();
         static std::string invalidExpressionAfter(std::string_view token);
         static std::string invalidReturnExpression();
+        static std::string invalidReturnParameterModifier(ParameterModifier modifier);
         static std::string invalidStatementInCompoundStatement();
         static std::string invalidTextInExpressionList();
         static std::string missingCloseParenthesisForParameterList();
@@ -26,8 +27,6 @@ public:
         static std::string missingFunctionReturnAfterArrow();
         static std::string missingSemicolonAtEndDeclaration();
         static std::string missingSemicolonAtEndStatement();
-        static std::string missingSemicolonEndStatement();
-        static std::string parenthesisNotFollowedByExpressionList();
         static std::string subscriptExpressionBracketEmpty();
         static std::string unexpectedTextAfterExpressionList();
         static std::string unexpectedTextAfterOpenParenthesis();
@@ -101,6 +100,9 @@ private:
     [[nodiscard]] const Token& current() const;
     [[nodiscard]] const Token& peekBack(std::size_t offset) const;
     void next();
+
+    void error(std::string message);
+    void error(std::string message, SourceLocation location);
 
     [[nodiscard]] CST::TranslationUnit::Allocator& allocator();
 
