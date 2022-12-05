@@ -47,7 +47,7 @@ private:
     CST::Node<CST::Declaration> parseUnnamedDeclaration(SourceLocation startLocation, bool mustEndWithSemicolon = true);
     CST::Node<CST::Declaration> parseUnnamedDeclaration(CST::Node<CST::UnqualifiedIdentifier>&& identifier, SourceLocation startLocation, bool mustEndWithSemicolon = true);
 
-    bool parseParameterDeclarationList(CST::ParameterDeclarationList& params);
+    bool parseParameterDeclarationList(CST::ParameterDeclarationList& params, bool returns = false);
     CST::Node<CST::ParameterDeclaration> parseParameterDeclaration(bool returns = false);
 
 private:

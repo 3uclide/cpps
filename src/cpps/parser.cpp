@@ -289,7 +289,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(CST::Node<CST::Unqua
 // parameter-declaration-seq:
 //     parameter-declaration
 //     parameter-declaration-seq , parameter-declaration
-bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params)
+bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params, bool returns)
 {
     const Token& openParenthesisToken = current();
 
@@ -303,7 +303,7 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
     // skip the (
     next();
 
-    while (CST::Node param = parseParameterDeclaration())
+    while (CST::Node param = parseParameterDeclaration(returns))
     {
         params.add(std::move(param));
 
@@ -754,10 +754,11 @@ CST::Node<CST::FunctionSignature> Parser::parseFunctionSignature()
         }
         else
         {
-            CST::ParameterDeclarationList returns_parameters;
-            if (parseParameterDeclarationList(returns_parameters))
+            CST::ParameterDeclarationList returnsParameters;
+            if (parseParameterDeclarationList(returnsParameters, true))
             {
-                // returns = std::move(returns_parameters);
+                CST::Node<CST::ParameterDeclarationList> node{allocator(), std::move(returnsParameters)};
+                returns = std::move(node);
             }
             else
             {

@@ -734,6 +734,27 @@ TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
     CHECK(errors[1].location == SourceLocation{0, 30});
 }
 
+TEST_CASE("Parser diagnosis invalid return parameter modifier", "[Parser], [CST]")
+{
+    auto check = [](ParameterModifier parameterModifier) {
+        const auto [source, diagnosis, tokens, tu] = parse(fmt::format("my_func: () -> ({} a: int) = {{ }}", parameterModifier));
+
+        checkNoWarning(diagnosis);
+
+        auto errors = diagnosis.getErrors();
+
+        REQUIRE_FALSE(errors.empty());
+
+        CHECK(errors[0].message == Parser::DiagnosisMessage::invalidReturnParameterModifier(parameterModifier));
+        CHECK(errors[0].location == SourceLocation{0, 16});
+    };
+
+    check(ParameterModifier::In);
+    check(ParameterModifier::InOut);
+    check(ParameterModifier::Copy);
+    check(ParameterModifier::Move);
+}
+
 TEST_CASE("Parser diagnosis missing semicolon at end declaration", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int)");
