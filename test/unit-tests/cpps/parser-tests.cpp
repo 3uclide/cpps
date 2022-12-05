@@ -802,10 +802,18 @@ TEST_CASE("Parser diagnosis subscript expression bracket empty", "[Parser], [CST
 
 TEST_CASE("Parser diagnosis unexpected text after expression list", "[Parser], [CST]")
 {
-    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a(b,.);)");
+    auto check = [](std::string code, SourceLocation location)
+    {
+        INFO(code);
 
-    checkNoWarning(diagnosis);
-    checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextAfterExpressionList(), SourceLocation{0, 15});
+        const auto [source, diagnosis, tokens, tu] = parse(std::move(code));
+
+        checkNoWarning(diagnosis);
+        checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextAfterExpressionList(), location);
+    };
+
+    check(R"(my_var: int = (b;)", SourceLocation{0, 16});
+    check(R"(my_var: int = a(b,.);)", SourceLocation{0, 15});
 }
 
 TEST_CASE("Parser diagnosis unexpected text bracket does not match", "[Parser], [CST]")
