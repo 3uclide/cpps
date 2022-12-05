@@ -708,13 +708,7 @@ TEST_CASE("Parser diagnosis dot must be followed by valid member name", "[Parser
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = my_obj.;)");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 1);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::dotMustFollowedByValidMemberName());
-    CHECK(errors[0].location == SourceLocation{0, 20});
+    checkError(diagnosis, Parser::DiagnosisMessage::dotMustFollowedByValidMemberName(), SourceLocation{0, 20});
 }
 
 TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
@@ -722,16 +716,7 @@ TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
     const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> int = { return }");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 2);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::invalidReturnExpression());
-    CHECK(errors[0].location == SourceLocation{0, 30});
-
-    CHECK(errors[1].message == Parser::DiagnosisMessage::invalidStatementInCompoundStatement());
-    CHECK(errors[1].location == SourceLocation{0, 30});
+    checkError(diagnosis, Parser::DiagnosisMessage::invalidReturnExpression(), SourceLocation{0, 30});
 }
 
 TEST_CASE("Parser diagnosis invalid return parameter modifier", "[Parser], [CST]")
@@ -740,13 +725,7 @@ TEST_CASE("Parser diagnosis invalid return parameter modifier", "[Parser], [CST]
         const auto [source, diagnosis, tokens, tu] = parse(fmt::format("my_func: () -> ({} a: int) = {{ }}", parameterModifier));
 
         checkNoWarning(diagnosis);
-
-        auto errors = diagnosis.getErrors();
-
-        REQUIRE_FALSE(errors.empty());
-
-        CHECK(errors[0].message == Parser::DiagnosisMessage::invalidReturnParameterModifier(parameterModifier));
-        CHECK(errors[0].location == SourceLocation{0, 16});
+        checkError(diagnosis, Parser::DiagnosisMessage::invalidReturnParameterModifier(parameterModifier), SourceLocation{0, 16});
     };
 
     check(ParameterModifier::In);
@@ -760,13 +739,7 @@ TEST_CASE("Parser diagnosis missing semicolon at end declaration", "[Parser], [C
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int)");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 1);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration());
-    CHECK(errors[0].location == SourceLocation{0, 0});
+    checkError(diagnosis, Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration(), SourceLocation{0, 0});
 }
 
 TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST]")
@@ -774,13 +747,7 @@ TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = 1)");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 1);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::missingSemicolonAtEndStatement());
-    CHECK(errors[0].location == SourceLocation{0, 14});
+    checkError(diagnosis, Parser::DiagnosisMessage::missingSemicolonAtEndStatement(), SourceLocation{0, 14});
 }
 
 TEST_CASE("Parser diagnosis missing equal before function body", "[Parser], [CST]")
@@ -788,13 +755,7 @@ TEST_CASE("Parser diagnosis missing equal before function body", "[Parser], [CST
     const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> void { }");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 1);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::missingEqualBeforeFunctionBody());
-    CHECK(errors[0].location == SourceLocation{0, 0});
+    checkError(diagnosis, Parser::DiagnosisMessage::missingEqualBeforeFunctionBody(), SourceLocation{0, 0});
 }
 
 TEST_CASE("Parser diagnosis missing comma between parameter declarations", "[Parser], [CST]")
@@ -802,16 +763,7 @@ TEST_CASE("Parser diagnosis missing comma between parameter declarations", "[Par
     const auto [source, diagnosis, tokens, tu] = parse("my_func: (p0 : int p1 : int) -> void { }");
 
     checkNoWarning(diagnosis);
-
-    auto errors = diagnosis.getErrors();
-
-    REQUIRE(errors.size() == 2);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::missingCommaBetweenParameterDeclarations());
-    CHECK(errors[0].location == SourceLocation{0, 19});
-
-    CHECK(errors[1].message == Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration());
-    CHECK(errors[1].location == SourceLocation{0, 0});
+    checkError(diagnosis, Parser::DiagnosisMessage::missingCommaBetweenParameterDeclarations(), SourceLocation{0, 19});
 }
 
 TEST_CASE("Parser diagnosis missing close parenthesis for parameter list", "[Parser], [CST]")
@@ -819,13 +771,15 @@ TEST_CASE("Parser diagnosis missing close parenthesis for parameter list", "[Par
     const auto [source, diagnosis, tokens, tu] = parse("my_func: (");
 
     checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::missingCloseParenthesisForParameterList(), SourceLocation{0, 9});
+}
 
-    auto errors = diagnosis.getErrors();
+TEST_CASE("Parser diagnosis subscript expression bracket empty", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a[];)");
 
-    REQUIRE(errors.size() == 1);
-
-    CHECK(errors[0].message == Parser::DiagnosisMessage::missingCloseParenthesisForParameterList());
-    CHECK(errors[0].location == SourceLocation{0, 9});
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::subscriptExpressionBracketEmpty(), SourceLocation{0, 15});
 }
 
 } // namespace CPPS

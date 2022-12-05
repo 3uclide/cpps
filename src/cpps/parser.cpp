@@ -543,7 +543,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
                                               auto errMsgNotMatchCloseGetter) {
             term.expressions = parseExpressionList(term.op.get().location);
 
-            if (term.expressions == std::nullopt)
+            if (term.expressions == std::nullopt || (closeLexeme == Punctuator::CloseBracket && term.expressions->empty()))
             {
                 error(errMsgExpressionsNullptrGetter(), term.op.get().location);
                 return false;
@@ -557,7 +557,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
                 return false;
             }
 
-            // term.expressions.value().closeParenthesisLocation = closeToken.location;
+            term.expressions.value().closeParenthesisLocation = closeToken.location;
             term.closeOp = closeToken;
 
             next();
