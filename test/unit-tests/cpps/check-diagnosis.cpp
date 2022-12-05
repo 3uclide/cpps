@@ -1,5 +1,6 @@
 #include "cpps/check-diagnosis.hpp"
 
+#include <algorithm>
 #include <string>
 
 #include <catch2/catch_test_macros.hpp>
