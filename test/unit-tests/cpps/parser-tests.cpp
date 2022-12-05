@@ -792,4 +792,28 @@ TEST_CASE("Parser diagnosis subscript expression bracket empty", "[Parser], [CST
     checkError(diagnosis, Parser::DiagnosisMessage::subscriptExpressionBracketEmpty(), SourceLocation{0, 15});
 }
 
+TEST_CASE("Parser diagnosis unexpected text bracket does not match", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a[0;)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextBracketDoesNotMatch(), SourceLocation{0, 17});
+}
+
+TEST_CASE("Parser diagnosis unexpected text parenthesis does not match", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a(0;)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextParenthesisDoesNotMatch(), SourceLocation{0, 17});
+}
+
+TEST_CASE("Parser diagnosis unexpected text after open parenthesis", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = (b,.);)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextAfterOpenParenthesis(), SourceLocation{0, 17});
+}
+
 } // namespace CPPS
