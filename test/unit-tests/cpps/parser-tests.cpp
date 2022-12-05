@@ -762,5 +762,49 @@ TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST
     CHECK(errors[0].location == SourceLocation{0, 14});
 }
 
+TEST_CASE("Parser diagnosis missing equal before function body", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> void { }");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 1);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::missingEqualBeforeFunctionBody());
+    CHECK(errors[0].location == SourceLocation{0, 0});
+}
+
+TEST_CASE("Parser diagnosis missing comma between parameter declarations", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse("my_func: (p0 : int p1 : int) -> void { }");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 2);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::missingCommaBetweenParameterDeclarations());
+    CHECK(errors[0].location == SourceLocation{0, 19});
+
+    CHECK(errors[1].message == Parser::DiagnosisMessage::missingSemicolonAtEndDeclaration());
+    CHECK(errors[1].location == SourceLocation{0, 0});
+}
+
+TEST_CASE("Parser diagnosis missing close parenthesis for parameter list", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse("my_func: (");
+
+    checkNoWarning(diagnosis);
+
+    auto errors = diagnosis.getErrors();
+
+    REQUIRE(errors.size() == 1);
+
+    CHECK(errors[0].message == Parser::DiagnosisMessage::missingCloseParenthesisForParameterList());
+    CHECK(errors[0].location == SourceLocation{0, 9});
+}
 
 } // namespace CPPS

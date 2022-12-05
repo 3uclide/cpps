@@ -328,7 +328,7 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
 
     if (closeParenthesisToken.lexeme != Punctuator::CloseParenthesis)
     {
-        error(DiagnosisMessage::missingCloseParenthesisForParameterList(), closeParenthesisToken.location);
+        error(DiagnosisMessage::missingCloseParenthesisForParameterList());
         next();
         return false;
     }
