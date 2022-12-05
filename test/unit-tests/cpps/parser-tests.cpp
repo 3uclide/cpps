@@ -27,6 +27,8 @@ auto parse(LinesT&&... lines)
 
     Tokens tokens = lexer.lex();
 
+    checkNoErrorOrWarning(diagnosis);
+
     Parser parser{diagnosis, tokens};
 
     CST::TranslationUnit tu = parser.parse();
@@ -639,7 +641,7 @@ TEST_CASE("Parser primary-expression", "[Parser], [CST]")
 
     SECTION("( expression-list )")
     {
-        const auto [source, diagnosis, tokens, tu] = parse(std::string("my_var: int = ( i );"));
+        const auto [source, diagnosis, tokens, tu] = parse("my_var: int = ( i );");
 
         checkNoErrorOrWarning(diagnosis);
 
