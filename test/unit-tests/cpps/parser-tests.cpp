@@ -762,10 +762,15 @@ TEST_CASE("Parser diagnosis missing semicolon at end declaration", "[Parser], [C
 
 TEST_CASE("Parser diagnosis missing semicolon at end statement", "[Parser], [CST]")
 {
-    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = 1)");
+    auto check = [](std::string code, SourceLocation location) {
+        const auto [source, diagnosis, tokens, tu] = parse(std::move(code));
 
-    checkNoWarning(diagnosis);
-    checkError(diagnosis, Parser::DiagnosisMessage::missingSemicolonAtEndStatement(), SourceLocation{0, 14});
+        checkNoWarning(diagnosis);
+        checkError(diagnosis, Parser::DiagnosisMessage::missingSemicolonAtEndStatement(), location);
+    };
+
+    check(R"(my_var: int = 1)", SourceLocation{0, 14});
+    check(R"(my_var: () -> void = { return i })", SourceLocation{0, 32});
 }
 
 TEST_CASE("Parser diagnosis missing equal before function body", "[Parser], [CST]")
