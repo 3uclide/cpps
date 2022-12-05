@@ -63,6 +63,8 @@ void checkNoErrorOrWarning(const Diagnosis& diagnosis)
 
 void checkDiagnosis(std::span<const Diagnosis::Entry> entries, std::string_view type, std::string_view msg, SourceLocation location)
 {
+    REQUIRE_FALSE(entries.empty());
+
     auto it = std::find_if(entries.begin(), entries.end(), [&msg](const auto& entry) { return entry.message == msg; });
 
     if (it != entries.end())

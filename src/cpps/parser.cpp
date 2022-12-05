@@ -109,7 +109,7 @@ std::string Parser::DiagnosisMessage::subscriptExpressionBracketEmpty()
 
 std::string Parser::DiagnosisMessage::unexpectedTextAfterExpressionList()
 {
-    return "unexpected text - ( is not followed by an expression-list";
+    return "unexpected text after expression-list";
 }
 
 std::string Parser::DiagnosisMessage::unexpectedTextAfterOpenParenthesis()
@@ -234,7 +234,10 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
         // skip the =
         next();
 
-        declaration->initializer = parseStatement(mustEndWithSemicolon, declaration->equalLocation);
+        if (CST::Node initializer = parseStatement(mustEndWithSemicolon, declaration->equalLocation))
+        {
+            declaration->initializer = std::move(initializer);
+        }
 
         if (declaration->initializer == std::nullopt)
         {

@@ -707,10 +707,18 @@ TEST_CASE("Parser expression list", "[Parser], [CST]")
 
 TEST_CASE("Parser diagnosis dot must be followed by valid member name", "[Parser], [CST]")
 {
-    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = my_obj.;)");
+    const auto [source, diagnosis, tokens, tu] = parse("my_var: int = my_obj.;");
 
     checkNoWarning(diagnosis);
     checkError(diagnosis, Parser::DiagnosisMessage::dotMustFollowedByValidMemberName(), SourceLocation{0, 20});
+}
+
+TEST_CASE("Parser diagnosis ill-formed initializer", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse("my_var: int = ");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::illFormedInitializer(), SourceLocation{0, 12});
 }
 
 TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
