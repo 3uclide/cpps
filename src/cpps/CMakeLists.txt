@@ -19,6 +19,7 @@ set(CPPS_INCLUDES
     cst/node-variant.hpp
     cst/parameter-declaration.hpp
     cst/parameter-declaration-list.hpp
+    cst/parser.hpp
     cst/postfix-expression.hpp
     cst/prefix-expression.hpp
     cst/primary-expression.hpp
@@ -50,7 +51,6 @@ set(CPPS_INCLUDES
     diagnosis.hpp
     lexeme.hpp
     lexer.hpp
-    parser.hpp
     source.hpp
     source-location.hpp
     source-reader.hpp
@@ -73,6 +73,7 @@ set(CPPS_SOURCES
     cst/node-variant.hpp
     cst/parameter-declaration.cpp
     cst/parameter-declaration-list.cpp
+    cst/parser.cpp
     cst/postfix-expression.cpp
     cst/prefix-expression.cpp
     cst/primary-expression.cpp
@@ -86,7 +87,6 @@ set(CPPS_SOURCES
     grammar/pointer-literal.cpp
     grammar/punctuator.cpp
     lexer.cpp
-    parser.cpp
     source-reader.cpp
 
     # TODO cleaner integration

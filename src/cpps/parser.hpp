@@ -4,7 +4,7 @@
 
 #include "cpps/cst.hpp"
 
-namespace CPPS {
+namespace CPPS::CST {
 
 class Diagnosis;
 class Tokens;

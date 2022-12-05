@@ -4,13 +4,13 @@
 
 #include "cpps/check-diagnosis.hpp"
 #include "cpps/cst.hpp"
+#include "cpps/cst/parser.hpp"
 #include "cpps/diagnosis.hpp"
 #include "cpps/lexer.hpp"
-#include "cpps/parser.hpp"
 #include "cpps/source.hpp"
 #include "cpps/tokens.hpp"
 
-namespace CPPS {
+namespace CPPS::CST {
 
 template<typename T>
 concept Stringable = std::is_convertible_v<T, std::string>;
@@ -31,7 +31,7 @@ auto parse(LinesT&&... lines)
 
     Parser parser{diagnosis, tokens};
 
-    CST::TranslationUnit tu = parser.parse();
+    TranslationUnit tu = parser.parse();
 
     return std::make_tuple(std::move(source), std::move(diagnosis), std::move(tokens), std::move(tu));
 }
@@ -52,12 +52,12 @@ const T& getAs(auto& value)
     return value.template as<T>();
 }
 
-void checkTerm(const CST::ExpressionTerm& term, ParameterModifier parameterModifier, std::string_view value)
+void checkTerm(const ExpressionTerm& term, ParameterModifier parameterModifier, std::string_view value)
 {
     CHECK(term.modifier == parameterModifier);
 
-    const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(term.expression->assignment->primary->type);
-    const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+    const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(term.expression->assignment->primary->type);
+    const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
     CHECK(unqualifiedIdentifier.identifier.get().text == value);
 }
@@ -74,12 +74,12 @@ TEST_CASE("Parser identifier-expression", "[Parser], [CST]")
 
             REQUIRE(tu.declarations.size() == 1);
 
-            const CST::Declaration& declaration = tu.declarations.back();
+            const Declaration& declaration = tu.declarations.back();
 
             CHECK(declaration.identifier->identifier.get().text == "my_var");
 
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(declaration.type);
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+            const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(declaration.type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == "int");
 
@@ -98,12 +98,12 @@ TEST_CASE("Parser identifier-expression", "[Parser], [CST]")
 
             REQUIRE(tu.declarations.size() == 1);
 
-            const CST::Declaration& declaration = tu.declarations.back();
+            const Declaration& declaration = tu.declarations.back();
 
             CHECK(declaration.identifier->identifier.get().text == "my_var");
 
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(declaration.type);
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+            const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(declaration.type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == "int");
 
@@ -128,13 +128,13 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         CHECK(declaration.startLocation == SourceLocation{0, 0});
         CHECK(declaration.endLocation == SourceLocation{0, 23});
         CHECK(declaration.equalLocation == SourceLocation{0, 20});
 
-        const CST::FunctionSignature& functionSignature = getAs<CST::FunctionSignature>(declaration.type);
+        const FunctionSignature& functionSignature = getAs<FunctionSignature>(declaration.type);
 
         CHECK(functionSignature.parameters.openParenthesisLocation == SourceLocation{0, 9});
         CHECK(functionSignature.parameters.closeParenthesisLocation == SourceLocation{0, 10});
@@ -150,13 +150,13 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         CHECK(declaration.startLocation == SourceLocation{0, 0});
         CHECK(declaration.endLocation == SourceLocation{0, 30});
         CHECK(declaration.equalLocation == SourceLocation{0, 27});
 
-        const CST::FunctionSignature& functionSignature = getAs<CST::FunctionSignature>(declaration.type);
+        const FunctionSignature& functionSignature = getAs<FunctionSignature>(declaration.type);
 
         CHECK(functionSignature.parameters.openParenthesisLocation == SourceLocation{0, 9});
         CHECK(functionSignature.parameters.closeParenthesisLocation == SourceLocation{0, 10});
@@ -176,20 +176,20 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
 
                 checkNoErrorOrWarning(diagnosis);
 
-                const CST::Declaration& declaration = tu.declarations.back();
+                const Declaration& declaration = tu.declarations.back();
 
                 CHECK(declaration.startLocation == SourceLocation{0, 0});
                 CHECK(declaration.endLocation == endLocation);
                 CHECK(declaration.equalLocation == equalLocation);
 
-                const CST::FunctionSignature& functionSignature = getAs<CST::FunctionSignature>(declaration.type);
+                const FunctionSignature& functionSignature = getAs<FunctionSignature>(declaration.type);
 
                 CHECK(functionSignature.parameters.openParenthesisLocation == openParenthesis);
                 CHECK(functionSignature.parameters.closeParenthesisLocation == closeParenthesis);
 
                 REQUIRE(functionSignature.parameters.size() == 1);
 
-                const CST::ParameterDeclaration& parameterDeclaration = functionSignature.parameters[0];
+                const ParameterDeclaration& parameterDeclaration = functionSignature.parameters[0];
 
                 CHECK(parameterDeclaration.modifier == parameterModifier);
             };
@@ -209,13 +209,13 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         CHECK(declaration.startLocation == SourceLocation{0, 0});
         CHECK(declaration.endLocation == SourceLocation{0, 108});
         CHECK(declaration.equalLocation == SourceLocation{0, 104});
 
-        const CST::FunctionSignature& functionSignature = getAs<CST::FunctionSignature>(declaration.type);
+        const FunctionSignature& functionSignature = getAs<FunctionSignature>(declaration.type);
 
         CHECK(functionSignature.parameters.openParenthesisLocation == SourceLocation{0, 9});
         CHECK(functionSignature.parameters.closeParenthesisLocation == SourceLocation{0, 94});
@@ -227,19 +227,19 @@ TEST_CASE("Parser function-signature", "[Parser], [CST]")
 
             REQUIRE(index < functionSignature.parameters.size());
 
-            const CST::ParameterDeclaration& parameterDeclaration = functionSignature.parameters[index];
+            const ParameterDeclaration& parameterDeclaration = functionSignature.parameters[index];
 
             REQUIRE(parameterDeclaration.declaration);
 
             CHECK(parameterDeclaration.modifier == parameterModifier);
             CHECK(parameterDeclaration.location == location);
 
-            const CST::Declaration& decl = *parameterDeclaration.declaration;
+            const Declaration& decl = *parameterDeclaration.declaration;
 
             CHECK(decl.identifier->identifier.get().text == name);
 
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(decl.type);
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+            const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(decl.type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == type);
         };
@@ -261,7 +261,7 @@ TEST_CASE("parser return statement", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         CHECK(declaration.startLocation == SourceLocation{0, 0});
         CHECK(declaration.endLocation == SourceLocation{0, 34});
@@ -269,11 +269,11 @@ TEST_CASE("parser return statement", "[Parser], [CST]")
 
         REQUIRE(declaration.initializer.has_value());
 
-        const CST::CompoundStatement& compoundStatement = getAs<CST::CompoundStatement>(declaration.initializer.value()->type);
+        const CompoundStatement& compoundStatement = getAs<CompoundStatement>(declaration.initializer.value()->type);
 
         REQUIRE(compoundStatement.size() == 1);
 
-        const CST::ReturnStatement& returnStatement = getAs<CST::ReturnStatement>(compoundStatement[0].type);
+        const ReturnStatement& returnStatement = getAs<ReturnStatement>(compoundStatement[0].type);
 
         REQUIRE(returnStatement.expression);
 
@@ -286,7 +286,7 @@ TEST_CASE("parser return statement", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         CHECK(declaration.startLocation == SourceLocation{0, 0});
         CHECK(declaration.endLocation == SourceLocation{0, 31});
@@ -294,11 +294,11 @@ TEST_CASE("parser return statement", "[Parser], [CST]")
 
         REQUIRE(declaration.initializer.has_value());
 
-        const CST::CompoundStatement& compoundStatement = getAs<CST::CompoundStatement>(declaration.initializer.value()->type);
+        const CompoundStatement& compoundStatement = getAs<CompoundStatement>(declaration.initializer.value()->type);
 
         REQUIRE(compoundStatement.size() == 1);
 
-        const CST::ReturnStatement& returnStatement = getAs<CST::ReturnStatement>(compoundStatement[0].type);
+        const ReturnStatement& returnStatement = getAs<ReturnStatement>(compoundStatement[0].type);
 
         CHECK_FALSE(returnStatement.expression);
     }
@@ -310,13 +310,13 @@ TEST_CASE("Parser expression statement", "[Parser], [CST]")
 
     checkNoErrorOrWarning(diagnosis);
 
-    const CST::Declaration& declaration = tu.declarations.back();
+    const Declaration& declaration = tu.declarations.back();
 
     CHECK(declaration.startLocation == SourceLocation{0, 0});
     CHECK(declaration.endLocation == SourceLocation{0, 16});
     CHECK(declaration.equalLocation == SourceLocation{0, 12});
 
-    const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
+    const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
 
     CHECK(expressionStatement.hasSemicolon);
 
@@ -335,26 +335,26 @@ TEST_CASE("Parser assignation expression", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
         REQUIRE(declaration.initializer);
 
-        const CST::CompoundStatement& compoundStatement = getAs<CST::CompoundStatement>(declaration.initializer.value()->type);
+        const CompoundStatement& compoundStatement = getAs<CompoundStatement>(declaration.initializer.value()->type);
 
         REQUIRE(compoundStatement.size() == 1);
 
-        const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(compoundStatement[0].type);
+        const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(compoundStatement[0].type);
 
         CHECK(expressionStatement.hasSemicolon);
 
         REQUIRE(expressionStatement.expression->assignment->terms.size() == 1);
 
-        const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(
-            getAs<CST::IdentifierExpression>(expressionStatement.expression->assignment->primary->type).identifier.type);
+        const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(
+            getAs<IdentifierExpression>(expressionStatement.expression->assignment->primary->type).identifier.type);
 
         CHECK(unqualifiedIdentifier.identifier.get().text == lhs_v);
 
-        const CST::AssignmentExpression::Term& term = expressionStatement.expression->assignment->terms[0];
+        const AssignmentExpression::Term& term = expressionStatement.expression->assignment->terms[0];
 
         CHECK(term.op.get().lexeme == punctuator);
 
@@ -383,9 +383,9 @@ TEST_CASE("Parser binary expression", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
+        const Declaration& declaration = tu.declarations.back();
 
-        const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
+        const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
 
         CHECK(expressionStatement.hasSemicolon);
 
@@ -401,24 +401,24 @@ TEST_CASE("Parser binary expression", "[Parser], [CST]")
         CHECK(getAs<Token>(term.primary->type).text == rhs_v);
     }; // NOLINT(readability/braces)
 
-    check("*", "my_var: int = 4 * 2;", "4", Punctuator::Multiply, "2", static_cast<CST::MultiplicativeExpression*>(nullptr));
-    check("/", "my_var: int = 4 / 2;", "4", Punctuator::Slash, "2", static_cast<CST::MultiplicativeExpression*>(nullptr));
-    check("+", "my_var: int = 4 + 2;", "4", Punctuator::Plus, "2", static_cast<CST::AdditiveExpression*>(nullptr));
-    check("-", "my_var: int = 4 - 2;", "4", Punctuator::Minus, "2", static_cast<CST::AdditiveExpression*>(nullptr));
-    check(">>", "my_var: int = 4 >> 2;", "4", Punctuator::RightShift, "2", static_cast<CST::ShiftExpression*>(nullptr));
-    check("<<", "my_var: int = 4 << 2;", "4", Punctuator::LeftShift, "2", static_cast<CST::ShiftExpression*>(nullptr));
-    check("<=>", "my_var: int = 4 <=> 2;", "4", Punctuator::Spaceship, "2", static_cast<CST::CompareExpression*>(nullptr));
-    check("<", "my_var: int = 4 < 2;", "4", Punctuator::Less, "2", static_cast<CST::RelationalExpression*>(nullptr));
-    check(">", "my_var: int = 4 > 2;", "4", Punctuator::Greater, "2", static_cast<CST::RelationalExpression*>(nullptr));
-    check("<=", "my_var: int = 4 <= 2;", "4", Punctuator::LessEqual, "2", static_cast<CST::RelationalExpression*>(nullptr));
-    check(">=", "my_var: int = 4 >= 2;", "4", Punctuator::GreaterEqual, "2", static_cast<CST::RelationalExpression*>(nullptr));
-    check("==", "my_var: int = 4 == 2;", "4", Punctuator::CompareEqual, "2", static_cast<CST::EqualityExpression*>(nullptr));
-    check("!=", "my_var: int = 4 != 2;", "4", Punctuator::CompareNotEqual, "2", static_cast<CST::EqualityExpression*>(nullptr));
-    check("&", "my_var: int = 4 & 2;", "4", Punctuator::Ampersand, "2", static_cast<CST::BitAndExpression*>(nullptr));
-    check("^", "my_var: int = 4 ^ 2;", "4", Punctuator::Caret, "2", static_cast<CST::BitXorExpression*>(nullptr));
-    check("|", "my_var: int = 4 | 2;", "4", Punctuator::Pipe, "2", static_cast<CST::BitOrExpression*>(nullptr));
-    check("&&", "my_var: int = 4 && 2;", "4", Punctuator::LogicalAnd, "2", static_cast<CST::LogicalAndExpression*>(nullptr));
-    check("||", "my_var: int = 4 || 2;", "4", Punctuator::LogicalOr, "2", static_cast<CST::LogicalOrExpression*>(nullptr));
+    check("*", "my_var: int = 4 * 2;", "4", Punctuator::Multiply, "2", static_cast<MultiplicativeExpression*>(nullptr));
+    check("/", "my_var: int = 4 / 2;", "4", Punctuator::Slash, "2", static_cast<MultiplicativeExpression*>(nullptr));
+    check("+", "my_var: int = 4 + 2;", "4", Punctuator::Plus, "2", static_cast<AdditiveExpression*>(nullptr));
+    check("-", "my_var: int = 4 - 2;", "4", Punctuator::Minus, "2", static_cast<AdditiveExpression*>(nullptr));
+    check(">>", "my_var: int = 4 >> 2;", "4", Punctuator::RightShift, "2", static_cast<ShiftExpression*>(nullptr));
+    check("<<", "my_var: int = 4 << 2;", "4", Punctuator::LeftShift, "2", static_cast<ShiftExpression*>(nullptr));
+    check("<=>", "my_var: int = 4 <=> 2;", "4", Punctuator::Spaceship, "2", static_cast<CompareExpression*>(nullptr));
+    check("<", "my_var: int = 4 < 2;", "4", Punctuator::Less, "2", static_cast<RelationalExpression*>(nullptr));
+    check(">", "my_var: int = 4 > 2;", "4", Punctuator::Greater, "2", static_cast<RelationalExpression*>(nullptr));
+    check("<=", "my_var: int = 4 <= 2;", "4", Punctuator::LessEqual, "2", static_cast<RelationalExpression*>(nullptr));
+    check(">=", "my_var: int = 4 >= 2;", "4", Punctuator::GreaterEqual, "2", static_cast<RelationalExpression*>(nullptr));
+    check("==", "my_var: int = 4 == 2;", "4", Punctuator::CompareEqual, "2", static_cast<EqualityExpression*>(nullptr));
+    check("!=", "my_var: int = 4 != 2;", "4", Punctuator::CompareNotEqual, "2", static_cast<EqualityExpression*>(nullptr));
+    check("&", "my_var: int = 4 & 2;", "4", Punctuator::Ampersand, "2", static_cast<BitAndExpression*>(nullptr));
+    check("^", "my_var: int = 4 ^ 2;", "4", Punctuator::Caret, "2", static_cast<BitXorExpression*>(nullptr));
+    check("|", "my_var: int = 4 | 2;", "4", Punctuator::Pipe, "2", static_cast<BitOrExpression*>(nullptr));
+    check("&&", "my_var: int = 4 && 2;", "4", Punctuator::LogicalAnd, "2", static_cast<LogicalAndExpression*>(nullptr));
+    check("||", "my_var: int = 4 || 2;", "4", Punctuator::LogicalOr, "2", static_cast<LogicalOrExpression*>(nullptr));
 }
 
 TEST_CASE("Parser prefix expression", "[Parser], [CST]")
@@ -430,15 +430,15 @@ TEST_CASE("Parser prefix expression", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
-        const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-        const CST::PrefixExpression& prefix = *expressionStatement.expression->assignment->prefix;
+        const Declaration& declaration = tu.declarations.back();
+        const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+        const PrefixExpression& prefix = *expressionStatement.expression->assignment->prefix;
 
         REQUIRE(prefix.ops.size() == 1);
         CHECK(prefix.ops[0].get().lexeme == punctuator);
 
-        const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
-        const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+        const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
+        const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
         CHECK(unqualifiedIdentifier.identifier.get().text == "i");
     };
@@ -459,15 +459,15 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
 
             REQUIRE(postfix.terms.size() == 1);
             CHECK(postfix.terms[0].op.get().lexeme == punctuator);
 
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+            const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == "i");
         };
@@ -485,13 +485,13 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
-        const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-        const CST::PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
+        const Declaration& declaration = tu.declarations.back();
+        const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+        const PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
 
         REQUIRE(postfix.terms.size() == 1);
 
-        const CST::PostfixExpression::Term& term = postfix.terms[0];
+        const PostfixExpression::Term& term = postfix.terms[0];
 
         REQUIRE(term.closeOp);
 
@@ -499,7 +499,7 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
         CHECK(term.closeOp->get().lexeme == Punctuator::CloseBracket);
 
         REQUIRE(term.expressions);
-        const CST::ExpressionList& expressions = *term.expressions;
+        const ExpressionList& expressions = *term.expressions;
 
         CHECK(expressions.openParenthesisLocation == SourceLocation{0, 21});
         CHECK(expressions.closeParenthesisLocation == SourceLocation{0, 26});
@@ -518,20 +518,20 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
 
             REQUIRE(postfix.terms.size() == 1);
 
-            const CST::PostfixExpression::Term& term = postfix.terms[0];
+            const PostfixExpression::Term& term = postfix.terms[0];
 
             REQUIRE(term.closeOp);
 
             CHECK(term.op.get().lexeme == Punctuator::OpenParenthesis);
             CHECK(term.closeOp.value().get().lexeme == Punctuator::CloseParenthesis);
 
-            const CST::ExpressionList& expressions = *term.expressions;
+            const ExpressionList& expressions = *term.expressions;
 
             CHECK(expressions.openParenthesisLocation == SourceLocation{0, 21});
             CHECK(expressions.closeParenthesisLocation == SourceLocation{0, 22});
@@ -544,20 +544,20 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
 
             REQUIRE(postfix.terms.size() == 1);
 
-            const CST::PostfixExpression::Term& term = postfix.terms[0];
+            const PostfixExpression::Term& term = postfix.terms[0];
 
             REQUIRE(term.closeOp);
 
             CHECK(term.op.get().lexeme == Punctuator::OpenParenthesis);
             CHECK(term.closeOp.value().get().lexeme == Punctuator::CloseParenthesis);
 
-            const CST::ExpressionList& expressions = *term.expressions;
+            const ExpressionList& expressions = *term.expressions;
 
             CHECK(expressions.openParenthesisLocation == SourceLocation{0, 21});
             CHECK(expressions.closeParenthesisLocation == SourceLocation{0, 26});
@@ -574,18 +574,18 @@ TEST_CASE("Parser postfix", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PostfixExpression& postfix = *expressionStatement.expression->assignment->postfix;
 
             REQUIRE(postfix.terms.size() == 1);
 
-            const CST::PostfixExpression::Term& term = postfix.terms[0];
+            const PostfixExpression::Term& term = postfix.terms[0];
 
             CHECK(term.op.get().lexeme == Punctuator::Dot);
             CHECK_FALSE(term.closeOp.has_value());
 
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(term.identifierExpression->identifier.type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(term.identifierExpression->identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == "my_member");
         }
@@ -602,9 +602,9 @@ TEST_CASE("Parser primary-expression", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PrimaryExpression& primaryExpression = *expressionStatement.expression->assignment->primary;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PrimaryExpression& primaryExpression = *expressionStatement.expression->assignment->primary;
 
             CHECK(getAs<Token>(primaryExpression.type).lexeme == BooleanLiteral::True);
         }
@@ -615,9 +615,9 @@ TEST_CASE("Parser primary-expression", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::PrimaryExpression& primaryExpression = *expressionStatement.expression->assignment->primary;
+            const Declaration& declaration = tu.declarations.back();
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const PrimaryExpression& primaryExpression = *expressionStatement.expression->assignment->primary;
 
             CHECK(getAs<Token>(primaryExpression.type).lexeme == PointerLiteral::NullPtr);
         }
@@ -645,14 +645,14 @@ TEST_CASE("Parser primary-expression", "[Parser], [CST]")
 
         checkNoErrorOrWarning(diagnosis);
 
-        const CST::Declaration& declaration = tu.declarations.back();
-        const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-        const CST::ExpressionList& expressions = getAs<CST::ExpressionList>(expressionStatement.expression->assignment->primary->type);
+        const Declaration& declaration = tu.declarations.back();
+        const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+        const ExpressionList& expressions = getAs<ExpressionList>(expressionStatement.expression->assignment->primary->type);
 
         REQUIRE(expressions.size() == 1);
 
-        const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(expressions[0].expression->assignment->primary->type);
-        const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+        const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(expressions[0].expression->assignment->primary->type);
+        const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
         CHECK(unqualifiedIdentifier.identifier.get().text == "i");
     }
@@ -665,11 +665,11 @@ TEST_CASE("Parser primary-expression", "[Parser], [CST]")
 
             checkNoErrorOrWarning(diagnosis);
 
-            const CST::Declaration& declaration = tu.declarations.back();
+            const Declaration& declaration = tu.declarations.back();
 
-            const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-            const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
-            const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+            const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+            const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
+            const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
             CHECK(unqualifiedIdentifier.identifier.get().text == "i");
         }
@@ -682,11 +682,11 @@ TEST_CASE("Parser expression list", "[Parser], [CST]")
 
     checkNoErrorOrWarning(diagnosis);
 
-    const CST::Declaration& declaration = tu.declarations.back();
+    const Declaration& declaration = tu.declarations.back();
 
-    const CST::ExpressionStatement& expressionStatement = getAs<CST::ExpressionStatement>(declaration.initializer.value()->type);
-    const CST::IdentifierExpression& identifierExpression = getAs<CST::IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
-    const CST::UnqualifiedIdentifier& unqualifiedIdentifier = getAs<CST::UnqualifiedIdentifier>(identifierExpression.identifier.type);
+    const ExpressionStatement& expressionStatement = getAs<ExpressionStatement>(declaration.initializer.value()->type);
+    const IdentifierExpression& identifierExpression = getAs<IdentifierExpression>(expressionStatement.expression->assignment->primary->type);
+    const UnqualifiedIdentifier& unqualifiedIdentifier = getAs<UnqualifiedIdentifier>(identifierExpression.identifier.type);
 
     CHECK(unqualifiedIdentifier.identifier.get().text == "my_func");
 
@@ -696,7 +696,7 @@ TEST_CASE("Parser expression list", "[Parser], [CST]")
 
     CHECK(term.op.get().lexeme == Punctuator::OpenParenthesis);
 
-    const CST::ExpressionList& expressions = *term.expressions;
+    const ExpressionList& expressions = *term.expressions;
 
     REQUIRE(expressions.size() == 3);
 
@@ -807,8 +807,7 @@ TEST_CASE("Parser diagnosis subscript expression bracket empty", "[Parser], [CST
 
 TEST_CASE("Parser diagnosis unexpected text after expression list", "[Parser], [CST]")
 {
-    auto check = [](std::string code, SourceLocation location)
-    {
+    auto check = [](std::string code, SourceLocation location) {
         INFO(code);
 
         const auto [source, diagnosis, tokens, tu] = parse(std::move(code));

@@ -1,11 +1,11 @@
-#include "cpps/parser.hpp"
+#include "cpps/cst/parser.hpp"
 
 #include <utility>
 
 #include "cpps/diagnosis.hpp"
 #include "cpps/tokens.hpp"
 
-namespace CPPS {
+namespace CPPS::CST {
 
 namespace {
 
@@ -147,9 +147,9 @@ Parser::Parser(Diagnosis& diagnosis, const Tokens& tokens)
 //     declaration-seq
 //          declaration
 //          declaration_seq declaration
-CST::TranslationUnit Parser::parse()
+TranslationUnit Parser::parse()
 {
-    while (CST::Node node = parseDeclaration())
+    while (Node node = parseDeclaration())
     {
         _tu.declarations.add(std::move(node));
     }
@@ -159,7 +159,7 @@ CST::TranslationUnit Parser::parse()
 
 // declaration:
 //    identifier unnamed-declaration
-CST::Node<CST::Declaration> Parser::parseDeclaration(bool mustEndWithSemicolon)
+Node<Declaration> Parser::parseDeclaration(bool mustEndWithSemicolon)
 {
     if (isEnd())
     {
@@ -169,9 +169,9 @@ CST::Node<CST::Declaration> Parser::parseDeclaration(bool mustEndWithSemicolon)
     const std::size_t startIndex = _currentTokenIndex;
     const SourceLocation startLocation = current().location;
 
-    if (CST::Node identifier = parseUnqualifiedIdentifier())
+    if (Node identifier = parseUnqualifiedIdentifier())
     {
-        if (CST::Node declaration = parseUnnamedDeclaration(std::move(identifier), startLocation, mustEndWithSemicolon))
+        if (Node declaration = parseUnnamedDeclaration(std::move(identifier), startLocation, mustEndWithSemicolon))
         {
             return declaration;
         }
@@ -188,7 +188,7 @@ CST::Node<CST::Declaration> Parser::parseDeclaration(bool mustEndWithSemicolon)
 //      : function-signature = statement
 //      : identifier-expression-opt = statement
 //      : identifier-expression
-CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation startLocation, bool mustEndWithSemicolon)
+Node<Declaration> Parser::parseUnnamedDeclaration(SourceLocation startLocation, bool mustEndWithSemicolon)
 {
     if (current().lexeme != Punctuator::Colon)
     {
@@ -199,10 +199,10 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
     // skip the :
     next();
 
-    CST::Node<CST::Declaration> declaration{allocator()};
+    Node<Declaration> declaration{allocator()};
     declaration->startLocation = startLocation;
 
-    if (CST::Node functionSignature = parseFunctionSignature())
+    if (Node functionSignature = parseFunctionSignature())
     {
         declaration->type = std::move(functionSignature);
     }
@@ -216,7 +216,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
 
         declaration->type = parseIdentifierExpression();
     }
-    else if (CST::Node identifierExpression = parseIdentifierExpression())
+    else if (Node identifierExpression = parseIdentifierExpression())
     {
         // non-pointer object
         declaration->type = std::move(identifierExpression);
@@ -234,7 +234,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
         // skip the =
         next();
 
-        if (CST::Node initializer = parseStatement(mustEndWithSemicolon, declaration->equalLocation))
+        if (Node initializer = parseStatement(mustEndWithSemicolon, declaration->equalLocation))
         {
             declaration->initializer = std::move(initializer);
         }
@@ -248,7 +248,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
     }
     else
     {
-        if (declaration->type.is<CST::FunctionSignature>())
+        if (declaration->type.is<FunctionSignature>())
         {
             error(DiagnosisMessage::missingEqualBeforeFunctionBody(), declaration->getLocation());
             return {};
@@ -275,9 +275,9 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(SourceLocation start
 //     : function-type = statement
 //     : id-expression-opt = statement
 //     : id-expression
-CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(CST::Node<CST::UnqualifiedIdentifier>&& identifier, SourceLocation startLocation, bool mustEndWithSemicolon)
+Node<Declaration> Parser::parseUnnamedDeclaration(Node<UnqualifiedIdentifier>&& identifier, SourceLocation startLocation, bool mustEndWithSemicolon)
 {
-    if (CST::Node declaration = parseUnnamedDeclaration(startLocation, mustEndWithSemicolon))
+    if (Node declaration = parseUnnamedDeclaration(startLocation, mustEndWithSemicolon))
     {
         declaration->identifier = std::move(identifier);
 
@@ -292,7 +292,7 @@ CST::Node<CST::Declaration> Parser::parseUnnamedDeclaration(CST::Node<CST::Unqua
 // parameter-declaration-seq:
 //     parameter-declaration
 //     parameter-declaration-seq , parameter-declaration
-bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params, bool returns)
+bool Parser::parseParameterDeclarationList(ParameterDeclarationList& params, bool returns)
 {
     const Token& openParenthesisToken = current();
 
@@ -306,7 +306,7 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
     // skip the (
     next();
 
-    while (CST::Node param = parseParameterDeclaration(returns))
+    while (Node param = parseParameterDeclaration(returns))
     {
         params.add(std::move(param));
 
@@ -347,7 +347,7 @@ bool Parser::parseParameterDeclarationList(CST::ParameterDeclarationList& params
 //     parameter-direction-opt declaration
 // parameter-direction: one of
 //     in copy inout out move forward
-CST::Node<CST::ParameterDeclaration> Parser::parseParameterDeclaration(bool returns)
+Node<ParameterDeclaration> Parser::parseParameterDeclaration(bool returns)
 {
     const Token& startToken = current();
 
@@ -378,14 +378,14 @@ CST::Node<CST::ParameterDeclaration> Parser::parseParameterDeclaration(bool retu
         }
     }
 
-    CST::Node decl = parseDeclaration(false);
+    Node decl = parseDeclaration(false);
 
     if (!decl)
     {
         return {};
     }
 
-    CST::Node<CST::ParameterDeclaration> parameterDeclaration{allocator()};
+    Node<ParameterDeclaration> parameterDeclaration{allocator()};
     parameterDeclaration->declaration = std::move(decl);
     parameterDeclaration->modifier = parameterModifier;
     parameterDeclaration->location = startToken.location;
@@ -395,16 +395,16 @@ CST::Node<CST::ParameterDeclaration> Parser::parseParameterDeclaration(bool retu
 // expression:
 //     assignment-expression
 // TODO    try expression
-CST::Node<CST::Expression> Parser::parseExpression(bool allowRelationalComparison)
+Node<Expression> Parser::parseExpression(bool allowRelationalComparison)
 {
-    CST::Node<CST::AssignmentExpression> assignment{allocator()};
+    Node<AssignmentExpression> assignment{allocator()};
 
     if (!parseAssignmentExpression(*assignment, allowRelationalComparison))
     {
         return {};
     }
 
-    CST::Node<CST::Expression> expression{allocator()};
+    Node<Expression> expression{allocator()};
     expression->assignment = std::move(assignment);
     return expression;
 }
@@ -412,7 +412,7 @@ CST::Node<CST::Expression> Parser::parseExpression(bool allowRelationalCompariso
 // expression-list:
 //     expression
 //     expression-list , expression
-std::optional<CST::ExpressionList> Parser::parseExpressionList(SourceLocation openParenthesisLocation)
+std::optional<ExpressionList> Parser::parseExpressionList(SourceLocation openParenthesisLocation)
 {
     auto parseParameterModifier = [this]() {
         if (current().lexeme == ParameterModifier::Out)
@@ -430,13 +430,13 @@ std::optional<CST::ExpressionList> Parser::parseExpressionList(SourceLocation op
 
     ParameterModifier parameterModifier{parseParameterModifier()};
 
-    CST::ExpressionList expressions;
+    ExpressionList expressions;
     expressions.openParenthesisLocation = openParenthesisLocation;
 
     // list is not empty
-    if (CST::Node firstExpression = parseExpression())
+    if (Node firstExpression = parseExpression())
     {
-        expressions.add(CST::Node<CST::ExpressionTerm>{allocator(), std::move(firstExpression), parameterModifier});
+        expressions.add(Node<ExpressionTerm>{allocator(), std::move(firstExpression), parameterModifier});
 
         while (current().lexeme == Punctuator::Comma)
         {
@@ -445,9 +445,9 @@ std::optional<CST::ExpressionList> Parser::parseExpressionList(SourceLocation op
 
             parameterModifier = parseParameterModifier();
 
-            if (CST::Node nextExpression = parseExpression())
+            if (Node nextExpression = parseExpression())
             {
-                expressions.add(CST::Node<CST::ExpressionTerm>{allocator(), std::move(nextExpression), parameterModifier});
+                expressions.add(Node<ExpressionTerm>{allocator(), std::move(nextExpression), parameterModifier});
             }
             else
             {
@@ -469,14 +469,14 @@ std::optional<CST::ExpressionList> Parser::parseExpressionList(SourceLocation op
 // TODO sizeof ... ( identifier )
 // TODO alignof ( type-id )
 // TODO throws-expression
-CST::Node<CST::PrefixExpression> Parser::parsePrefixExpression()
+Node<PrefixExpression> Parser::parsePrefixExpression()
 {
     auto isPrefixToken = [](const Token& token) {
         const Lexeme lexeme = token.lexeme;
         return lexeme == Punctuator::Not || lexeme == Punctuator::Plus || lexeme == Punctuator::Minus;
     };
 
-    CST::Node<CST::PrefixExpression> prefix{allocator()};
+    Node<PrefixExpression> prefix{allocator()};
 
     for (; isPrefixToken(current()); next())
     {
@@ -491,9 +491,9 @@ CST::Node<CST::PrefixExpression> Parser::parsePrefixExpression()
 //     [ expression-list ]
 //     ( expression-list? )
 //     . id-expression
-CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
+Node<PostfixExpression> Parser::parsePostfixExpression()
 {
-    CST::Node<CST::PostfixExpression> postfix{allocator()};
+    Node<PostfixExpression> postfix{allocator()};
 
     // TODO Find a better name
     auto shouldContinue = [this]() {
@@ -521,7 +521,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
         //  * & and ~ can't be a unary operator if followed by ( or identifier
         const bool is_invalid_sequence =
             (curr.lexeme == Punctuator::Multiply || curr.lexeme == Punctuator::Ampersand || curr.lexeme == Punctuator::Tilde) &&
-            (curr.lexeme == Punctuator::OpenParenthesis || curr.lexeme == Identifier{});
+            (curr.lexeme == Punctuator::OpenParenthesis || curr.lexeme.is<CPPS::Identifier>());
         // clang-format on
 
         return !is_invalid_sequence;
@@ -536,7 +536,7 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
         }
 
         postfix->terms.emplace_back(current());
-        CST::PostfixExpression::Term& term{postfix->terms.back()};
+        PostfixExpression::Term& term{postfix->terms.back()};
 
         next();
 
@@ -603,11 +603,11 @@ CST::Node<CST::PostfixExpression> Parser::parsePostfixExpression()
     return postfix;
 }
 
-CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
+Node<PrimaryExpression> Parser::parsePrimaryExpression()
 {
-    if (CST::Node id = parseIdentifierExpression())
+    if (Node id = parseIdentifierExpression())
     {
-        CST::Node<CST::PrimaryExpression> node{allocator()};
+        Node<PrimaryExpression> node{allocator()};
         node->type = std::move(id);
         return node;
     }
@@ -619,7 +619,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
                token.lexeme.is<CharacterLiteral>() ||
                token.lexeme.is<DecimalLiteral>() ||
                token.lexeme.is<FloatingLiteral>() ||
-               token.lexeme.is<Identifier>() ||
+               token.lexeme.is<CPPS::Identifier>() ||
                token.lexeme.is<Keyword>() ||
                token.lexeme.is<PointerLiteral>() ||
                token.lexeme.is<StringLiteral>();
@@ -628,7 +628,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
 
     if (isLiteralOrIdentifierOrKeyword(current()))
     {
-        CST::Node<CST::PrimaryExpression> node{allocator()};
+        Node<PrimaryExpression> node{allocator()};
         node->type = std::ref(current());
         next();
         return node;
@@ -639,9 +639,9 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
         return parsePrimaryOpenParenthesisExpression();
     }
 
-    if (CST::Node declaration = parseUnnamedDeclaration(current().location, true))
+    if (Node declaration = parseUnnamedDeclaration(current().location, true))
     {
-        if (!declaration->type.is<CST::FunctionSignature>())
+        if (!declaration->type.is<FunctionSignature>())
         {
             error(DiagnosisMessage::unnamedDeclarationAtExpressionScopeMustBeFunction(), declaration->getLocation());
 
@@ -650,18 +650,18 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
             return {};
         }
 
-        const CST::FunctionSignature& func = declaration->type.as<CST::FunctionSignature>();
+        const FunctionSignature& func = declaration->type.as<FunctionSignature>();
 
-        if (func.returns.is<CST::ParameterDeclarationList>())
+        if (func.returns.is<ParameterDeclarationList>())
         {
-            error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues(), func.returns.as<CST::ParameterDeclarationList>().openParenthesisLocation);
+            error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues(), func.returns.as<ParameterDeclarationList>().openParenthesisLocation);
 
             next();
 
             return {};
         }
 
-        CST::Node<CST::PrimaryExpression> node{allocator()};
+        Node<PrimaryExpression> node{allocator()};
         node->type = std::move(declaration);
         return node;
     }
@@ -669,7 +669,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
     return {};
 }
 
-CST::Node<CST::PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression()
+Node<PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression()
 {
     const SourceLocation openLocation = current().location;
 
@@ -686,7 +686,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression(
         return {};
     }
 
-    CST::ExpressionList& expressions = expressionsOpt.value();
+    ExpressionList& expressions = expressionsOpt.value();
 
     if (current().lexeme != Punctuator::CloseParenthesis)
     {
@@ -701,19 +701,19 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryOpenParenthesisExpression(
 
     next();
 
-    CST::Node<CST::PrimaryExpression> primary{allocator()};
-    primary->type = CST::Node<CST::ExpressionList>{allocator(), std::move(expressions)};
+    Node<PrimaryExpression> primary{allocator()};
+    primary->type = Node<ExpressionList>{allocator(), std::move(expressions)};
     return primary;
 }
 
 // id-expression
 //    unqualified-id
 //    qualified-id
-CST::Node<CST::IdentifierExpression> Parser::parseIdentifierExpression()
+Node<IdentifierExpression> Parser::parseIdentifierExpression()
 {
-    if (CST::Node unqualifiedIdentifier = parseUnqualifiedIdentifier())
+    if (Node unqualifiedIdentifier = parseUnqualifiedIdentifier())
     {
-        CST::Node<CST::IdentifierExpression> expression{allocator()};
+        Node<IdentifierExpression> expression{allocator()};
 
         expression->location = current().location;
         expression->identifier.type = std::move(unqualifiedIdentifier);
@@ -723,14 +723,14 @@ CST::Node<CST::IdentifierExpression> Parser::parseIdentifierExpression()
     return {};
 }
 
-CST::Node<CST::IterationStatement> Parser::parseIterationStatement()
+Node<IterationStatement> Parser::parseIterationStatement()
 {
     return {};
 }
 
-CST::Node<CST::FunctionSignature> Parser::parseFunctionSignature()
+Node<FunctionSignature> Parser::parseFunctionSignature()
 {
-    CST::ParameterDeclarationList parameters;
+    ParameterDeclarationList parameters;
     if (!parseParameterDeclarationList(parameters))
     {
         return {};
@@ -746,21 +746,21 @@ CST::Node<CST::FunctionSignature> Parser::parseFunctionSignature()
     }
 
     // Optional returns
-    CST::FunctionSignature::Returns returns;
+    FunctionSignature::Returns returns;
     if (current().lexeme == Punctuator::Arrow)
     {
         next();
 
-        if (CST::Node id_expr = parseIdentifierExpression())
+        if (Node id_expr = parseIdentifierExpression())
         {
             returns = std::move(id_expr);
         }
         else
         {
-            CST::ParameterDeclarationList returnsParameters;
+            ParameterDeclarationList returnsParameters;
             if (parseParameterDeclarationList(returnsParameters, true))
             {
-                CST::Node<CST::ParameterDeclarationList> node{allocator(), std::move(returnsParameters)};
+                Node<ParameterDeclarationList> node{allocator(), std::move(returnsParameters)};
                 returns = std::move(node);
             }
             else
@@ -771,7 +771,7 @@ CST::Node<CST::FunctionSignature> Parser::parseFunctionSignature()
         }
     }
 
-    CST::Node<CST::FunctionSignature> functionSignature{allocator()};
+    Node<FunctionSignature> functionSignature{allocator()};
     functionSignature->parameters = std::move(parameters);
     functionSignature->returns = std::move(returns);
     functionSignature->throws = throws;
@@ -789,7 +789,7 @@ bool Parser::parseBinaryExpression(BinaryExpressionT& binaryExpression, auto par
     while (isValidTokenFunctor(current()))
     {
         // add the token
-        binaryExpression.terms.add(CST::Node<typename BinaryExpressionT::Term>{allocator(), current()});
+        binaryExpression.terms.add(Node<typename BinaryExpressionT::Term>{allocator(), current()});
 
         // skip the operand
         next();
@@ -809,14 +809,14 @@ bool Parser::parseBinaryExpression(BinaryExpressionT& binaryExpression, auto par
 //     multiplicative-expression
 //     additive-expression + multiplicative-expression
 //     additive-expression - multiplicative-expression
-bool Parser::parseAdditiveExpression(CST::AdditiveExpression& expr)
+bool Parser::parseAdditiveExpression(AdditiveExpression& expr)
 {
     return parseBinaryExpression(expr, &Parser::parseMultiplicativeExpression, &anyTokenPunctuator<Punctuator::Plus, Punctuator::Minus>);
 }
 
 // basic-expression:
 //     prefix-expression primary-expression postfix-expression
-bool Parser::parseBasicExpression(CST::BasicExpression& expr)
+bool Parser::parseBasicExpression(BasicExpression& expr)
 {
     expr.prefix = parsePrefixExpression();
     expr.primary = parsePrimaryExpression();
@@ -834,7 +834,7 @@ bool Parser::parseBasicExpression(CST::BasicExpression& expr)
 // assignment-expression:
 //     logical-or-expression
 //     assignment-expression assignment-operator assignment-expression
-bool Parser::parseAssignmentExpression(CST::AssignmentExpression& expr, bool allowRelationalComparison)
+bool Parser::parseAssignmentExpression(AssignmentExpression& expr, bool allowRelationalComparison)
 {
     // clang-format off
     return parseBinaryExpression(
@@ -859,7 +859,7 @@ bool Parser::parseAssignmentExpression(CST::AssignmentExpression& expr, bool all
 // bit-and-expression:
 //     equality-expression
 //     bit-and-expression & equality-expression
-bool Parser::parseBitAndExpression(CST::BitAndExpression& expr, bool allowRelationalComparison)
+bool Parser::parseBitAndExpression(BitAndExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -871,7 +871,7 @@ bool Parser::parseBitAndExpression(CST::BitAndExpression& expr, bool allowRelati
 // bit-or-expression:
 //     bit-xor-expression
 //     bit-or-expression & bit-xor-expression
-bool Parser::parseBitOrExpression(CST::BitOrExpression& expr, bool allowRelationalComparison)
+bool Parser::parseBitOrExpression(BitOrExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -883,7 +883,7 @@ bool Parser::parseBitOrExpression(CST::BitOrExpression& expr, bool allowRelation
 // bit-xor-expression:
 //     bit-and-expression
 //     bit-xor-expression & bit-and-expression
-bool Parser::parseBitXorExpression(CST::BitXorExpression& expr, bool allowRelationalComparison)
+bool Parser::parseBitXorExpression(BitXorExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -895,7 +895,7 @@ bool Parser::parseBitXorExpression(CST::BitXorExpression& expr, bool allowRelati
 // compare-expression:
 //    shift-expression
 //    compare-expression <=> shift-expression
-bool Parser::parseCompareExpression(CST::CompareExpression& expr)
+bool Parser::parseCompareExpression(CompareExpression& expr)
 {
     return parseBinaryExpression(
         expr,
@@ -907,7 +907,7 @@ bool Parser::parseCompareExpression(CST::CompareExpression& expr)
 //    relational-expression
 //    equality-expression == relational-expression
 //    equality-expression != relational-expression
-bool Parser::parseEqualityExpression(CST::EqualityExpression& expr, bool allowRelationalComparison)
+bool Parser::parseEqualityExpression(EqualityExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -921,7 +921,7 @@ bool Parser::parseEqualityExpression(CST::EqualityExpression& expr, bool allowRe
 // TODO    is-as-expression is-expression-constraint
 // TODO    is-as-expression as-type-cast
 // TODO    type-id is-type-constraint
-bool Parser::parseIsAsExpression(CST::IsAsExpression& expr)
+bool Parser::parseIsAsExpression(IsAsExpression& expr)
 {
     return parseBinaryExpression(
         expr,
@@ -932,7 +932,7 @@ bool Parser::parseIsAsExpression(CST::IsAsExpression& expr)
 // logical-and-expression:
 //     bit-or-expression
 //     logical-and-expression && bit-or-expression
-bool Parser::parseLogicalAndExpression(CST::LogicalAndExpression& expr, bool allowRelationalComparison)
+bool Parser::parseLogicalAndExpression(LogicalAndExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -946,7 +946,7 @@ bool Parser::parseLogicalAndExpression(CST::LogicalAndExpression& expr, bool all
 // logical-or-expression:
 //     logical-and-expression
 //     logical-or-expression || logical-and-expression
-bool Parser::parseLogicalOrExpression(CST::LogicalOrExpression& expr, bool allowRelationalComparison)
+bool Parser::parseLogicalOrExpression(LogicalOrExpression& expr, bool allowRelationalComparison)
 {
     return parseBinaryExpression(
         expr,
@@ -960,7 +960,7 @@ bool Parser::parseLogicalOrExpression(CST::LogicalOrExpression& expr, bool allow
 //     multiplicative-expression * is-as-expression
 //     multiplicative-expression / is-as-expression
 //     multiplicative-expression % is-as-expression
-bool Parser::parseMultiplicativeExpression(CST::MultiplicativeExpression& expr)
+bool Parser::parseMultiplicativeExpression(MultiplicativeExpression& expr)
 {
     return parseBinaryExpression(
         expr,
@@ -974,7 +974,7 @@ bool Parser::parseMultiplicativeExpression(CST::MultiplicativeExpression& expr)
 //     relational-expression >  compare-expression
 //     relational-expression <= compare-expression
 //     relational-expression >= compare-expression
-bool Parser::parseRelationalExpression(CST::RelationalExpression& expr, bool allowRelationalComparison)
+bool Parser::parseRelationalExpression(RelationalExpression& expr, bool allowRelationalComparison)
 {
     if (allowRelationalComparison)
     {
@@ -994,7 +994,7 @@ bool Parser::parseRelationalExpression(CST::RelationalExpression& expr, bool all
 //     additive-expression
 //     shift-expression << additive-expression
 //     shift-expression >> additive-expression
-bool Parser::parseShiftExpression(CST::ShiftExpression& expr)
+bool Parser::parseShiftExpression(ShiftExpression& expr)
 {
     return parseBinaryExpression(
         expr,
@@ -1013,24 +1013,24 @@ bool Parser::parseShiftExpression(CST::ShiftExpression& expr)
 //     selection-statement
 //
 // TODO     try-block
-CST::Node<CST::Statement> Parser::parseStatement(bool mustEndWithSemicolon, SourceLocation equalLocation)
+Node<Statement> Parser::parseStatement(bool mustEndWithSemicolon, SourceLocation equalLocation)
 {
-    auto makeStatementIfParseSucceed = [this]<typename... ArgsT>(auto parseStatementMethod, ArgsT&&... args) -> CST::Node<CST::Statement> {
-        if (CST::Node stmtType = (this->*parseStatementMethod)(std::forward<ArgsT>(args)...))
+    auto makeStatementIfParseSucceed = [this]<typename... ArgsT>(auto parseStatementMethod, ArgsT&&... args) -> Node<Statement> {
+        if (Node stmtType = (this->*parseStatementMethod)(std::forward<ArgsT>(args)...))
         {
-            CST::Node<CST::Statement> stmt{allocator()};
+            Node<Statement> stmt{allocator()};
             stmt->type = std::move(stmtType);
             return stmt;
         }
         return {};
     };
 
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseSelectionStatement)) return stmt;
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseReturnStatement)) return stmt;
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseIterationStatement)) return stmt;
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseCompoundStatement, equalLocation)) return stmt;
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseDeclaration, mustEndWithSemicolon)) return stmt;
-    if (CST::Node stmt = makeStatementIfParseSucceed(&Parser::parseExpressionStatement, mustEndWithSemicolon)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseSelectionStatement)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseReturnStatement)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseIterationStatement)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseCompoundStatement, equalLocation)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseDeclaration, mustEndWithSemicolon)) return stmt;
+    if (Node stmt = makeStatementIfParseSucceed(&Parser::parseExpressionStatement, mustEndWithSemicolon)) return stmt;
 
     return {};
 }
@@ -1041,7 +1041,7 @@ CST::Node<CST::Statement> Parser::parseStatement(bool mustEndWithSemicolon, Sour
 // statement-seq:
 //     statement
 //     statement-seq statement
-CST::Node<CST::CompoundStatement> Parser::parseCompoundStatement(SourceLocation equalLocation)
+Node<CompoundStatement> Parser::parseCompoundStatement(SourceLocation equalLocation)
 {
     const Token& openBraceToken = current();
 
@@ -1055,14 +1055,14 @@ CST::Node<CST::CompoundStatement> Parser::parseCompoundStatement(SourceLocation 
     // slip the {
     next();
 
-    CST::Node<CST::CompoundStatement> statements{allocator()};
+    Node<CompoundStatement> statements{allocator()};
 
     statements->openBraceLocation = openBraceLocation;
 
     while (current().lexeme != Punctuator::CloseBrace)
     {
         static constexpr bool mustEndWithSemicolon = true;
-        if (CST::Node statement = parseStatement(mustEndWithSemicolon))
+        if (Node statement = parseStatement(mustEndWithSemicolon))
         {
             statements->add(std::move(statement));
         }
@@ -1084,9 +1084,9 @@ CST::Node<CST::CompoundStatement> Parser::parseCompoundStatement(SourceLocation 
 // expression-statement:
 //    expression ;
 //    expression
-CST::Node<CST::ExpressionStatement> Parser::parseExpressionStatement(bool mustEndWithSemicolon)
+Node<ExpressionStatement> Parser::parseExpressionStatement(bool mustEndWithSemicolon)
 {
-    CST::Node expression = parseExpression();
+    Node expression = parseExpression();
 
     if (!expression)
     {
@@ -1108,7 +1108,7 @@ CST::Node<CST::ExpressionStatement> Parser::parseExpressionStatement(bool mustEn
         return {};
     }
 
-    CST::Node<CST::ExpressionStatement> exprStmt{allocator()};
+    Node<ExpressionStatement> exprStmt{allocator()};
     exprStmt->expression = std::move(expression);
     exprStmt->hasSemicolon = hasSemicolon;
     return exprStmt;
@@ -1116,7 +1116,7 @@ CST::Node<CST::ExpressionStatement> Parser::parseExpressionStatement(bool mustEn
 
 // return-statement:
 //     return expression-opt ;
-CST::Node<CST::ReturnStatement> Parser::parseReturnStatement()
+Node<ReturnStatement> Parser::parseReturnStatement()
 {
     const Token& identifier = current();
 
@@ -1131,11 +1131,11 @@ CST::Node<CST::ReturnStatement> Parser::parseReturnStatement()
     {
         next();
 
-        CST::Node<CST::ReturnStatement> returnStatement{allocator(), identifier};
+        Node<ReturnStatement> returnStatement{allocator(), identifier};
         return returnStatement;
     }
 
-    CST::Node expression = parseExpression();
+    Node expression = parseExpression();
 
     if (!expression)
     {
@@ -1154,7 +1154,7 @@ CST::Node<CST::ReturnStatement> Parser::parseReturnStatement()
 
     next();
 
-    CST::Node<CST::ReturnStatement> returnStatement{allocator(), identifier};
+    Node<ReturnStatement> returnStatement{allocator(), identifier};
     returnStatement->expression = std::move(expression);
     return returnStatement;
 }
@@ -1162,7 +1162,7 @@ CST::Node<CST::ReturnStatement> Parser::parseReturnStatement()
 // selection-statement:
 //     if constexpr-opt expression compound-statement
 //     if constexpr-opt expression compound-statement else compound-statement
-CST::Node<CST::SelectionStatement> Parser::parseSelectionStatement()
+Node<SelectionStatement> Parser::parseSelectionStatement()
 {
     return {};
 }
@@ -1182,14 +1182,14 @@ CST::Node<CST::SelectionStatement> Parser::parseSelectionStatement()
 //    expression
 //    id-expression
 //
-CST::Node<CST::UnqualifiedIdentifier> Parser::parseUnqualifiedIdentifier()
+Node<UnqualifiedIdentifier> Parser::parseUnqualifiedIdentifier()
 {
-    if (!current().lexeme.is<Identifier>() && !current().lexeme.is<Keyword>())
+    if (!current().lexeme.is<CPPS::Identifier>() && !current().lexeme.is<Keyword>())
     {
         return {};
     }
 
-    CST::Node<CST::UnqualifiedIdentifier> identifier{allocator(), current()};
+    Node<UnqualifiedIdentifier> identifier{allocator(), current()};
 
     next();
 
@@ -1238,9 +1238,9 @@ void Parser::error(std::string message, SourceLocation location)
     _diagnosis.error(std::move(message), location);
 }
 
-CST::TranslationUnit::Allocator& Parser::allocator()
+TranslationUnit::Allocator& Parser::allocator()
 {
     return _tu.allocator;
 }
 
-} // namespace CPPS
+} // namespace CPPS::CST
