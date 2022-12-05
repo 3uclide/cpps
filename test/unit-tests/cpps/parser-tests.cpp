@@ -721,6 +721,14 @@ TEST_CASE("Parser diagnosis ill-formed initializer", "[Parser], [CST]")
     checkError(diagnosis, Parser::DiagnosisMessage::illFormedInitializer(), SourceLocation{0, 12});
 }
 
+TEST_CASE("Parser diagnosis invalid expression after", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = b.+;)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::invalidExpressionAfter("+"), SourceLocation{0, 17});
+}
+
 TEST_CASE("Parser diagnosis invalid return expression", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse("my_func: () -> int = { return }");
@@ -792,6 +800,14 @@ TEST_CASE("Parser diagnosis subscript expression bracket empty", "[Parser], [CST
     checkError(diagnosis, Parser::DiagnosisMessage::subscriptExpressionBracketEmpty(), SourceLocation{0, 15});
 }
 
+TEST_CASE("Parser diagnosis unexpected text after expression list", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a(b,.);)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextAfterExpressionList(), SourceLocation{0, 15});
+}
+
 TEST_CASE("Parser diagnosis unexpected text bracket does not match", "[Parser], [CST]")
 {
     const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int = a[0;)");
@@ -814,6 +830,22 @@ TEST_CASE("Parser diagnosis unexpected text after open parenthesis", "[Parser], 
 
     checkNoWarning(diagnosis);
     checkError(diagnosis, Parser::DiagnosisMessage::unexpectedTextAfterOpenParenthesis(), SourceLocation{0, 17});
+}
+
+TEST_CASE("Parser diagnosis unnamed declaration at expression scope must be function", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int =: int = 0;)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unnamedDeclarationAtExpressionScopeMustBeFunction(), SourceLocation{0, 13});
+}
+
+TEST_CASE("Parser diagnosis unnamed function at expression scope cannot returns multiple values", "[Parser], [CST]")
+{
+    const auto [source, diagnosis, tokens, tu] = parse(R"(my_var: int =: () -> (a : int, b : int) = { };)");
+
+    checkNoWarning(diagnosis);
+    checkError(diagnosis, Parser::DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues(), SourceLocation{0, 21});
 }
 
 } // namespace CPPS

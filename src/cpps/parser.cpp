@@ -654,7 +654,7 @@ CST::Node<CST::PrimaryExpression> Parser::parsePrimaryExpression()
 
         if (func.returns.is<CST::ParameterDeclarationList>())
         {
-            error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues());
+            error(DiagnosisMessage::unnamedFunctionAtExpressionScopeCannotReturnsMultipleValues(), func.returns.as<CST::ParameterDeclarationList>().openParenthesisLocation);
 
             next();
 
