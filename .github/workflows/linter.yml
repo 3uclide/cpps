@@ -6,7 +6,6 @@ on:  # yamllint disable-line rule:truthy
     branches: [main]
 
   push:
-    branches-ignore: [main]
 
 jobs:
   build:

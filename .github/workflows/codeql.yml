@@ -6,7 +6,6 @@ on:  # yamllint disable-line rule:truthy
     branches: [main]
 
   push:
-    branches-ignore: [main]
 
   schedule:
     - cron: '38 0 * * 5'
