@@ -1,0 +1,9 @@
+{
+  "hasModules": false,
+  "threshold": 0,
+  "reporters": ["html", "verbose"],
+  "format": ["cpp", "c"],
+  "ignore": ["**/test/**"],
+  "min-tokens": 200,
+  "absolute": true
+}

@@ -6,7 +6,7 @@
 #include <range/v3/view.hpp>
 
 #include "cpps/diagnosis.hpp"
-#include "cpps/utility.hpp"
+#include "cpps/grammar/identifier.hpp"
 
 namespace CPPS {
 

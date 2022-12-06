@@ -21,3 +21,4 @@ CMakeUserPresets.json
 _ReSharper*
 *.log
 *.user
+*.TMP

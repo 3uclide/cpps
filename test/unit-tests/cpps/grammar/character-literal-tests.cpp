@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "cpps/utility.hpp"
+#include "cpps/grammar/character-literal.hpp"
 
 namespace CPPS {
 
@@ -109,29 +109,6 @@ TEST_CASE("isNondigit", "[Utility]")
     }
 
     CHECK_FALSE(isNondigit(' '));
-}
-
-TEST_CASE("findFirstNotOf", "[Utility]")
-{
-    CHECK(findFirstNotOf("0", isSpace, 0) == 0);
-    CHECK(findFirstNotOf(" 1", isSpace, 0) == 1);
-    CHECK(findFirstNotOf("  2", isSpace, 0) == 2);
-    CHECK(findFirstNotOf("   3", isSpace, 0) == 3);
-
-    CHECK(findFirstNotOf("01", isSpace, 1) == 1);
-    CHECK(findFirstNotOf("0 2", isSpace, 1) == 2);
-    CHECK(findFirstNotOf("0  3", isSpace, 1) == 3);
-    CHECK(findFirstNotOf("0   4", isSpace, 1) == 4);
-}
-
-TEST_CASE("findFirstIdentifierEnd", "[Utility]")
-{
-    CHECK(findFirstIdentifierEnd("i") == 1);
-    CHECK(findFirstIdentifierEnd("identifier: int;") == 10);
-    CHECK(findFirstIdentifierEnd("_identifier: int;") == 11);
-
-    CHECK(findFirstIdentifierEnd("0identifier: int;") == std::string_view::npos);
-    CHECK(findFirstIdentifierEnd("-identifier: int;") == std::string_view::npos);
 }
 
 } // namespace CPPS

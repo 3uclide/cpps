@@ -44,6 +44,9 @@ concept Lexemable = TypeListContainsV<T, LexemeTypes>;
 class Lexeme
 {
 public:
+    static constexpr Lexeme invalid();
+
+public:
     constexpr Lexeme() = default;
     constexpr bool operator==(const Lexeme& other) const = default;
 
@@ -73,6 +76,11 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& os, Lexeme value);
+
+constexpr Lexeme Lexeme::invalid()
+{
+    return {};
+}
 
 template<Lexemable T>
 constexpr Lexeme::Lexeme(T value)

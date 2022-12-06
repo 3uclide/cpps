@@ -38,4 +38,20 @@
       <Item Name="[Data]" Condition="(_data &amp; 0x00FF) == 11">(CPPS::Punctuator)((_data &amp; 0xFF00) &gt;&gt; 8u)</Item>
   </Expand>
   </Type>
+  <Type Name="CPPS::CST::Node&lt;*&gt;">
+    <DisplayString Condition="_node == nullptr">nullnode</DisplayString>
+    <Expand HideRawView="true">
+      <ExpandedItem Condition="_node != nullptr">*_node</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="CPPS::CST::NodeList&lt;*&gt;">
+    <Expand HideRawView="true">
+      <ExpandedItem>_nodes</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="CPPS::CST::NodeVariant&lt;*&gt;">
+    <Expand HideRawView="true">
+      <ExpandedItem>_variant</ExpandedItem>
+    </Expand>
+  </Type>
 </AutoVisualizer>

@@ -1,0 +1,40 @@
+(* C++² Specification *)
+
+TranslationUnit = [DeclarationSeq] Declaration
+
+Declaration = Identifier UunamedDeclaration
+
+UnamedDeclaration = FunctionSignature = Statement |
+                    [IdentifierExpression] = Statement |
+                    IdentifierExpression]
+
+FunctionSignature = ( ParameterDeclarationList ) [ThrowsSpecifier] -> [ReturnList]
+
+ParameterDeclarationList = ParameterDeclaration |
+                           ParameterDeclarationList, ParameterDeclaration
+
+ParameterDeclaration = [ParameterModifier] Declaration
+
+ParameterModifier = copy | forward | in | inout | move | out
+
+Expression = AssignmentExpression
+
+ExpressionList = Expression |
+                 ExpressionList , Expression
+
+PrefixExpression = PostfixExpression |
+                   [PrefixOperator] PrefixExpression
+
+PostfixExpression = PrimaryExpression |
+                    PrimaryExpression PostfixOperator | (*without whitespace before the operator*)
+                    PrimaryExpression [ [ExpressionList] ] |
+                    PrimaryExpression ( [ExpressionList] ) |
+                    PrimaryExpression . IdentifierExpression
+
+PrimaryExpression = Literal |
+                    IdentifierExpression |
+                    UnnamedDeclaration |
+                    ( [ExpressionList] )
+
+IdentifierExpression = UnqualifiedIdentifier |
+                       QualifiedIdentifier

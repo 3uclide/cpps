@@ -15,6 +15,9 @@ struct TypesContains
     static constexpr bool Value{(std::is_same_v<TargetTypeT, TypesT> || ...)};
 };
 
+template<typename TargetTypeT, typename... TypesT>
+constexpr bool TypesContainsV{TypesContains<TargetTypeT, TypesT...>::Value};
+
 template<typename TargetTypeT, typename TypeListT>
 struct TypeListContains;
 
