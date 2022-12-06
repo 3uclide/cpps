@@ -29,6 +29,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     utility/strings-tests.cpp
     check-diagnosis.cpp
     diagnosis-tests.cpp
+    generator-tests.cpp
     lexeme-tests.cpp
     lexer-tests.cpp
     source-location-tests.cpp

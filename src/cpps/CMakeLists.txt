@@ -49,6 +49,7 @@ set(CPPS_INCLUDES
     comment.hpp
     cst.hpp
     diagnosis.hpp
+    generator.hpp
     lexeme.hpp
     lexer.hpp
     source.hpp
@@ -86,6 +87,7 @@ set(CPPS_SOURCES
     grammar/parameter-modifier.cpp
     grammar/pointer-literal.cpp
     grammar/punctuator.cpp
+    generator.cpp
     lexer.cpp
     source-reader.cpp
 
