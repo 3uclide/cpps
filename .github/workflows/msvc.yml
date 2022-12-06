@@ -9,7 +9,6 @@ on:  # yamllint disable-line rule:truthy
     types: [published]
 
   push:
-    branches-ignore: [main]
 
 env:
   # Conan cache environment variables
