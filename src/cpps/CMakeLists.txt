@@ -54,6 +54,7 @@ set(CPPS_INCLUDES
     lexer.hpp
     source.hpp
     source-location.hpp
+    source-printer.hpp
     source-reader.hpp
     token.hpp
     tokens.hpp
@@ -89,6 +90,7 @@ set(CPPS_SOURCES
     grammar/punctuator.cpp
     generator.cpp
     lexer.cpp
+    source-printer.cpp
     source-reader.cpp
 
     # TODO cleaner integration

@@ -1,7 +1,8 @@
-#include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <string>
 #include <tuple>
+
+#include <catch2/catch_test_macros.hpp>
 
 #include "check-diagnosis.hpp"
 #include "cpps/cst.hpp"
@@ -9,6 +10,7 @@
 #include "cpps/diagnosis.hpp"
 #include "cpps/generator.hpp"
 #include "cpps/lexer.hpp"
+#include "cpps/source-printer.hpp"
 #include "cpps/source-reader.hpp"
 #include "cpps/source.hpp"
 #include "cpps/tokens.hpp"
@@ -40,7 +42,9 @@ auto generate(LinesT&&... lines)
     checkNoErrorOrWarning(diagnosis);
 
     std::stringstream outStream;
-    Generator generator{diagnosis, *source, tokens, tu, outStream};
+    SourcePrinter sourcePrinter{outStream};
+
+    Generator generator{diagnosis, *source, tokens, tu, sourcePrinter};
     generator.generate();
 
     return std::make_tuple(std::move(*source), std::move(diagnosis), std::move(tokens), outStream.str());

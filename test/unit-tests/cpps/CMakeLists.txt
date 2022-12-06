@@ -33,6 +33,7 @@ set(CPPS_UNIT_TESTS_SOURCES
     lexeme-tests.cpp
     lexer-tests.cpp
     source-location-tests.cpp
+    source-printer-tests.cpp
     source-reader-tests.cpp
     source-tests.cpp
     token-tests.cpp
