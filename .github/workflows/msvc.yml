@@ -50,7 +50,7 @@ jobs:
           generator: ${{ matrix.generator }}
 
       - name: Setup Cpp
-        uses: aminya/setup-cpp@v0.23.0
+        uses: aminya/setup-cpp@v0.24.0
         with:
           compiler: ${{ matrix.compiler }}
           vcvarsall: true
